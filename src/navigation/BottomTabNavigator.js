@@ -1,11 +1,12 @@
 import * as React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import TabBarIcon from '../components/TabBarIcon';
-import HomeScreen from '../screens/HomeScreen';
-import LinksScreen from '../screens/LinksScreen';
+import SimplyRun from '../screens/SimplyRun'
+import Settings from '../screens/Settings'
+import RunLog from '../screens/RunLog'
 
 const BottomTab = createBottomTabNavigator();
-const INITIAL_ROUTE_NAME = 'Home';
+const INITIAL_ROUTE_NAME = 'SIMPLY_RUN';
 
 export default function BottomTabNavigator({ navigation, route }) {
   // Set the header title on the parent stack navigator depending on the
@@ -16,18 +17,26 @@ export default function BottomTabNavigator({ navigation, route }) {
   return (
     <BottomTab.Navigator initialRouteName={INITIAL_ROUTE_NAME}>
       <BottomTab.Screen
-        name="Home"
-        component={HomeScreen}
+        name="RUN_LOG"
+        component={RunLog}
         options={{
           title: 'Get Started',
           tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="md-code-working" />,
         }}
       />
       <BottomTab.Screen
-        name="Links"
-        component={LinksScreen}
+        name="SIMPLY_RUN"
+        component={SimplyRun}
         options={{
-          title: 'Resources',
+          title: 'Simply Run',
+          tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="md-code-working" />,
+        }}
+      />
+      <BottomTab.Screen
+        name="SETTINGS"
+        component={Settings}
+        options={{
+          title: 'Settings',
           tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="md-book" />,
         }}
       />
@@ -39,9 +48,11 @@ function getHeaderTitle(route) {
   const routeName = route.state?.routes[route.state.index]?.name ?? INITIAL_ROUTE_NAME;
 
   switch (routeName) {
-    case 'Home':
-      return 'Simply Run';
-    case 'Links':
+    case 'RUN_LOG':
       return 'Run Log';
+    case 'SIMPLY_RUN':
+      return 'Simply Run';
+    case 'SETTINGS':
+      return 'Settings';
   }
 }
