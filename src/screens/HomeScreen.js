@@ -9,8 +9,8 @@ export default function HomeScreen() {
   return (
     <View style={styles.container}>
       <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-        <View style={styles.welcomeContainer}>
-          
+        <View style={styles.welcomeContainer}>          
+
         </View>
       </ScrollView>
     </View>
