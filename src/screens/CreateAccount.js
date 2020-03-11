@@ -1,16 +1,16 @@
 import React, { Component } from 'react';
 import { Text, View, TextInput, Button, Alert } from 'react-native';
 import firebase from 'firebase'
-import Firebase from '../firebase/Firebase.js'
+// import Firebase from '../firebase/Firebase.js'
 import '@firebase/firestore';
 import { connect } from 'react-redux'
 
 
 //Firebase initialization 
-Firebase
+// Firebase
 
 
-class CreateAccountScreen extends Component {
+class CreateAccount extends Component {
 
     signUp = () => {
         if (this.props.email != null && this.props.password != null &&
@@ -18,7 +18,7 @@ class CreateAccountScreen extends Component {
             firebase
                 .auth()
                 .createUserWithEmailAndPassword(this.props.email, this.props.password)
-                .then(() => this.props.navigation.navigate('Run'))
+                .then(() => this.props.navigation.navigate('Main'))
                 .catch(error => Alert.alert(error.message));
         }
     }
@@ -62,4 +62,4 @@ function mapDispatchtoProps(dispatch){
     }
 }
 
-export default connect(mapStateToProps, mapDispatchtoProps)(CreateAccountScreen);
+export default connect(mapStateToProps, mapDispatchtoProps)(CreateAccount);

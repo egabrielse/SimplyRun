@@ -1,16 +1,16 @@
 import React, { Component } from 'react';
 import { Text, View, TextInput, Button, Alert  } from 'react-native';
 import firebase from 'firebase';
-import Firebase from '../firebase/Firebase.js'
+// import Firebase from '../firebase/Firebase.js'
 import { connect } from 'react-redux'
 
 //References to the root of the firestore database
 const firestore = firebase.firestore();
 //Firebase initialzation 
-Firebase
+// Firebase
 
 //Login Screen 
-class LoginScreen extends Component {
+class Login extends Component {
     //Using the Firebase built in authentification to login 
     login = () => {
         if (this.props.email != null && this.props.password != null &&
@@ -18,7 +18,7 @@ class LoginScreen extends Component {
             firebase
                 .auth()
                 .signInWithEmailAndPassword(this.props.email, this.props.password)
-                .then(() => this.props.navigation.navigate('Run'))
+                .then(() => this.props.navigation.navigate('Main'))
                 .catch(error => Alert.alert(error.message));
         }
     }
@@ -73,7 +73,7 @@ class LoginScreen extends Component {
     }
     
 }
-//Getting the states from the store and mapping it to props in the LoginScreen
+//Getting the states from the store and mapping it to props in the Login
 function mapStateToProps(state) {
     return {
         email: state.email,
@@ -89,4 +89,4 @@ function mapDispatchtoProps(dispatch) {
 }
 
 //Connecting the react components to the store in App.js 
-export default connect(mapStateToProps, mapDispatchtoProps)(LoginScreen);
+export default connect(mapStateToProps, mapDispatchtoProps)(Login);
