@@ -1,10 +1,16 @@
-import * as React from 'react';
+import React, { Component } from 'react';
 import { Text, View } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
+import firebase from '../config/firebase'
 
-export default function Settings() {
-    return (
-        <View >
-            <Text>Settings</Text>
-        </View>
-    );
+export default class Settings extends Component {
+    render() {
+        return (
+            <ScrollView >
+                <View>
+                    <Text > Settings </Text>
+                </View>
+            </ScrollView>
+        );
+    }
 }

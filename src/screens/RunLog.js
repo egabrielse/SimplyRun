@@ -1,13 +1,16 @@
-import * as React from 'react';
-import { Text, FlatList, View } from 'react-native';
+import React, { Component } from 'react';
+import { Text, View, TextInput, Button } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
+import firebase from '../config/firebase'
 
-export default function RunLog() {
-  return (
+export default class RunLog extends Component {
+  render() {
+    return (
       <ScrollView >
         <View>
-            <Text > Run Log </Text>
+          <Text > Run Log </Text>
         </View>
-    </ScrollView>
-  );
+      </ScrollView>
+    );
+  }
 }

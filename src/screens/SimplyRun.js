@@ -1,12 +1,16 @@
-import * as React from 'react';
-import { View, Text } from 'react-native';
+import React, { Component } from 'react';
+import { Text, View, TextInput, Button } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
 import firebase from '../config/firebase'
 
-export default function SimplyRun ({ route, navigation}) {
-        return (
-            <View >
-                <Text></Text>
-            </View>
-        );
-    
+export default class SimplyRun extends Component {
+  render() {
+    return (
+      <ScrollView >
+        <View>
+          <Text > Simply Run </Text>
+        </View>
+      </ScrollView>
+    );
+  }
 }
