@@ -6,28 +6,13 @@ import Login from './src/screens/Login';
 import CreateAccount from './src/screens/CreateAccount'
 import { createStore } from 'redux'
 import { Provider } from 'react-redux'
+import rootReducer from './src/reducers' // Importing the index (do not need specifying)
 
 //Create a stack navigator 
 const Stack = createStackNavigator();
 
-//Initial state of the store 
-const initialState = {
-    email: "",
-    passsword: ""
-}
-//Modfies the store depending on actions 
-const reducer = (state = initialState, action) => {
-    switch (action.type) {
-        case "EMAIL":
-            return { ...state, email: action.email }
-        case "PASSWORD":
-            return { ...state, password: action.password }
-        default:
-            return state
-    }
-}
-
-const store = createStore(reducer)
+//Create a store using the rootReducer 
+const store = createStore(rootReducer)
 
 export default function App() {
 
