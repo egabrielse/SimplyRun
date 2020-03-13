@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import { Text, View, TextInput, Button, Alert  } from 'react-native';
 import firebase from 'firebase';
-// import Firebase from '../firebase/Firebase.js'
+import Firebase from '../config/Firebase'
 import { connect } from 'react-redux'
 
 //References to the root of the firestore database
 const firestore = firebase.firestore();
 //Firebase initialzation 
-// Firebase
+Firebase
 
 //Login Screen 
 class Login extends Component {
@@ -44,6 +44,10 @@ class Login extends Component {
         })
     }
 
+    devSkip = () => {
+        this.props.navigation.navigate('Main')
+    }
+
     render() {
         return (
             <View style={{ flex: 1, alignContent: 'center', justifyContent: 'center' }} >
@@ -67,6 +71,7 @@ class Login extends Component {
                 <Button title="Write To Firebase" onPress={this.sendToFirebase} />
                 <Text>This retrieves some data from firestore and prints it on the console </Text>
                 <Button title="Read From Firebase" onPress={this.getFromFirebase} />
+                <Button title="DEV:skip login" onPress={this.devSkip}/>
 
             </View>
         );
