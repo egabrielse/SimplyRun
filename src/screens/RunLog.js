@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Text, View, TextInput, Button } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-import Firebase from '../config/Firebase'
+import firebaseConfig from '../config/firebaseConfig'
 
 export default class RunLog extends Component {
   render() {
