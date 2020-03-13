@@ -7,6 +7,11 @@ import CreateAccount from './src/screens/CreateAccount'
 import { createStore } from 'redux'
 import { Provider } from 'react-redux'
 import rootReducer from './src/reducers' // Importing the index (do not need specifying)
+import {decode, encode} from 'base-64'
+
+if (!global.btoa) {global.btoa = encode}
+
+if (!global.atob) {global.atob = decode}
 
 //Create a stack navigator 
 const Stack = createStackNavigator();

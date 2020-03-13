@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Text, View, TextInput, Button } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-import firebase from '../config/firebase'
+import Firebase from '../config/Firebase'
 
 export default class SimplyRun extends Component {
   render() {
