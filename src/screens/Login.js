@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import { Text, View, TextInput, Button, Alert  } from 'react-native';
 import firebase from 'firebase';
-import Firebase from '../config/Firebase'
+import firebaseConfig from '../config/firebaseConfig'
 import { connect } from 'react-redux'
 
 //References to the root of the firestore database
 const firestore = firebase.firestore();
 //Firebase initialzation 
-Firebase
+firebaseConfig
 
 //Login Screen 
 class Login extends Component {

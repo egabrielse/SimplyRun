@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import { Text, View, TextInput, Button, Alert } from 'react-native';
 import firebase from 'firebase'
-import Firebase from '../config/Firebase'
+import firebaseConfig from '../config/firebaseConfig'
 import '@firebase/firestore';
 import { connect } from 'react-redux'
 
 
 //Firebase initialization 
-Firebase
+firebaseConfig
 
 
 class CreateAccount extends Component {
