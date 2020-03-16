@@ -1,5 +1,5 @@
 import React, { Component, } from 'react';
-import { Text, View, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { Text, View, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import firebaseConfig from '../config/firebaseConfig'
 
@@ -37,7 +37,7 @@ class StartButton extends Component {
                     height: 150,
                     backgroundColor: 'springgreen',
                     borderRadius: 75
-                }} onPress={this.props.onPress} >
+                }} delayLongPress={1000} onPress={this.props.onPress} onLongPress={this.props.onLongPress}>
                 <Triangle />
             </TouchableOpacity>
         )
@@ -59,7 +59,9 @@ export default class SimplyRun extends Component {
         }
     }
 
-
+    longPress = () => {
+        Alert.alert("LONGPRESS")
+    }
 
     render() {
         ``
@@ -69,7 +71,7 @@ export default class SimplyRun extends Component {
                 {
                     this.state.displayStat ? < Text style={{ paddingVertical: 100 }}> {this.state.stats}</Text> : null
                 }
-                <StartButton onPress={this.displayStats} />
+                <StartButton onPress={this.displayStats} onLongPress={this.longPress} />
             </View>
 
         );
