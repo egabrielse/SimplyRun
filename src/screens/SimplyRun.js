@@ -18,6 +18,10 @@ class Triangle extends Component {
                 borderLeftColor: 'transparent',
                 borderRightColor: 'transparent',
                 borderBottomColor: 'steelblue',
+                shadowColor: '#000',
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.8,
+                shadowRadius: 5,
                 transform: [{ rotate: '90deg' }]
 
             }} />
@@ -36,7 +40,11 @@ class StartButton extends Component {
                     width: 150,
                     height: 150,
                     backgroundColor: 'springgreen',
-                    borderRadius: 75
+                    borderRadius: 75,
+                    shadowColor: '#000',
+                    shadowOffset: { width: 0, height: 2 },
+                    shadowOpacity: 0.8,
+                    shadowRadius: 5,
                 }} delayLongPress={1000} onPress={this.props.onPress} onLongPress={this.props.onLongPress}>
                 <Triangle />
             </TouchableOpacity>
@@ -48,7 +56,6 @@ export default class SimplyRun extends Component {
     state = {
         stats: 'Time: \n Ditance: \n Pace: \n calories:',
         displayStat: false,
-        time: 0
     }
 
     displayStats = () => {
