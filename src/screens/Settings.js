@@ -17,20 +17,22 @@ export default class Settings extends Component {
             height: "",
             weight: "",
             sex: "",
-            birthday: ""
+            age: ""
         };
     }
 
     componentDidMount() {
         var ref = firestore.collection('users').doc('fullerTest');
         ref.get().then(testData => {
-            console.log(testData.data())
+            console.log(testData.data());
+            var feet = Math.floor(testData.data().height/12);
+            var inches = testData.data().height%12;
             this.setState({
                 name: testData.data().name,
-                height: testData.data().height,
+                height: feet + "'" + inches + '"',
                 weight: testData.data().weight,
                 sex: testData.data().sex,
-                birthday: testData.data().birthday
+                age: Math.floor(((Math.round(new Date().getTime()/1000)) - testData.data().birthday.seconds)/(3600*24*365))
             })
         })
     }
@@ -39,8 +41,11 @@ export default class Settings extends Component {
         return (
             <ScrollView >
                 <View>
-                    <Text > Settings </Text>
-                    <Text> {this.state.name}</Text>
+                    <Text> Name: {this.state.name}</Text>
+                    <Text> Height: {this.state.height}</Text>
+                    <Text> Weight: {this.state.weight} lbs</Text>
+                    <Text> Sex: {this.state.sex}</Text>
+                    <Text> Age: {this.state.age}</Text>
                 </View>
             </ScrollView>
         );
