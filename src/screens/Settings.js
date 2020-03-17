@@ -21,7 +21,7 @@ export default class Settings extends Component {
         };
     }
 
-    componentDidMount() {
+    getInfo = () => {
         var ref = firestore.collection('users').doc('fullerTest');
         ref.get().then(testData => {
             console.log(testData.data());
@@ -36,10 +36,14 @@ export default class Settings extends Component {
             })
         })
     }
-    
+
+    componentDidMount() {
+        this.getInfo();
+    }
+
     render() {
         return (
-            <ScrollView >
+            <ScrollView>
                 <View>
                     <Text>My Profile</Text>
                     <Text> Name: {this.state.name}</Text>
@@ -49,8 +53,9 @@ export default class Settings extends Component {
                     <Text> Age: {this.state.age}</Text>
                     <Button 
                         title="Edit Profile"
-                        onPress={() => 
-                            this.props.navigation.navigate("EDIT")
+                        onPress={() => {
+                            this.props.navigation.navigate("EDIT");
+                            }
                         } />
                     <Text>Settings</Text>
                 </View>
