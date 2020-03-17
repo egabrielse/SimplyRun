@@ -2,97 +2,18 @@ import React, { Component, } from 'react';
 import { Text, View, Button, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import firebaseConfig from '../config/firebaseConfig'
 import { connect } from 'react-redux'
+import StartButton from "../runbutton/StartButton"
+import StopRunButton from "../runbutton/StopRunButton"
 //Firebase initialzation 
 firebaseConfig
-class Triangle extends Component {
 
-    render() {
-        return (
-            <View style={{
-                width: 0,
-                height: 0,
-                backgroundColor: 'transparent',
-                borderStyle: 'solid',
-                borderLeftWidth: 35,
-                borderRightWidth: 35,
-                borderBottomWidth: 70,
-                borderLeftColor: 'transparent',
-                borderRightColor: 'transparent',
-                borderBottomColor: 'steelblue',
-                shadowColor: '#000',
-                shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: 0.8,
-                shadowRadius: 5,
-                transform: [{ rotate: '90deg' }]
-
-            }} />
-        )
-    }
-}
-
-class Rectangle extends Component {
-    render() {
-        return (
-            <View style={{
-                width: 25,
-                height: 2 * 50,
-                backgroundColor: this.props.color,
-                borderColor: 'black',
-                shadowColor: '#000',
-                shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: 0.8,
-                shadowRadius: 5,
-            }} />
-        );
-    }
-}
-
-class StartButton extends Component {
-
-    render() {
-        return (
-            <TouchableOpacity
-                style={{
-                    borderWidth: 2,
-                    borderColor: 'rgba(0,0,0,0.2)',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    width: 150,
-                    height: 150,
-                    backgroundColor: 'springgreen',
-                    borderRadius: 75,
-                    shadowColor: '#000',
-                    shadowOffset: { width: 0, height: 2 },
-                    shadowOpacity: 0.8,
-                    shadowRadius: 5,
-                }} delayLongPress={1000} onPress={this.props.onPress} onLongPress={this.props.onLongPress}>
-                {this.props.pauseButton ? <View style={{ flexDirection: "row", justifyContent: 'space-between', padding: 10 }}>
-                    <Rectangle color='yellow' />
-                <View style={{ paddingHorizontal: 10 }} />
-                <Rectangle color='yellow' />
-                </View> : <Triangle />
-                }
-                   
-            </TouchableOpacity>
-        )
-    }
-}
-
-class StopButton extends Component {
-    render() {
-        return (
-            <View style={{ paddingVertical: 50 }}>
-                <TouchableOpacity delayLongPress={1000} onLongPress={this.props.onLongPress}>
-                <Text> STOP </Text>
-                </TouchableOpacity>
-                </View>
-            )
-    }
-}
-
+var display = "\n" + "Time:00:00:00"  +
+    "\n" + "Distance: 0.0" + "\n" + "Pace: 0.0" + "\n" + "Calories: 0.0 "
 class SimplyRun extends Component {
+
     state = {
-        stats: 'Time:',
+        stats: display,
+        current: "",
         displayStat: true,
         startRun: true,
         paused: false,
@@ -100,17 +21,46 @@ class SimplyRun extends Component {
         stopButton: false
     }
 
-    longPress = () => {
-        this.setState({ button: false })
-        this.setState({ paused: true })
-        clearInterval(this.intervalID);
-       var  totalTimeSec = (this.state.hour * 60 * 60) + (this.state.min * 60  )+ this.state.sec + (this.state.mili/1000)
-        Alert.alert("" + totalTimeSec)
+    formatStats = () => {
+        var formatSec = "" + this.state.sec; formatSec = formatSec.padStart(2, '0');
+
+        var formatMin = "" + this.state.min; formatMin = formatMin.padStart(2, '0')
+
+        var formatHour = "" + this.state.hour; formatHour = formatHour.padStart(2, '0')
+        
+        this.setState({
+            stats: "\n" + "Time" + ":" + formatHour + ":" + formatMin + ":" + formatSec +
+                "\n" + "Distance: 0.0" + "\n" + "Pace: 0.0" + "\n" + "Calories: 0.0 ",
+        })
+
     }
 
     endRun = () => {
+        this.setState({ stopButton: false })
+        this.setState({ current: "" })
         this.props.navigation.navigate('EndRun');
-        time = this.props.sendTime((this.state.hour * 60 * 60) + (this.state.min * 60) + this.state.sec + (this.state.mili / 1000))
+        var totalTimeSecs = (this.state.hour * 60 * 60) + (this.state.min * 60) + this.state.sec + (this.state.mili / 1000);
+        //Using Redux to pass info to the EndRun Screen
+        time = this.props.sendRunStats(totalTimeSecs, "Test Ditance", "Test Pace", "Test Calories")
+        this.setState({ hour: 0, min: 0, sec: 0, mili: 0 })
+        this.formatStats()
+        this.setState({ endRun: false })
+    } 
+
+    endRunButton = () => {
+        Alert.alert(
+            'Confirm End Run',
+            'Would you like to end your run?',
+            [
+                { text: 'Yes', onPress: () => { this.endRun() } },
+                {
+                    text: 'No',
+                    style: 'cancel',
+                }
+            ],
+            { cancelable: false },
+        );
+
     }
 
     start = () => {
@@ -122,9 +72,9 @@ class SimplyRun extends Component {
         }
         //Run has not started yet
         if (this.state.startRun) {
-            this.setState({ button: true })
-            this.setState({ startRun: false })
-            this.setState({ stopButton: true })
+            this.setState({ current: "Tracking Run" })
+            this.setState({ button: true, stopButton: true, startRun: false})
+       
             this.intervalID = setInterval(() => {
                 var diff = startTime - new Date().getTime();
                 var hr = Math.floor(-diff / 3600000)
@@ -135,20 +85,12 @@ class SimplyRun extends Component {
                 mili = mili - 1000 & sec;
                 min = min.toFixed(0);
                 sec = sec.toFixed(0);
-                this.setState({ hour: parseInt(hr) })
-                this.setState({ min: parseInt(min) })
-                this.setState({ sec: parseInt(sec)})
-                this.setState({ mili: parseInt(mili) })
-                var formatSec = "" + this.state.sec;
-                formatSec = formatSec.padStart(2, '0');
-                var formatMin = "" + this.state.min;
-                formatMin = formatMin.padStart(2, '0')
-                var formatHour = "" + this.state.hour;
-                formatHour = formatHour.padStart(2, '0')
-                this.setState({ stats: "Time: " + formatHour + ":" + formatMin + ":" + formatSec })
+                this.setState({ hour: parseInt(hr), min: parseInt(min), sec: parseInt(sec), mili: parseInt(mili) })
+                this.formatStats()
             }, 1);
         } else {           
             if (this.state.paused) {
+                this.setState({ current: "Tracking Run" })
                 var pauseSec = this.state.sec;
                 var pauseMin = this.state.min;
                 var pauseHour = this.state.hour;
@@ -178,22 +120,13 @@ class SimplyRun extends Component {
                         newMin = newMin - 60;
                         newHour = newHour + 1;
                     }
-
-                    this.setState({ hour: newHour })
-                    this.setState({ min: newMin  })
-                    this.setState({ sec: newSec })
-                    this.setState({ mili: parseInt(mili) })
-
-                    var formatSec = "" + this.state.sec;
-                    formatSec = formatSec.padStart(2, '0');
-                    var formatMin = "" + this.state.min;
-                    formatMin = formatMin.padStart(2, '0')
-                    var formatHour = "" + this.state.hour;
-                    formatHour = formatHour.padStart(2, '0')
-                    this.setState({ stats: "Time: " + formatHour + ":" + formatMin + ":" + formatSec })
+                    this.setState({ hour: newHour, min: newMin, sec: newSec, mili: parseInt(mili) }); 
+                    this.formatStats()
                 }, 1);
             } else {
-                this.setState({ button: false})
+                this.setState({ current: "Run Paused" })
+                this.setState({ button: false })
+                this.setState({ stopButton: true })
                 this.setState({ paused: true })
                 clearInterval(this.intervalID);
             }
@@ -204,25 +137,26 @@ class SimplyRun extends Component {
         clearInterval(this.intervalId);
     }
 
-
     render() {
         return (
 
-            <View style={{ flex: 1, justifyContent: 'space-between', alignItems: 'center', padding: 100, position: 'absolute' }}>    
+            <View style={{ alignItems: 'center', justifyContent: "center"}}>    
+                <Text style={{ fontSize: 15 }}> {this.state.current}</Text>
                 {
-                    this.state.displayStat ? < Text style={{ paddingVertical: 50, fontSize: 20 }}> {this.state.stats}</Text> : null
+                    this.state.displayStat ? < Text style={{
+                        paddingVertical: 50, fontSize: 15 }}> {this.state.stats}</Text> : null
                 }
+
                 {
                     this.state.button ? < StartButton onPress={this.start}  pauseButton={true} />:
                                       < StartButton onPress={this.start} pauseButton={false} />
                 }
+            
                 {
                     !this.state.button && this.state.stopButton ?
-                        <StopButton style={{ paddingVertical: 100, fontSize: 20 }} onLongPress={this.endRun} title={'STOP'} /> : null               
-                    }
-                 
-            </View>
-
+                        <StopRunButton style={{ fontSize: 20}} onLongPress={this.endRunButton} title={'STOP'} /> : null                  
+                }
+              </View>
         );
     }
 }
@@ -230,13 +164,15 @@ class SimplyRun extends Component {
 function mapStateToProps(state) {
     return {
         time: state.endRunReducer.time,
-    
+        distance: state.endRunReducer.distance,
+        pace: state.endRunReducer.pace,
+        calories: state.endRunReducer.calories
     }
 }
 //Sends actions to the reducer in the App.js file 
 function mapDispatchtoProps(dispatch) {
     return {
-        sendTime: (time) => dispatch({ type: "ENDRUN", time }),
+        sendRunStats: (time, distance,pace,calories) => dispatch({ type: "ENDRUN", time, distance, pace, calories}),
        
     }
 }
