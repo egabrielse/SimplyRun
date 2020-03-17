@@ -1,12 +1,9 @@
 import React, { Component, } from 'react';
-import { Text, View, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
+import { Text, View, Button, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import firebaseConfig from '../config/firebaseConfig'
-
-
+import { connect } from 'react-redux'
 //Firebase initialzation 
 firebaseConfig
-
 class Triangle extends Component {
 
     render() {
@@ -81,13 +78,26 @@ class StartButton extends Component {
     }
 }
 
-export default class SimplyRun extends Component {
+class StopButton extends Component {
+    render() {
+        return (
+            <View style={{ paddingVertical: 50 }}>
+                <TouchableOpacity delayLongPress={1000} onLongPress={this.props.onLongPress}>
+                <Text> STOP </Text>
+                </TouchableOpacity>
+                </View>
+            )
+    }
+}
+
+class SimplyRun extends Component {
     state = {
         stats: 'Time:',
         displayStat: true,
         startRun: true,
         paused: false,
-        button: false
+        button: false,
+        stopButton: false
     }
 
     longPress = () => {
@@ -96,6 +106,11 @@ export default class SimplyRun extends Component {
         clearInterval(this.intervalID);
        var  totalTimeSec = (this.state.hour * 60 * 60) + (this.state.min * 60  )+ this.state.sec + (this.state.mili/1000)
         Alert.alert("" + totalTimeSec)
+    }
+
+    endRun = () => {
+        this.props.navigation.navigate('EndRun');
+        time = this.props.sendTime((this.state.hour * 60 * 60) + (this.state.min * 60) + this.state.sec + (this.state.mili / 1000))
     }
 
     start = () => {
@@ -109,6 +124,7 @@ export default class SimplyRun extends Component {
         if (this.state.startRun) {
             this.setState({ button: true })
             this.setState({ startRun: false })
+            this.setState({ stopButton: true })
             this.intervalID = setInterval(() => {
                 var diff = startTime - new Date().getTime();
                 var hr = Math.floor(-diff / 3600000)
@@ -192,18 +208,38 @@ export default class SimplyRun extends Component {
     render() {
         return (
 
-            <View style={{ flex: 1, justifyContent: 'flex-end', alignItems: 'center', padding: 75 }}>
-
-                
+            <View style={{ flex: 1, justifyContent: 'space-between', alignItems: 'center', padding: 100, position: 'absolute' }}>    
                 {
-                    this.state.displayStat ? < Text style={{ paddingVertical: 100, fontSize: 20 }}> {this.state.stats}</Text> : null
+                    this.state.displayStat ? < Text style={{ paddingVertical: 50, fontSize: 20 }}> {this.state.stats}</Text> : null
                 }
                 {
-                    this.state.button ? < StartButton onPress={this.start} onLongPress={this.longPress} pauseButton={true} />:
-                                      < StartButton onPress={this.start} onLongPress={this.longPress} pauseButton={false} />
+                    this.state.button ? < StartButton onPress={this.start}  pauseButton={true} />:
+                                      < StartButton onPress={this.start} pauseButton={false} />
                 }
+                {
+                    !this.state.button && this.state.stopButton ?
+                        <StopButton style={{ paddingVertical: 100, fontSize: 20 }} onLongPress={this.endRun} title={'STOP'} /> : null               
+                    }
+                 
             </View>
 
         );
     }
 }
+//Getting the states from the store and mapping it to props in the Login
+function mapStateToProps(state) {
+    return {
+        time: state.endRunReducer.time,
+    
+    }
+}
+//Sends actions to the reducer in the App.js file 
+function mapDispatchtoProps(dispatch) {
+    return {
+        sendTime: (time) => dispatch({ type: "ENDRUN", time }),
+       
+    }
+}
+
+//Connecting the react components to the store in App.js 
+export default connect(mapStateToProps, mapDispatchtoProps)(SimplyRun);

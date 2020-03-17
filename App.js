@@ -4,10 +4,13 @@ import { createStackNavigator } from '@react-navigation/stack';
 import BottomTabNavigator from './src/navigation/BottomTabNavigator';
 import Login from './src/screens/Login';
 import CreateAccount from './src/screens/CreateAccount'
+import EndRun from './src/screens/EndRun';
 import { createStore } from 'redux'
 import { Provider } from 'react-redux'
 import rootReducer from './src/reducers' // Importing the index (do not need specifying)
 import {decode, encode} from 'base-64'
+import SimplyRun from './src/screens/SimplyRun';
+
 
 if (!global.btoa) {global.btoa = encode}
 
@@ -28,6 +31,8 @@ export default function App() {
                     <Stack.Screen name="Login" options={{ headerLeft: null }} component={Login} />
                     <Stack.Screen name="CreateAccount" component={CreateAccount} />
                     <Stack.Screen name="Main" options={{ headerLeft: null }} component={BottomTabNavigator} />
+                    <Stack.Screen name="EndRun" options={{ headerLeft: null }} component={EndRun} />
+                    <Stack.Screen name="Run" options={{ headerLeft: null }} component={SimplyRun} />
             </Stack.Navigator>
         </NavigationContainer>
       </Provider>
