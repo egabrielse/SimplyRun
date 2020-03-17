@@ -41,11 +41,18 @@ export default class Settings extends Component {
         return (
             <ScrollView >
                 <View>
+                    <Text>My Profile</Text>
                     <Text> Name: {this.state.name}</Text>
                     <Text> Height: {this.state.height}</Text>
                     <Text> Weight: {this.state.weight} lbs</Text>
                     <Text> Sex: {this.state.sex}</Text>
                     <Text> Age: {this.state.age}</Text>
+                    <Button 
+                        title="Edit Profile"
+                        onPress={() => 
+                            this.props.navigation.navigate("EDIT")
+                        } />
+                    <Text>Settings</Text>
                 </View>
             </ScrollView>
         );
