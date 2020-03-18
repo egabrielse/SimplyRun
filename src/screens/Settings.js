@@ -54,7 +54,7 @@ export default class Settings extends Component {
                     <Button 
                         title="Edit Profile"
                         onPress={() => {
-                            this.props.navigation.navigate("EDIT");
+                            this.props.navigation.navigate("EDIT", {refresh: this.getInfo});
                             }
                         } />
                     <Text>Settings</Text>

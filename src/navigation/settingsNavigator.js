@@ -7,6 +7,8 @@ import editSettings from '../screens/editSettings';
 const Stack = createStackNavigator();
 const INITIAL_ROUTE_NAME = 'Settings';
 
+console.disableYellowBox = true;
+
 export default function settingsNavigator({ navigation, route }) {
 
   return (
