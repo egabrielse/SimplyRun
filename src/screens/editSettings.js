@@ -167,6 +167,7 @@ export default class editSettings extends Component {
                             style={styles.saveButton}
                             onPress={() => {
                                 this.sendToFirebase();
+                                this.props.route.params.refresh();
                                 this.props.navigation.navigate('SETTINGS');
                                 }
                             }>
