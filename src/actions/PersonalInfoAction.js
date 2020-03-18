@@ -1,11 +1,12 @@
-export const CHANGE_ALL = "CHANGE_ALL"
+export const UPDATE_ALL = "UPDATE_ALL"
 
-export const createChangeAllPersonalInfoAction = (name, age, height, weight) => {
+export const createChangeAllPersonalInfoAction = (name, birthday, height, weight, sex) => {
     return {
-        type: CHANGE_ALL,
+        type: UPDATE_ALL,
         name: name,
-        age: age,
+        birthday: birthday,
         height: height,
         weight: weight,
+        sex: sex,
     }
 }

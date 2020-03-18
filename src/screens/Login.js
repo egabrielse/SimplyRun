@@ -13,11 +13,10 @@ firebaseConfig
 
 class Login extends Component {
     state = {
-        email:"",
-        password:"",
+        email:null,
+        password:null,
         emailValid:false,
         passwordValid:false,
-
     }
 
     // DEVELOPER FUNCTION: Used to bypass the login/create account screens
@@ -30,8 +29,10 @@ class Login extends Component {
         this.props.navigation.navigate('CreateAccount');
     }
 
-    login = (e,p) => {
-        console.log("Login: Login in user with email =", e, "and password =", p)
+    signIn = () => {
+        console.log("Login: Attempting to sign in existing user")
+        let e = this.state.email
+        let p = this.state.password
 
         // Login existing user with given username and password
         if (e != null && p != null && e.trim() != "" && p != "") {
@@ -39,21 +40,28 @@ class Login extends Component {
                 .auth()
                 .signInWithEmailAndPassword(e, p)
                 .then(() => {
+                    console.log("Login: Successfully signed in existing user!")
+                    let user = firebase.auth().currentUser
+
                     // Dispatch login action to store
-                    this.props.dispatch(createLoginAction(e,p));
+                    this.props.dispatch(createLoginAction(user))
 
                     // Navigate to 'Main'
                     this.props.navigation.navigate("Main")
+
+                    // Reset Login's state
+                    this.setState({email:null, password:null, emailValid:false, passwordValid:false})
+
                 })
-                .catch(error => Alert.alert(error.message));
+                .catch((error) => {
+                    Alert.alert(error.message)
+                    return
+                });
         } else {
-            // Alert user that email and/or password are empty
-            Alert.alert("Please fill out all text fields")
+            console.log("Login: One of the fields (email, password) is empty")
+            Alert.alert("Please provide a email address and password")
             return
         }
-
-        // Reset Login's state
-        this.setState({email:"", password:""})
     }
 
     updateEmail = (text) => {
@@ -75,11 +83,13 @@ class Login extends Component {
         return (
             <ScrollView contentContainerStyle={{flexGrow: 1}} keyboardShouldPersistTaps='handled'>
                 <KeyboardAvoidingView style={{flex:1, marginHorizontal:20}} behavior='padding'>
+                    {/*SIMPLY RUN*/}
                     <View  style={{flex:1, justifyContent:'center', alignItems:'center'}}>
                         <Text style={styles.titleText}>Simply Run</Text>
                     </View>
 
                     <View style={{flex:2}}>
+                    
                         {/*TextInput for email address*/}
                         <TextInput
                             placeholder="Email"
@@ -92,6 +102,7 @@ class Login extends Component {
                             style={styles.textInput}
                         />
 
+
                         {/*TextInput for password*/}
                         <TextInput
                             placeholder="Password" 
@@ -100,14 +111,16 @@ class Login extends Component {
                             autoCapitalize='none'
                             returnKeyType={'done'}
                             ref={(input) => { this.passwordInput = input; }}
+                            onSubmitEditing={() => {this.signIn()}}
                             keyboardType='email-address'
                             secureTextEntry
                             style={styles.textInput}
                         />
 
-                        {/*Button for logging in*/}
+
+                        {/*Button for signing user*/}
                         <TouchableOpacity 
-                            onPress={() => this.login(this.state.email, this.state.password)}
+                            onPress={() => this.signIn()}
                             disabled={(this.state.emailValid && this.state.passwordValid ? false : true)}>
                             <View style={{
                                 height:50,
@@ -115,9 +128,10 @@ class Login extends Component {
                                 justifyContent:'center',
                                 alignItems:'center',
                                 paddingHorizontal:15,}}>
-                                <Text style={{fontSize:20,color:'black'}}>Login!</Text>
+                                <Text style={{fontSize:20,color:'black'}}>Sign In!</Text>
                             </View>
                         </TouchableOpacity>
+
 
                         {/*Button for changing to the CreateAccount screen*/}
                         <View style={{flexDirection:'row', justifyContent:'center', alignItems:'center', height:75}}>
@@ -125,12 +139,14 @@ class Login extends Component {
                             <Button title="Sign Up!" onPress={this.goToCreateAccount}/>
                         </View>
 
+
                         {/*DEVELOPER BUTTON FOR SKIPPING LOGIN*/}
                         <TouchableOpacity onPress={() => this.DEV_SKIP_LOGIN()}>
                             <View style={{height:50, maxHeight:50, backgroundColor:"red", padding:8, justifyContent:'center', alignItems:'center'}}>
                                 <Text style={{fontSize:20,color:'white'}}>DEV:Skip Login</Text>
                             </View>
                         </TouchableOpacity>
+
                     </View>
                 </KeyboardAvoidingView>
             </ScrollView>
@@ -155,22 +171,3 @@ const styles = StyleSheet.create({
         fontStyle:'italic',
     }
   });
-
-//     //References to the root of the firestore database
-//     const firestore = firebase.firestore();
-//
-//     sendToFirebase = () => {
-//         firestore.collection('users').doc('test').set({
-//             name: "SimpleTest",
-//             weight: "260",
-//             height: "6"
-//         })
-//     }
-//
-//     //Basic function that retrieves some date from firestore and displays it on the console
-//     getFromFirebase = () => {
-//         var ref = firestore.collection('users').doc('test');
-//         ref.get().then(testData => {
-//             console.log(testData.data())
-//         })
-//     }

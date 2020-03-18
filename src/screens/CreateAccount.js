@@ -15,9 +15,12 @@ firebaseConfig
 
 class CreateAccount extends Component {
     state = {
-        email:"",
-        password:"",
-        confirmPassword:"",
+        email:null,
+        password:null,
+        confirmPassword:null,
+        emailValid:false,
+        passwordValid:false,
+        confirmValid:false,
     }
 
     DEV_SKIP_ACCOUNT = () => {
@@ -25,38 +28,76 @@ class CreateAccount extends Component {
         this.props.navigation.navigate("InputPersonalInfo")
     }
 
-    signUp = (e,p,p2) => {
-        console.log("CreateAccount: Signing up new user with email =", e, "and password =", p)
+    signUp = () => {
+        console.log("CreateAccount: Attempting to sign in a new user")
+        let e = this.state.email;
+        let p = this.state.password;
+        let p2 = this.state.confirmPassword;
 
         // Create new user with given username and password
         if (e != null && e.trim() != "" && p != null && p.trim() != "" && p2 != null && p2.trim() != "") {
             if (p === p2) {
                 firebase
-                    .auth()
-                    .createUserWithEmailAndPassword(e, p)
-                    .catch(function(error) {
-                        Alert.alert(error.message);
-                        return
+                .auth()
+                .createUserWithEmailAndPassword(e, p)
+                .then(() => {
+                    console.log("CreateAccount: Successfully signed up new user!")
+                    let user = firebase.auth().currentUser
+
+                    // Dispatch login action to store
+                    this.props.dispatch(createLoginAction(user))
+
+                    // Navigate to 'Main'
+                    this.props.navigation.navigate("InputPersonalInfo")
+
+                    // Reset CreateAccount's state
+                    this.setState({
+                        email:null,
+                        password:null,
+                        confirmPassword:null,
+                        emailValid:false,
+                        passwordValid:false, 
+                        confirmValid:false
                     })
-                    
-                // Dispatch login action to store
-                this.props.dispatch(createLoginAction(e,p));
 
-                // Navigate to 'Main'
-                this.props.navigation.navigate("InputPersonalInfo")
-
-                // Reset state of CreateAccount
-                this.setState({email:"", password:"", confirmPassword:""})
+                })
+                .catch((error) => {
+                    Alert.alert(error.message)
+                    return
+                });
 
             } else {
-                // Alert user that password and confirm password must match
+                console.log("CreateAccount: password and confirmPassword do not match")
                 Alert.alert("Passwords do not match")
                 return
             }
         } else {
-            // Alert user that email and/or password are empty
-            Alert.alert("Please fill out all text fields")
+            console.log("CreateAccount: One of the fields (email, password, confirmPassword) is empty")
+            Alert.alert("Please provide a email address and password")
             return
+        }
+    }
+
+    updateEmail = (text) => {
+        if (text != null && text.trim() != "" && text.length >= 8) {
+            this.setState({email:text, emailValid:true})
+        } else {
+            this.setState({email:text, emailValid:false})
+        }
+    }
+    updatePassword = (text) => {
+        if (text != null && text.trim() != "" && text.length >= 8) {
+            this.setState({password:text, passwordValid:true})
+        } else {
+            this.setState({password:text, passwordValid:false})
+        }
+    }
+
+    updateConfirm = (text) => {
+        if (text != null && text.trim() != "" && text.length >= 8) {
+            this.setState({confirmPassword:text, confirmValid:true})
+        } else {
+            this.setState({confirmPassword:text, confirmValid:false})
         }
     }
 
@@ -64,25 +105,31 @@ class CreateAccount extends Component {
         return (
             <ScrollView contentContainerStyle={{flexGrow: 1}} keyboardShouldPersistTaps='handled'>
                 <KeyboardAvoidingView style={{flex:1, marginHorizontal:20}} behavior='padding'>
+                    {/*SIMPLY RUN*/}
                     <View  style={{flex:1, justifyContent:'center', alignItems:'center'}}>
                         <Text style={styles.titleText}>Simply Run</Text>
                     </View>
 
                     <View style={{flex:2}}>
+
+                        {/*TextInput for email*/}
                         <TextInput
                             placeholder="Email"
                             value={this.state.email}
-                            onChangeText={(text) => this.setState({email:text})}
+                            onChangeText={(text) => this.updateEmail(text)}
                             autoCapitalize='none'
                             returnKeyType={'next'}
                             onSubmitEditing={() => { this.passwordInput.focus(); }}
                             keyboardType='email-address'
                             style={styles.textInput}
                         />
+
+
+                        {/*TextInput for password*/}
                         <TextInput
                             placeholder="Password" 
                             value={this.state.password}
-                            onChangeText={(text) => this.setState({password:text})}
+                            onChangeText={(text) => this.updatePassword(text)}
                             secureTextEntry
                             autoCapitalize='none'
                             returnKeyType={'next'}
@@ -91,19 +138,32 @@ class CreateAccount extends Component {
                             keyboardType='email-address'
                             style={styles.textInput}
                         />
+
+
+                        {/*TextInput for confirmPassword*/}
                         <TextInput
                             placeholder="Confirm Password" 
                             value={this.state.confirmPassword}
-                            onChangeText={(text) => this.setState({confirmPassword:text})}
+                            onChangeText={(text) => this.updateConfirm(text)}
                             secureTextEntry
                             autoCapitalize='none'
                             returnKeyType={'done'}
                             ref={(input) => { this.confirm = input; }}
+                            onSubmitEditing={() => {this.signUp()}}
                             keyboardType='email-address'
                             style={styles.textInput}
                         />
-                        <TouchableOpacity onPress={() => this.signUp(this.state.email, this.state.password, this.state.confirmPassword)}>
-                            <View style={styles.inputButton}>
+
+                        {/*Button for signing up user*/}
+                        <TouchableOpacity 
+                            onPress={() => this.signUp()}
+                            disabled={(this.state.emailValid && this.state.passwordValid && this.state.confirmValid ? false : true)}>
+                            <View style={{
+                                height:50,
+                                backgroundColor: (this.state.emailValid && this.state.passwordValid && this.state.confirmValid  ? "lightblue" : "lightgray"),
+                                justifyContent:'center',
+                                alignItems:'center',
+                                paddingHorizontal:15,}}>
                                 <Text style={{fontSize:20,color:'black'}}>Sign Up!</Text>
                             </View>
                         </TouchableOpacity>
@@ -132,13 +192,6 @@ const styles = StyleSheet.create({
       maxHeight:50,
       justifyContent:'center',
       padding:5,
-    },
-    inputButton: {
-        height:50,
-        backgroundColor: 'lightblue',
-        justifyContent:'center',
-        alignItems:'center',
-        paddingHorizontal:15,
     },
     titleText: {
         fontSize:40,

@@ -3,8 +3,7 @@ import {LOGIN_USER, LOGOUT_USER} from '../actions/UserAuthenticationAction'
 //Initial state of the store 
 const initialState = {
     signedIn:false,
-    email: "",
-    passsword: ""
+    user:null,
 }
 //Modfies the store depending on actions 
 const UserAuthenticationReducer = (state = initialState, action) => {
@@ -12,10 +11,10 @@ const UserAuthenticationReducer = (state = initialState, action) => {
     switch (action.type) {
         case LOGIN_USER:
             console.log("UserAuthenticationReducer: LOGIN_USER")
-            return { ...state, signedIn:true, email:action.email, password:action.password }
+            return { ...state, signedIn:true, user:action.user }
         case LOGOUT_USER:
             console.log("UserAuthenticationReducer: LOGOUT_USER")
-            return { ...state, signedIn:false, email:"", password:""}
+            return { ...state, signedIn:false, user:null}
         default:
             console.log("UserAuthenticationReducer: default case (no change to state)")
             return state
