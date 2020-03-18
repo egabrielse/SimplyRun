@@ -9,6 +9,10 @@ export default class RunLog extends Component {
       <ScrollView >
         <View>
           <Text > Run Log </Text>
+          <Text > Here is a list of all the beautiful runs you have been on! </Text>
+          <Text > Run 1: 4 miles </Text>
+          <Text > Run 2: 3.6 miles </Text>
+
         </View>
       </ScrollView>
     );
