@@ -37,16 +37,16 @@ export default class Settings extends Component {
             }
             var stats = [];
             if(testData.data().settings.display_time) {
-                stats.push("Time");
+                stats.push(" Time");
             }
             if(testData.data().settings.display_pace) {
-                stats.push("Pace");
+                stats.push(" Pace");
             }
             if(testData.data().settings.display_distance) {
-                stats.push("Distance");
+                stats.push(" Distance");
             }
             if(testData.data().settings.display_calories) {
-                stats.push("Calories");
+                stats.push(" Calories");
             }
             this.setState({
                 name: testData.data().name,

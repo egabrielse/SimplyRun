@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { TextInput, Text, View, Button, StyleSheet, TouchableOpacity } from 'react-native';
+import { TextInput, Text, View, Button, StyleSheet, TouchableOpacity, Switch } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import firebase from 'firebase';
 import firebaseConfig from '../config/firebaseConfig'
@@ -187,11 +187,59 @@ export default class editSettings extends Component {
                             placeholder="Year"
                         />
                     </View>
-                    {/* <Switch  
-                        value={this.state.metricSwitch}  
-                        onValueChange ={(value) => {
-                            this.setState({metricSwitch: value})
-                        }}/>   */}
+                    <View style={styles.row}>
+                        <Text>Unit:  </Text>
+                        <Text> Imperial </Text>
+                        <Switch  
+                            value={this.state.metricSwitch}  
+                            onValueChange ={(value) => {
+                                this.setState({metricSwitch: value})
+                            }}/>  
+                        <Text> Metric</Text>
+                    </View>
+                    <View style={styles.row}>
+                        <Text>Update Frequency:</Text> 
+                        <TextInput
+                            style={{ height: 31, width: '15%', borderColor: 'gray', borderWidth: 1, margin: 2}}
+                            onChangeText={text => this.setState({update_frequency: text})}
+                            textAlign={'center'}
+                            value={this.state.update_frequency}
+                            placeholder="Update Frequency"
+                        />
+                    </View>
+                    <Text>Stats to Display on Run Screen:</Text>
+                    <View style={styles.row}>
+                        <Text>Time: </Text>
+                        <Switch  
+                            value={this.state.display_time_switch}  
+                            onValueChange ={(value) => {
+                                this.setState({display_time_switch: value})
+                            }}/>
+                    </View>
+                    <View style={styles.row}>
+                        <Text>Distance: </Text>
+                        <Switch  
+                            value={this.state.display_distance_switch}  
+                            onValueChange ={(value) => {
+                                this.setState({display_distance_switch: value})
+                            }}/>
+                    </View>
+                    <View style={styles.row}>
+                        <Text>Pace: </Text>
+                        <Switch  
+                            value={this.state.display_pace_switch}  
+                            onValueChange ={(value) => {
+                                this.setState({display_pace_switch: value})
+                            }}/>
+                    </View>
+                    <View style={styles.row}>
+                        <Text>Calories: </Text>
+                        <Switch  
+                            value={this.state.display_calories_switch}  
+                            onValueChange ={(value) => {
+                                this.setState({display_calories_switch: value})
+                            }}/>
+                    </View>
                     <View style={styles.row}>
                         <TouchableOpacity
                             style={styles.saveButton}
