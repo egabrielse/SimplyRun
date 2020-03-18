@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, Button } from 'react-native';
+import { Text, View, TouchableOpacity, StyleSheet } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import firebase from 'firebase';
 import firebaseConfig from '../config/firebaseConfig'
@@ -70,25 +70,59 @@ export default class Settings extends Component {
         return (
             <ScrollView>
                 <View>
-                    <Text>My Profile</Text>
-                    <Text> Name: {this.state.name}</Text>
-                    <Text> Email: {this.state.email}</Text>
-                    <Text> Height: {this.state.height}</Text>
-                    <Text> Weight: {this.state.weight} lbs</Text>
-                    <Text> Sex: {this.state.sex}</Text>
-                    <Text> Age: {this.state.age}</Text>
-                    <Button 
-                        title="Edit Profile"
+                    <Text style = {styles.title}>My Profile</Text>
+                    <Text style = {styles.text}> Name: {this.state.name}</Text>
+                    <Text style = {styles.text}> Email: {this.state.email}</Text>
+                    <Text style = {styles.text}> Height: {this.state.height}</Text>
+                    <Text style = {styles.text}> Weight: {this.state.weight} lbs</Text>
+                    <Text style = {styles.text}> Sex: {this.state.sex}</Text>
+                    <Text style = {styles.text}> Age: {this.state.age}</Text>
+                    <Text> </Text>
+                    <Text style = {styles.title}>Settings</Text>
+                    <Text style = {styles.text}> Unit: {this.state.metricSwitch} </Text>
+                    <Text style = {styles.text}> Stats Displayed: {this.state.stats_to_display.toString()} </Text>
+                    <Text style = {styles.text}> Update Frequency: {this.state.update_frequency} </Text>
+                    <TouchableOpacity
+                        style={styles.button}
                         onPress={() => {
                             this.props.navigation.navigate("EDIT", {refresh: this.getInfo});
                             }
-                        } />
-                    <Text>Settings</Text>
-                    <Text> Unit: {this.state.metricSwitch} </Text>
-                    <Text> Stats Displayed: {this.state.stats_to_display.toString()} </Text>
-                    <Text> Update Frequency: {this.state.update_frequency} </Text>
+                        }>
+                        <Text style={styles.buttonText}>Edit Profile</Text>
+                    </TouchableOpacity>
                 </View>
             </ScrollView>
         );
     }
 }
+
+const styles = StyleSheet.create({
+    title: {
+        fontSize: 18,
+        fontWeight: "bold",
+        textAlign: "center",
+        padding: 5
+    },
+    text: {
+        textAlign: "center",
+        padding: 2
+    },
+    button: {
+        marginLeft: 120,
+        marginRight: 120,
+        marginTop:10,
+        paddingTop:10,
+        paddingBottom:10,
+        backgroundColor:'#A44CA0',
+        borderRadius:10,
+        borderWidth: 1,
+        borderColor: '#fff',
+        color: "yellow"
+      },
+    buttonText: {
+        color:'#fff',
+        textAlign:'center',
+        paddingLeft : 25,
+        paddingRight : 25
+      },
+});

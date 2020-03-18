@@ -109,7 +109,6 @@ export default class editSettings extends Component {
         return (
             <ScrollView>
                 <View>
-                    <Text>THIS IS THE EDIT SCREEN</Text>
                     <View style={styles.row}>
                         <Text>Name:</Text> 
                         <TextInput
