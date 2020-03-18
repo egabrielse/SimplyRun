@@ -79,7 +79,7 @@ export default class StopRunButton extends Component {
                     <View style={{ alignItems: 'center' }}>
                         <StopSign />
                         <Text> Hold to end Run </Text>
-                        </View>
+                    </View>
                 </TouchableOpacity>
          
             </View>

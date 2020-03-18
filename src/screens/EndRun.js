@@ -50,29 +50,65 @@ class EndRun extends Component {
     }
     render() {
         return (
-            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}  >
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', bottom: 2}}  >
+                <Text style = {{fontSize: 20, paddingBottom: 240}} > {"Run Complete"} </Text>
                 <Text >{"Time: " + this.props.time} </Text>
-                <Text >{"Distance: " + this.props.distance } </Text>
-                <Text >{"Pace: " + this.props.pace} </Text>
-                <Text >{"Calories: " + this.props.calories} </Text>
+                <Text style = {{left: 10}}>{"Distance: " + this.props.distance} </Text>
+                <Text style = {{left: 14}}>{"Pace: " + this.props.pace} </Text>
+                <Text style = {{left: 14, paddingBottom: 30}}>{"Calories: " + this.props.calories} </Text>
                 
-                <TextInput
-                    placeholder="Notes"
+                <TextInput style = {{ paddingLeft: 7, borderWidth: 5, borderColor: 'black', right: 0, width: 200}}
+                    placeholder="Notes     "
                     autoCapitalize="none"
                     onChangeText={note => this.writeNote(note)}
                     value={this.state.notes}
+                    multiline
                 />
-                <TouchableOpacity onPress={this.saveRun}>
-                        <Text>Save Run </Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={this.discardRun}>
-                    <Text>Discard Run</Text>
-                </TouchableOpacity>
-                
+
+                <View style = {{paddingTop: 30, flexDirection: 'row', alignContent: 'space-between'}}> 
+
+                    <TouchableOpacity style = {{
+                        right: 20, 
+                        width: 75, 
+                        height: 75, 
+                        backgroundColor: 'darkcyan',
+                        borderRadius: 200/2,
+                        alignItems: 'center' }} onPress={this.saveRun}>
+                        
+                        <Text style = {{paddingVertical: 25}}>Save Run </Text>
+                        
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style = {{
+                        left: 20,
+                        width: 75, 
+                        height: 75, 
+                        backgroundColor: 'darkorange',
+                        borderRadius: 200/2,
+                        alignItems: 'center'}} onPress={this.discardRun}>
+                        
+                        <Text style = {{paddingVertical: 25}}>Discard Run</Text>
+
+                    </TouchableOpacity>
+                </View>
             </View>
         );
     }
     
+}
+
+class Circle extends Component {
+    
+    render () {
+        return (
+            <View style = {{
+                width: 75,
+                height: 75,
+                backgroundColor: 'darkcyan',
+                borderRadius: 200/2
+            }}/>
+        )
+    }
 }
 
 //Getting the states from the store and mapping it to props in the Login
