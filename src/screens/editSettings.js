@@ -14,29 +14,43 @@ export default class editSettings extends Component {
         super(props);
         this.state = {
             name: "",
+            email: "",
             feet: "",
             inches: "",
             weight: "",
             sex: "",
             month: "",
             day: "",
-            year: ""
+            year: "",
+            display_time_switch: true,
+            display_pace_switch: true,
+            display_distance_switch: true,
+            display_calories_switch: true,
+            metricSwitch: false,
+            update_frequency: 0
         };
     }
 
     componentDidMount() {
-        var ref = firestore.collection('users').doc('fullerTest');
+        var ref = firestore.collection('users').doc('JUMxTNt8lET0JYQXWHLJJrjrQ6G2');
         ref.get().then(testData => {
-            var date = new Date((testData.data().birthday.seconds)*1000);
+            var date = new Date((testData.data().personal.birthday.seconds)*1000);
             this.setState({
                 name: testData.data().name,
-                feet: Math.floor(testData.data().height/12),
-                inches: testData.data().height%12,
-                weight: testData.data().weight,
-                sex: testData.data().sex,
+                email: testData.data().email,
+                feet: Math.floor(testData.data().personal.height/12),
+                inches: testData.data().personal.height%12,
+                weight: testData.data().personal.weight,
+                sex: testData.data().personal.sex,
                 year: date.getFullYear(),
                 month: date.getMonth() + 1,
-                day: date.getDate()
+                day: date.getDate(),
+                display_time_switch: testData.data().settings.display_time,
+                display_pace_switch: testData.data().settings.display_pace,
+                display_distance_switch: testData.data().settings.display_distance,
+                display_calories_switch: testData.data().settings.display_calories,
+                metricSwitch: testData.data().settings.metric,
+                update_frequency: testData.data().settings.update_frequency
             })
         })
     }
@@ -71,12 +85,23 @@ export default class editSettings extends Component {
 
     sendToFirebase = () => {
         var dateString = this.getMonth(this.state.month - 1) + " " + this.state.day + ", " + this.state.year;
-        firestore.collection('users').doc('fullerTest').set({
+        firestore.collection('users').doc('JUMxTNt8lET0JYQXWHLJJrjrQ6G2').set({
             name: this.state.name,
-            height: +(this.state.feet * 12) + +this.state.inches,
-            weight: this.state.weight,
-            sex: this.state.sex,
-            birthday: new Date(dateString)
+            email: this.state.email,
+            personal: {
+                height: +(this.state.feet * 12) + +this.state.inches,
+                weight: this.state.weight,
+                sex: this.state.sex,
+                birthday: new Date(dateString)
+            },
+            settings: {
+                metric: this.state.metricSwitch,
+                update_frequency: this.state.update_frequency,
+                display_time: this.state.display_time_switch,
+                display_distance: this.state.display_distance_switch,
+                display_pace: this.state.display_pace_switch,
+                display_calories: this.state.display_calories_switch
+            }
         })
     }
 
@@ -162,6 +187,11 @@ export default class editSettings extends Component {
                             placeholder="Year"
                         />
                     </View>
+                    {/* <Switch  
+                        value={this.state.metricSwitch}  
+                        onValueChange ={(value) => {
+                            this.setState({metricSwitch: value})
+                        }}/>   */}
                     <View style={styles.row}>
                         <TouchableOpacity
                             style={styles.saveButton}
