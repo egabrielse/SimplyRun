@@ -7,16 +7,15 @@ const initialState = {
 }
 //Modfies the store depending on actions 
 const UserAuthenticationReducer = (state = initialState, action) => {
-    console.log("UserAuthenticationReducer: action.type =", action.type)
     switch (action.type) {
         case LOGIN_USER:
-            console.log("UserAuthenticationReducer: LOGIN_USER")
+            console.log("UserAuthenticationReducer (",action.type,"): logging in user with uid=", action.user.uid)
             return { ...state, signedIn:true, user:action.user }
         case LOGOUT_USER:
-            console.log("UserAuthenticationReducer: LOGOUT_USER")
+            console.log("UserAuthenticationReducer: (",action.type,"): logging out user with uid=", action.user.uid)
             return { ...state, signedIn:false, user:null}
         default:
-            console.log("UserAuthenticationReducer: default case (no change to state)")
+            console.log("UserAuthenticationReducer (",action.type,"): default case (no change to state)")
             return state
     }
 }

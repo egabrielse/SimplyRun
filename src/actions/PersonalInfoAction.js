@@ -37,13 +37,13 @@ export const updateSexAction = (sex) => {
     }
 }
 
-export const createChangeAllPersonalInfoAction = (name, birthday, height, weight, sex) => {
+export const updateAllPersonalInfoAction = (personal) => {
     return {
         type: UPDATE_ALL_PERSONAL_INFO,
-        name: name,
-        birthday: birthday,
-        height: height,
-        weight: weight,
-        sex: sex,
+        name: personal.name,
+        birthday: personal.birthday.seconds,
+        height: personal.height,
+        weight: personal.weight,
+        sex: personal.sex,
     }
 }

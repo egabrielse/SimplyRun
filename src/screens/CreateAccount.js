@@ -7,8 +7,6 @@ import { connect } from 'react-redux'
 import { ScrollView } from 'react-native-gesture-handler';
 import {createLoginAction} from '../actions/UserAuthenticationAction'
 
-//References to the root of the firestore database
-const firestore = firebase.firestore();
 //Firebase initialization 
 firebaseConfig
 
@@ -44,21 +42,14 @@ class CreateAccount extends Component {
                     console.log("CreateAccount: Successfully signed up new user!")
                     let user = firebase.auth().currentUser
 
-                    // Dispatch login action to store
+                    // Dispatch to UserAuthenticationReducer
                     this.props.dispatch(createLoginAction(user))
 
                     // Navigate to 'Main'
                     this.props.navigation.navigate("InputPersonalInfo")
 
                     // Reset CreateAccount's state
-                    this.setState({
-                        email:null,
-                        password:null,
-                        confirmPassword:null,
-                        emailValid:false,
-                        passwordValid:false, 
-                        confirmValid:false
-                    })
+                    this.setState({ email:null,password:null,confirmPassword:null,emailValid:false,passwordValid:false, confirmValid:false})
 
                 })
                 .catch((error) => {

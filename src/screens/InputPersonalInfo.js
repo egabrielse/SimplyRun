@@ -6,6 +6,8 @@ import { connect } from 'react-redux'
 import { ScrollView } from 'react-native-gesture-handler';
 import ModalDropdown from 'react-native-modal-dropdown';
 import {months, days, years} from '../constants/Date'
+import {updateAllPersonalInfoAction} from '../actions/PersonalInfoAction'
+import {updateAllSettingsAction} from '../actions/SettingsAction'
 
 //References to the root of the firestore database
 const firestore = firebase.firestore();
@@ -63,38 +65,34 @@ class InputPersonalInfo extends Component {
             return
         }
 
-        let n = this.state.name;
-        let h = this.convertMeasurementsToHeight(this.state.ftm, this.state.incm);
-        let w = this.state.weight;
-        let b = this.state.month + " " + this.state.day + ", " + this.state.year;
-        let s = this.state.sex;
-        let m = this.state.metric;
         let user = firebase.auth().currentUser;
+        let personal = {
+            name: this.state.name,
+            sex: this.state.sex,
+            height: this.convertMeasurementsToHeight(this.state.ftm, this.state.incm),
+            weight: this.state.weight,
+            birthday: (new Date(this.state.month + " " + this.state.day + ", " + this.state.year)),
+        }
+        let settings = {
+            metric: this.state.metric,
+            update_frequency:0,
+            display_time:false,
+            display_distance:false,
+            display_pace:false,
+            display_calories:false,
+        }
 
-        console.log("InputPersonalInfo: name:",n,"birth date:",b,"sex:",s,"height",h,"weight:",w,"metric:",m)
+        console.log("InputPersonalInfo: personal:",personal,"settings:",settings)
 
         firestore.collection('users').doc(user.uid)
-        .set({
-            email:user.email,
-            name:n,
-            personal:{
-                sex:s,
-                height:h,
-                weight:w,
-                birthday:(new Date(b)),
-            },
-            settings:{
-                metric:m,
-                update_frequency:0,
-                display_time:false,
-                display_distance:false,
-                display_pace:false,
-                display_calories:false,
-            }
-        })
+        .set({ personal, settings})
         .then(() => {
             console.log("InputPersonalInfo: Successfully added user's personal info to firestore")
 
+            // Update all personal info in store
+            this.props.dispatch(updateAllPersonalInfoAction(personal))
+            // Update all settings info in store 
+            this.props.dispatch(updateAllSettingsAction(settings))
             // Navigate to 'Main'
             this.props.navigation.navigate("Main")
 
@@ -102,8 +100,7 @@ class InputPersonalInfo extends Component {
             this.setState({metric:false,name:null,ftm:null,incm:null,weight:null,sex:'male',month:null,day:null,year:null,})
             
         }).catch(function(error) {
-            console.log("InputPersonalInfo:")
-            console.log(error.message)
+            console.log("InputPersonalInfo:", error.message)
             Alert.alert(error.message);
         })
     }

@@ -5,6 +5,8 @@ import firebaseConfig from '../config/firebaseConfig'
 import { connect } from 'react-redux'
 import { ScrollView } from 'react-native-gesture-handler';
 import {createLoginAction} from '../actions/UserAuthenticationAction'
+import {updateAllPersonalInfoAction} from '../actions/PersonalInfoAction'
+import {updateAllSettingsAction} from '../actions/SettingsAction'
 
 //References to the root of the firestore database
 const firestore = firebase.firestore();
@@ -43,20 +45,46 @@ class Login extends Component {
                     console.log("Login: Successfully signed in existing user!")
                     let user = firebase.auth().currentUser
 
-                    // Dispatch login action to store
-                    this.props.dispatch(createLoginAction(user))
+                    // Fetch user data from the database
+                    console.log("Login: Attempting to fetch user data for user with uid=", user.uid)
+                    let userRef = firestore.collection('users').doc(user.uid)
+                    userRef.get()
+                    .then((doc) => {
+                        if (doc.exists){
+                            console.log("Login: Successfully fetched user data for user with uid=", user.uid)
+                            let userData = doc.data()
 
-                    // Navigate to 'Main'
-                    this.props.navigation.navigate("Main")
+                            // Update login info in store
+                            this.props.dispatch(createLoginAction(user))
+                            // Update all personal info in store
+                            this.props.dispatch(updateAllPersonalInfoAction(userData.personal))
+                            // Update all settings info in store 
+                            this.props.dispatch(updateAllSettingsAction(userData.settings))
 
-                    // Reset Login's state
-                    this.setState({email:null, password:null, emailValid:false, passwordValid:false})
+                            // Navigate to 'Main'
+                            this.props.navigation.navigate("Main")
 
+                        } else {
+                            console.log("Login: User data for user with uid=", user.uid, "not found")
+                            return
+                        }
+                    })
+                    .catch((error) => {
+                        console.log("Login: Error fetching user data:", error.message)
+                        Alert.alert(error.message)
+                        return
+                    })
                 })
                 .catch((error) => {
+                    console.log("Login: Error signing in user:", error.message)
                     Alert.alert(error.message)
                     return
                 });
+
+                // Reset Login's state
+                this.setState({email:null, password:null, emailValid:false, passwordValid:false})
+
+
         } else {
             console.log("Login: One of the fields (email, password) is empty")
             Alert.alert("Please provide a email address and password")
