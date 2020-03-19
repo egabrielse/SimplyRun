@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, TextInput, TouchableOpacity, Alert } from 'react-native';
+import { Text, View, TextInput, TouchableOpacity, Alert, KeyboardAvoidingView } from 'react-native';
 import firebaseConfig from '../config/firebaseConfig' 
 import firebase from 'firebase';
 import { connect } from 'react-redux'
@@ -50,6 +50,7 @@ class EndRun extends Component {
     }
     render() {
         return (
+            
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', bottom: 2}}  >
                 <Text style = {{fontSize: 20, paddingBottom: 240}} > {"Run Complete"} </Text>
                 <Text >{"Time: " + this.props.time} </Text>
@@ -57,6 +58,7 @@ class EndRun extends Component {
                 <Text style = {{left: 14}}>{"Pace: " + this.props.pace} </Text>
                 <Text style = {{left: 14, paddingBottom: 30}}>{"Calories: " + this.props.calories} </Text>
                 
+                <KeyboardAvoidingView behavior='padding' keyboardVerticalOffset='100' style={{alignItems: 'center'}}>
                 <TextInput style = {{ paddingLeft: 7, borderWidth: 5, borderColor: 'black', right: 0, width: 200}}
                     placeholder="Notes     "
                     autoCapitalize="none"
@@ -64,33 +66,34 @@ class EndRun extends Component {
                     value={this.state.notes}
                     multiline
                 />
-
+                
                 <View style = {{paddingTop: 30, flexDirection: 'row', alignContent: 'space-between'}}> 
 
                     <TouchableOpacity style = {{
                         right: 20, 
-                        width: 75, 
-                        height: 75, 
+                        width: 90, 
+                        height: 90, 
                         backgroundColor: 'darkcyan',
                         borderRadius: 200/2,
                         alignItems: 'center' }} onPress={this.saveRun}>
                         
-                        <Text style = {{paddingVertical: 25}}>Save Run </Text>
+                        <Text style = {{paddingVertical: 35}}>Save Run </Text>
                         
                     </TouchableOpacity>
 
                     <TouchableOpacity style = {{
                         left: 20,
-                        width: 75, 
-                        height: 75, 
+                        width: 90, 
+                        height: 90, 
                         backgroundColor: 'darkorange',
                         borderRadius: 200/2,
                         alignItems: 'center'}} onPress={this.discardRun}>
                         
-                        <Text style = {{paddingVertical: 25}}>Discard Run</Text>
+                        <Text style = {{paddingVertical: 35}}>Discard Run</Text>
 
                     </TouchableOpacity>
                 </View>
+                </KeyboardAvoidingView>
             </View>
         );
     }
