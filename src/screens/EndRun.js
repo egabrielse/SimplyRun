@@ -31,7 +31,7 @@ class EndRun extends Component {
     saveRun = () => {
         Alert.alert("Run Saved")
         this.sendToFirebase();
-        this.props.navigation.navigate('Main');
+        this.props.navigation.navigate('SimplyRun');
     }
 
     discardRun = () => {
@@ -39,7 +39,7 @@ class EndRun extends Component {
             'Confirm Discard Run',
             'Would you like to end your run?',
             [
-                { text: 'Yes', onPress: () => { this.props.navigation.navigate('Main'); } },
+                { text: 'Yes', onPress: () => { this.props.navigation.navigate('SimplyRun'); } },
                 {
                     text: 'No',
                     style: 'cancel',
@@ -59,12 +59,13 @@ class EndRun extends Component {
                 <Text style = {{left: 14, paddingBottom: 30}}>{"Calories: " + this.props.calories} </Text>
                 
                 <KeyboardAvoidingView behavior='padding' keyboardVerticalOffset='100' style={{alignItems: 'center'}}>
-                <TextInput style = {{ paddingLeft: 7, borderWidth: 5, borderColor: 'black', right: 0, width: 200}}
-                    placeholder="Notes     "
-                    autoCapitalize="none"
-                    onChangeText={note => this.writeNote(note)}
-                    value={this.state.notes}
-                    multiline
+                    <TextInput style={{ paddingLeft: 7, borderWidth: 5, borderColor: 'black', right: 0, width: 200 }}
+                        placeholder="Notes     "
+                        autoCapitalize="none"
+                        onChangeText={note => this.writeNote(note)}
+                        value={this.state.notes}
+                        multiline
+                        blurOnSubmit={true}
                 />
                 
                 <View style = {{paddingTop: 30, flexDirection: 'row', alignContent: 'space-between'}}> 

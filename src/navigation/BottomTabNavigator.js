@@ -4,6 +4,7 @@ import TabBarIcon from '../components/TabBarIcon';
 import SimplyRun from '../screens/SimplyRun'
 import Settings from '../screens/Settings'
 import RunLog from '../screens/RunLog'
+import endRunNavigator from './endRunNavigator.js';
 
 const BottomTab = createBottomTabNavigator();
 const INITIAL_ROUTE_NAME = 'SIMPLY_RUN';
@@ -26,7 +27,7 @@ export default function BottomTabNavigator({ navigation, route }) {
       />
       <BottomTab.Screen
         name="SIMPLY_RUN"
-        component={SimplyRun}
+              component={endRunNavigator}
         options={{
           title: 'Simply Run',
           tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="md-code-working" />,
