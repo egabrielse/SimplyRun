@@ -2,63 +2,49 @@ import React, { Component } from 'react';
 import { Text, View, TouchableOpacity, StyleSheet } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import firebase from 'firebase';
-import firebaseConfig from '../config/firebaseConfig'
+import firebaseConfig from '../config/firebaseConfig';
+import { connect } from 'react-redux';
+import {updateAllPersonalInfoAction} from '../actions/PersonalInfoAction';
+import {updateAllSettingsAction} from '../actions/SettingsAction';
 
 //References to the root of the firestore database
 const firestore = firebase.firestore();
 //Firebase initialzation 
 firebaseConfig
 
-export default class Settings extends Component {
+class Settings extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            name: "",
-            email: "",
             height: "",
             weight: "",
-            sex: "",
             age: "",
-            stats_to_display: [],
-            metricSwitch: false,
-            update_frequency: 0
+            stats_to_display: []
         };
     }
 
     getInfo = () => {
-        var ref = firestore.collection('users').doc(firebase.auth().currentUser.uid);
-        ref.get().then(testData => {
-            console.log(testData.data());
-            var feet = Math.floor(testData.data().personal.height/12);
-            var inches = testData.data().personal.height%12;
-            var metric = "Imperial";
-            if(testData.data().settings.metric == true) {
-                metric = "Metric";
-            }
-            var stats = [];
-            if(testData.data().settings.display_time) {
-                stats.push(" Time");
-            }
-            if(testData.data().settings.display_pace) {
-                stats.push(" Pace");
-            }
-            if(testData.data().settings.display_distance) {
-                stats.push(" Distance");
-            }
-            if(testData.data().settings.display_calories) {
-                stats.push(" Calories");
-            }
-            this.setState({
-                name: testData.data().personal.name,
-                email: testData.data().personal.email,
-                height: feet + "'" + inches + '"',
-                weight: testData.data().personal.weight,
-                sex: testData.data().personal.sex,
-                age: Math.floor(((Math.round(new Date().getTime()/1000)) - testData.data().personal.birthday.seconds)/(3600*24*365)),
-                stats_to_display: stats,
-                metricSwitch: metric,
-                update_frequency: testData.data().settings.update_frequency
-            })
+        var feet = Math.floor(this.props.height/12);
+        var inches = this.props.height%12;
+
+        var stats = [];
+        if(this.props.display_time) {
+            stats.push(" Time");
+        }
+        if(this.props.display_pace) {
+            stats.push(" Pace");
+        }
+        if(this.props.display_distance) {
+            stats.push(" Distance");
+        }
+        if(this.props.display_calories) {
+            stats.push(" Calories");
+        }
+        this.setState({
+            height: feet + "'" + inches + '"',
+            weight: this.props.weight,
+            age: Math.floor(((Math.round(new Date().getTime()/1000)) - this.props.birthday)/(3600*24*365)),
+            stats_to_display: stats
         })
     }
 
@@ -71,17 +57,17 @@ export default class Settings extends Component {
             <ScrollView>
                 <View>
                     <Text style = {styles.title}>My Profile</Text>
-                    <Text style = {styles.text}> Name: {this.state.name}</Text>
-                    <Text style = {styles.text}> Email: {this.state.email}</Text>
+                    <Text style = {styles.text}> Name: {this.props.name}</Text>
+                    <Text style = {styles.text}> Email: {this.props.email}</Text>
                     <Text style = {styles.text}> Height: {this.state.height}</Text>
                     <Text style = {styles.text}> Weight: {this.state.weight} lbs</Text>
-                    <Text style = {styles.text}> Sex: {this.state.sex}</Text>
+                    <Text style = {styles.text}> Sex: {this.props.sex}</Text>
                     <Text style = {styles.text}> Age: {this.state.age}</Text>
                     <Text> </Text>
                     <Text style = {styles.title}>Settings</Text>
-                    <Text style = {styles.text}> Unit: {this.state.metricSwitch} </Text>
+                    <Text style = {styles.text}> Unit: {this.props.metric} </Text>
                     <Text style = {styles.text}> Stats Displayed: {this.state.stats_to_display.toString()} </Text>
-                    <Text style = {styles.text}> Update Frequency: {this.state.update_frequency} </Text>
+                    <Text style = {styles.text}> Update Frequency: {this.props.update_frequency} </Text>
                     <TouchableOpacity
                         style={styles.button}
                         onPress={() => {
@@ -126,3 +112,23 @@ const styles = StyleSheet.create({
         paddingRight : 25
       },
 });
+
+function mapStateToProps(state) {
+    return {
+        name: state.PersonalInfoReducer.name,
+        email: state.PersonalInfoReducer.email,
+        birthday: state.PersonalInfoReducer.birthday,
+        height: state.PersonalInfoReducer.height,
+        weight: state.PersonalInfoReducer.weight,
+        sex: state.PersonalInfoReducer.sex,
+
+        display_calories: state.SettingsReducer.display_calories,
+        display_distance: state.SettingsReducer.display_distance,
+        display_pace: state.SettingsReducer.display_pace,
+        display_time: state.SettingsReducer.display_time,
+        metric: state.SettingsReducer.metric,
+        update_frequency: state.SettingsReducer.update_frequency,
+    }
+}
+
+export default connect(mapStateToProps)(Settings);

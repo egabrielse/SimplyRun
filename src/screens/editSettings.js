@@ -18,56 +18,46 @@ class editSettings extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            name: "",
-            email: "",
+            name: this.props.name,
+            email: this.props.email,
             ftm: "",
             incm: "",
             weight: "",
-            sex: "",
+            sex: this.props.sex,
             month: "",
             day: "",
             year: "",
-            display_time_switch: true,
-            display_pace_switch: true,
-            display_distance_switch: true,
-            display_calories_switch: true,
-            metric: false,
-            update_frequency: 0
+            display_time_switch: this.props.display_time_switch,
+            display_pace_switch: this.props.display_pace_switch,
+            display_distance_switch: this.props.display_distance_switch,
+            display_calories_switch: this.props.display_calories_switch,
+            metric: this.props.metric,
+            update_frequency: this.props.update_frequency
         };
     }
 
     componentDidMount() {
-        var ref = firestore.collection('users').doc(firebase.auth().currentUser.uid);
-        ref.get().then(testData => {
-            var date = new Date((testData.data().personal.birthday.seconds)*1000);
+            console.log(this.props);
+            var date = new Date((this.props.birthday)*1000);
             var big = "";
             var little = "";
             // determine ftm/incm based on imperial/metric
-            if(testData.data().settings.metric) {
-                big = Math.floor(testData.data().personal.height / 100).toString();
-                little = Math.floor(testData.data().personal.height % 100).toString();
+            if(this.props.metric) {
+                // deal with later
+                // big = Math.floor(testData.data().personal.height / 100).toString();
+                // little = Math.floor(testData.data().personal.height % 100).toString();
             } else {
-                big = Math.floor(testData.data().personal.height / 12).toString();
-                little = Math.floor(testData.data().personal.height % 12).toString();
+                big = Math.floor(this.props.height / 12).toString();
+                little = Math.floor(this.props.height % 12).toString();
             }
             this.setState({
-                name: testData.data().personal.name,
-                email: testData.data().personal.email,
                 ftm: big,
                 incm: little,
-                weight: testData.data().personal.weight,
-                sex: testData.data().personal.sex,
+                weight: this.props.weight,
                 year: date.getFullYear().toString(),
                 month: months[date.getMonth()],
-                day: date.getDate().toString(),
-                display_time_switch: testData.data().settings.display_time,
-                display_pace_switch: testData.data().settings.display_pace,
-                display_distance_switch: testData.data().settings.display_distance,
-                display_calories_switch: testData.data().settings.display_calories,
-                metric: testData.data().settings.metric,
-                update_frequency: testData.data().settings.update_frequency
+                day: date.getDate().toString()
             })
-        })
     }
     
     convertMeasurementsToHeight = (ftm, incm) => {
@@ -123,7 +113,7 @@ class editSettings extends Component {
         }
 
         firestore.collection('users').doc(user.uid)
-        .set({ personal, settings})
+        .update({ personal, settings})
         .then(() => {
             console.log("Successfully updated settings")
 
@@ -133,8 +123,6 @@ class editSettings extends Component {
             this.props.dispatch(updateAllSettingsAction(settings))
 
             this.props.navigation.navigate('SETTINGS');
-
-            console.log(firebase.auth().currentUser);
         }).catch(function(error) {
             console.log("InputPersonalInfo:", error.message)
             Alert.alert(error.message);
@@ -147,15 +135,11 @@ class editSettings extends Component {
                 <View style={{flex:1, flexDirection:'row', alignItems:'center'}}>
                 <Text>Name:</Text>
                     <TextInput
+                        style={{ height: 31, width: '25%', borderColor: 'gray', borderWidth: 1, margin: 2}}
+                        textAlign={'center'}
                         value={this.state.name}
                         onChangeText={(text) => this.setState({name:text})}
-                    />
-                </View>
-                <View style={{flex:1, flexDirection:'row', alignItems:'center'}}>
-                <Text>Email:</Text>
-                    <TextInput
-                        value={this.state.email}
-                        onChangeText={(text) => this.setState({email:text})}
+                        placeholder = "Name"
                     />
                 </View>
 
@@ -371,7 +355,25 @@ class editSettings extends Component {
     }
 }
 
-export default connect()(editSettings);
+function mapStateToProps(state) {
+    return {
+        name: state.PersonalInfoReducer.name,
+        email: state.PersonalInfoReducer.email,
+        birthday: state.PersonalInfoReducer.birthday,
+        height: state.PersonalInfoReducer.height,
+        weight: state.PersonalInfoReducer.weight,
+        sex: state.PersonalInfoReducer.sex,
+
+        display_calories: state.SettingsReducer.display_calories,
+        display_distance: state.SettingsReducer.display_distance,
+        display_pace: state.SettingsReducer.display_pace,
+        display_time: state.SettingsReducer.display_time,
+        metric: state.SettingsReducer.metric,
+        update_frequency: state.SettingsReducer.update_frequency,
+    }
+}
+
+export default connect(mapStateToProps)(editSettings);
 
 const styles = StyleSheet.create({
     row: {
