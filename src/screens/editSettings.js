@@ -1,22 +1,27 @@
 import React, { Component } from 'react';
-import { TextInput, Text, View, Button, StyleSheet, TouchableOpacity, Switch } from 'react-native';
+import { TextInput, Text, View, Button, StyleSheet, TouchableOpacity, Switch, Alert } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
+import ModalDropdown from 'react-native-modal-dropdown';
 import firebase from 'firebase';
-import firebaseConfig from '../config/firebaseConfig'
+import {months, days, years} from '../constants/Date';
+import firebaseConfig from '../config/firebaseConfig';
+import { connect } from 'react-redux';
+import {updateAllPersonalInfoAction} from '../actions/PersonalInfoAction';
+import {updateAllSettingsAction} from '../actions/SettingsAction';
 
 //References to the root of the firestore database
 const firestore = firebase.firestore();
 //Firebase initialzation 
 firebaseConfig
 
-export default class editSettings extends Component {
+class editSettings extends Component {
     constructor(props) {
         super(props);
         this.state = {
             name: "",
             email: "",
-            feet: "",
-            inches: "",
+            ftm: "",
+            incm: "",
             weight: "",
             sex: "",
             month: "",
@@ -26,82 +31,110 @@ export default class editSettings extends Component {
             display_pace_switch: true,
             display_distance_switch: true,
             display_calories_switch: true,
-            metricSwitch: false,
+            metric: false,
             update_frequency: 0
         };
     }
 
     componentDidMount() {
-        var ref = firestore.collection('users').doc('JUMxTNt8lET0JYQXWHLJJrjrQ6G2');
+        var ref = firestore.collection('users').doc(firebase.auth().currentUser.uid);
         ref.get().then(testData => {
             var date = new Date((testData.data().personal.birthday.seconds)*1000);
+            var big = "";
+            var little = "";
+            // determine ftm/incm based on imperial/metric
+            if(testData.data().settings.metric) {
+                big = Math.floor(testData.data().personal.height / 100).toString();
+                little = Math.floor(testData.data().personal.height % 100).toString();
+            } else {
+                big = Math.floor(testData.data().personal.height / 12).toString();
+                little = Math.floor(testData.data().personal.height % 12).toString();
+            }
             this.setState({
-                name: testData.data().name,
-                email: testData.data().email,
-                feet: Math.floor(testData.data().personal.height/12),
-                inches: testData.data().personal.height%12,
+                name: testData.data().personal.name,
+                email: testData.data().personal.email,
+                ftm: big,
+                incm: little,
                 weight: testData.data().personal.weight,
                 sex: testData.data().personal.sex,
-                year: date.getFullYear(),
-                month: date.getMonth() + 1,
-                day: date.getDate(),
+                year: date.getFullYear().toString(),
+                month: months[date.getMonth()],
+                day: date.getDate().toString(),
                 display_time_switch: testData.data().settings.display_time,
                 display_pace_switch: testData.data().settings.display_pace,
                 display_distance_switch: testData.data().settings.display_distance,
                 display_calories_switch: testData.data().settings.display_calories,
-                metricSwitch: testData.data().settings.metric,
+                metric: testData.data().settings.metric,
                 update_frequency: testData.data().settings.update_frequency
             })
         })
     }
     
-    getMonth = (num) => {
-        if (num == 0) {
-            return "January";
-        } else if (num == 1) {
-            return "February";
-        } else if (num == 2) {
-            return "March";
-        } else if (num == 3) {
-            return "April";
-        } else if (num == 4) {
-            return "May";
-        } else if (num == 5) {
-            return "June";
-        } else if (num == 6) {
-            return "July";
-        } else if (num == 7) {
-            return "August";
-        } else if (num == 8) {
-            return "September";
-        } else if (num == 9) {
-            return "October";
-        } else if (num == 10) {
-            return "November";
-        } else if (num == 11) {
-            return "December";
+    convertMeasurementsToHeight = (ftm, incm) => {
+        if (this.state.metric) {
+            // User chose metric
+            return (+(100 * ftm) + +incm)
+
+        } else {
+            // User chose imperial
+            return (+(12*ftm) + +incm)
         }
     }
 
     sendToFirebase = () => {
-        var dateString = this.getMonth(this.state.month - 1) + " " + this.state.day + ", " + this.state.year;
-        firestore.collection('users').doc('JUMxTNt8lET0JYQXWHLJJrjrQ6G2').set({
+        console.log(this.state);
+        if (this.state.name === null) {
+            console.log("InputPersonalInfo: name is null")
+            Alert.alert("Please provide a name.")
+            return
+        }
+        if (this.state.ftm === null || this.state.incm === null) {
+            console.log("InputPersonalInfo: ftm and/or incm are/is null")
+            Alert.alert("Please provide a height.")
+            return
+        }
+        if (this.state.ftm === null || this.state.incm === null) {
+            console.log("InputPersonalInfo: ftm and/or incm are/is null")
+            Alert.alert("Please provide a weight.")
+            return
+        }
+        
+        if (this.state.month === null || this.state.day === null || this.state.year === null) {
+            console.log("InputPersonalInfo: month and/or day and/or year are/is null")
+            Alert.alert("Please provide a full birth date.")
+            return
+        }
+
+        let user = firebase.auth().currentUser;
+        let personal = {
             name: this.state.name,
             email: this.state.email,
-            personal: {
-                height: +(this.state.feet * 12) + +this.state.inches,
-                weight: this.state.weight,
-                sex: this.state.sex,
-                birthday: new Date(dateString)
-            },
-            settings: {
-                metric: this.state.metricSwitch,
-                update_frequency: this.state.update_frequency,
-                display_time: this.state.display_time_switch,
-                display_distance: this.state.display_distance_switch,
-                display_pace: this.state.display_pace_switch,
-                display_calories: this.state.display_calories_switch
-            }
+            sex: this.state.sex,
+            height: this.convertMeasurementsToHeight(this.state.ftm, this.state.incm),
+            weight: this.state.weight,
+            birthday: (new Date(this.state.month + " " + this.state.day + ", " + this.state.year)),
+        }
+        let settings = {
+            metric: this.state.metric,
+            update_frequency: this.state.update_frequency,
+            display_time: this.state.display_time_switch,
+            display_distance: this.state.display_distance_switch,
+            display_pace: this.state.display_pace_switch,
+            display_calories: this.state.display_calories_switch,
+        }
+
+        firestore.collection('users').doc(user.uid)
+        .set({ personal, settings})
+        .then(() => {
+            console.log("Successfully updated settings")
+
+            // Update all personal info in store
+            this.props.dispatch(updateAllPersonalInfoAction(personal))
+            // Update all settings info in store 
+            this.props.dispatch(updateAllSettingsAction(settings))
+        }).catch(function(error) {
+            console.log("InputPersonalInfo:", error.message)
+            Alert.alert(error.message);
         })
     }
 
@@ -109,93 +142,149 @@ export default class editSettings extends Component {
         return (
             <ScrollView>
                 <View>
-                    <View style={styles.row}>
-                        <Text>Name:</Text> 
-                        <TextInput
-                            style={{ height: 31, width: '70%', borderColor: 'gray', borderWidth: 1, margin: 2}}
-                            onChangeText={text => this.setState({name: text})}
-                            textAlign={'center'}
-                            value={this.state.name}
-                            placeholder="Name"
-                        />
-                    </View>
-                    <View style={styles.row}>
-                        <Text>Height:</Text> 
-                        <TextInput
-                            style={{ height: 31, width: '12%', borderColor: 'gray', borderWidth: 1, margin: 2}}
-                            onChangeText={text => this.setState({feet: text})}
-                            textAlign={'center'}
-                            value={this.state.feet.toString()}
-                            placeholder="Feet"
-                        />
-                        <Text>Feet</Text>
-                        <TextInput
-                            style={{ height: 31, width: '12%', borderColor: 'gray', borderWidth: 1, margin: 2}}
-                            onChangeText={text => this.setState({inches: text})}
-                            textAlign={'center'}
-                            value={this.state.inches.toString()}
-                            placeholder="Inches"
-                        />
-                        <Text>Inches</Text>
-                    </View>
-                    <View style={styles.row}>
-                        <Text>Weight:</Text> 
-                        <TextInput
-                            style={{ height: 31, width: '15%', borderColor: 'gray', borderWidth: 1, margin: 2}}
-                            onChangeText={text => this.setState({weight: text})}
-                            textAlign={'center'}
-                            value={this.state.weight.toString()}
-                            placeholder="Weight"
-                        />
-                        <Text>lbs</Text> 
-                    </View>
-                    <View style={styles.row}>
-                        <Text>Sex:</Text> 
-                        <TextInput
-                            style={{ height: 31, width: '15%', borderColor: 'gray', borderWidth: 1, margin: 2}}
-                            onChangeText={text => this.setState({sex: text})}
-                            textAlign={'center'}
-                            value={this.state.sex}
-                            placeholder="Sex"
-                        />
-                    </View>
-                    <View style={styles.row}>
-                        <Text>Birthday:</Text> 
-                        <Text>Month:</Text> 
-                        <TextInput
-                            style={{ height: 31, width: '15%', borderColor: 'gray', borderWidth: 1, margin: 2}}
-                            onChangeText={text => this.setState({month: text})}
-                            textAlign={'center'}
-                            value={this.state.month.toString()}
-                            placeholder="Month"
-                        />
-                        <Text>Day:</Text> 
-                        <TextInput
-                            style={{ height: 31, width: '15%', borderColor: 'gray', borderWidth: 1, margin: 2}}
-                            onChangeText={text => this.setState({day: text})}
-                            textAlign={'center'}
-                            value={this.state.day.toString()}
-                            placeholder="Day"
-                        />
-                        <Text>Year:</Text> 
-                        <TextInput
-                            style={{ height: 31, width: '15%', borderColor: 'gray', borderWidth: 1, margin: 2}}
-                            onChangeText={text => this.setState({year: text})}
-                            textAlign={'center'}
-                            value={this.state.year.toString()}
-                            placeholder="Year"
-                        />
-                    </View>
-                    <View style={styles.row}>
-                        <Text>Unit:  </Text>
-                        <Text> Imperial </Text>
-                        <Switch  
-                            value={this.state.metricSwitch}  
-                            onValueChange ={(value) => {
-                                this.setState({metricSwitch: value})
-                            }}/>  
-                        <Text> Metric</Text>
-                    </View>
+                    {/*Buttons for choosing Metric vs Imperial Measurements*/}
+                    <View style={{ minHeight:25, flexDirection:'row', justifyContent:'center',alignItems:'center', paddingTop:10}}>
+                            <Text style={{flex:1, alignContent:'center', justifyContent:'center'}}>Preferred Meaurement System:</Text>
+                        </View>
+                        <View style={{ minHeight:50, flexDirection:'row'}}>
+                            {/*Metric Button*/}
+                            <View style={{flex:1}}>
+                                <TouchableOpacity 
+                                    onPress={() => this.setState({metric:true})}
+                                    disabled={(this.state.metric ? true : false)}>
+                                    <View style={{
+                                            backgroundColor:(this.state.metric ? 'lightgreen': 'lightgray'),
+                                            height:50,
+                                            justifyContent:'center',
+                                            alignItems:'center',
+                                            paddingHorizontal:15}}>
+                                        <Text value={true} style={{fontSize:20,color:(this.state.metric ? 'black': 'darkgray')}}>Metric</Text>
+                                    </View>
+                                </TouchableOpacity>
+                            </View>
+                            {/*Imperial Button*/}
+                            <View style={{flex:1}}>
+                                <TouchableOpacity
+                                    onPress={() => this.setState({metric:false})}
+                                    disabled={(this.state.metric ? false : true)}>
+                                    <View style={{
+                                            backgroundColor:(this.state.metric ? 'lightgray': 'lightgreen'),
+                                            height:50,
+                                            justifyContent:'center',
+                                            alignItems:'center',
+                                            paddingHorizontal:15}}>
+                                        <Text value={false} style={{fontSize:20,color:(this.state.metric ? 'darkgray': 'black')}}>Imperial</Text>
+                                    </View>
+                                </TouchableOpacity>
+                            </View>
+
+                        </View>
+
+
+                        {/*TextInput for inputing user's birthday (used for calculating age)*/}
+                        <View style={{ minHeight:25, flexDirection:'row', justifyContent:'center',alignItems:'center', paddingTop:10}}>
+                            <Text style={{flex:1, alignContent:'center', justifyContent:'center'}}>Birth Date:</Text>
+                        </View>
+                        <View style={{ minHeight:50, flexDirection:'row', justifyContent:'center',alignItems:'center'}}>
+                            <ModalDropdown
+                                defaultValue={this.state.month}
+                                textStyle={{fontSize:20}}
+                                style={{fontSize:18, flex:1, borderColor:'lightgray', borderWidth:1, height:50, alignItems:'center', justifyContent:'center'}}
+                                dropdownTextStyle={{fontSize:18}}
+                                options={months}
+                                onSelect={(index, value) => this.setState({month:value})}/>
+                            <ModalDropdown
+                                defaultValue={this.state.day}
+                                textStyle={{fontSize:20}}
+                                style={{fontSize:18, flex:1, borderColor:'lightgray', borderWidth:1, height:50, alignItems:'center', justifyContent:'center'}}
+                                dropdownTextStyle={{fontSize:18}}
+                                options={days}
+                                onSelect={(index, value) => this.setState({day:value})}/>
+                            <ModalDropdown
+                                defaultValue={this.state.year}
+                                textStyle={{fontSize:20}}
+                                style={{fontSize:18, flex:1, borderColor:'lightgray', borderWidth:1, height:50, alignItems:'center', justifyContent:'center'}}
+                                dropdownTextStyle={{fontSize:18}}
+                                options={years}
+                                onSelect={(index, value) => this.setState({year:value})}/>
+                        </View>
+
+
+                        {/*TextInputs for inputing user's height*/}
+                        <View style={{ minHeight:25, flexDirection:'row', justifyContent:'center',alignItems:'center', paddingTop:10}}>
+                            <Text style={{flex:4, alignContent:'center', justifyContent:'center'}}>Height:</Text>
+                            <Text style={{flex:2, alignContent:'center', justifyContent:'center', paddingLeft:10}}>Weight:</Text>
+                        </View>
+                        <View style={{flexDirection:'row', minHeight:50, justifyContent:'center', alignItems:'center'}}>
+                            {/*TextInput for feet or meters*/}
+                            <View style={{flex:1, flexDirection:'row', alignItems:'center'}}>
+                                <TextInput
+                                    value={this.state.ftm}
+                                    onChangeText={(text) => this.setState({ftm:text})}
+                                    keyboardType='number-pad'
+                                    style={styles.inputNumber}
+                                />
+                                <Text>{(this.state.metric ? "m" : "ft")}</Text>
+                            </View>
+                            {/*TextInput for inches or centimeters*/}
+                            <View style={{flex:1, flexDirection:'row', alignItems:'center', paddingRight:20}}>
+                                <TextInput
+                                    value={this.state.incm}
+                                    onChangeText={(text) => this.setState({incm:text})}
+                                    keyboardType='number-pad'
+                                    style={styles.inputNumber}
+                                />
+                                <Text>{(this.state.metric ? "cm" : "in")}</Text>
+                            </View>
+                            {/*TextInput for kilograms or pounds*/}
+                            <View style={{flex:1, flexDirection:'row', alignItems:'center'}}>
+                                <TextInput
+                                    value={this.state.weight}
+                                    onChangeText={(text) => this.setState({weight:text})}
+                                    keyboardType='number-pad'
+                                    style={styles.inputNumber}
+                                />
+                                <Text>{(this.state.metric ? "kg" : "lb")}</Text>
+                            </View>
+                        </View>
+
+
+                        {/*Buttons for inputing user's sex*/}
+                        <View style={{ minHeight:25, flexDirection:'row', justifyContent:'center',alignItems:'center', paddingTop:10}}>
+                            <Text style={{flex:1, alignContent:'center', justifyContent:'center'}}>Sex:</Text>
+                        </View>
+                        <View style={{ minHeight:50, flexDirection:'row'}}>
+                            {/*Male Button*/}
+                            <View style={{flex:1}}>
+                                <TouchableOpacity 
+                                    onPress={() => this.setState({sex:"male"})}
+                                    disabled={(this.state.sex === "male" ? true : false)}>
+                                    <View style={{
+                                            backgroundColor:(this.state.sex === "male" ? 'lightgreen': 'lightgray'),
+                                            height:50,
+                                            justifyContent:'center',
+                                            alignItems:'center',
+                                            paddingHorizontal:15}}>
+                                        <Text value={true} style={{fontSize:20,color:(this.state.sex === "male" ? 'black': 'darkgray')}}>Male</Text>
+                                    </View>
+                                </TouchableOpacity>
+                            </View>
+                            {/*Female Button*/}
+                            <View style={{flex:1}}>
+                                <TouchableOpacity
+                                    onPress={() => this.setState({sex:"female"})}
+                                    disabled={(this.state.sex ? false : true)}>
+                                    <View style={{
+                                            backgroundColor:(this.state.sex === "male" ? 'lightgray': 'lightgreen'),
+                                            height:50,
+                                            justifyContent:'center',
+                                            alignItems:'center',
+                                            paddingHorizontal:15}}>
+                                        <Text value={false} style={{fontSize:20,color:(this.state.sex === 'male' ? 'darkgray': 'black')}}>Female</Text>
+                                    </View>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
                     <View style={styles.row}>
                         <Text>Update Frequency:</Text> 
                         <TextInput
@@ -244,7 +333,6 @@ export default class editSettings extends Component {
                             style={styles.saveButton}
                             onPress={() => {
                                 this.sendToFirebase();
-                                this.props.route.params.refresh();
                                 this.props.navigation.navigate('SETTINGS');
                                 }
                             }>
@@ -264,6 +352,8 @@ export default class editSettings extends Component {
         );
     }
 }
+
+export default connect()(editSettings);
 
 const styles = StyleSheet.create({
     row: {
@@ -297,5 +387,33 @@ const styles = StyleSheet.create({
         textAlign:'center',
         paddingLeft : 25,
         paddingRight : 25
-      }
+      },
+      inputText: {
+        borderWidth: 1,
+        borderColor: 'lightgrey',
+        height:50,
+        maxHeight:50,
+        justifyContent:'center',
+        padding:8,
+        flex:1,
+    },
+    inputNumber: {
+        borderWidth: 1,
+        borderColor: 'lightgrey',
+        minHeight:50,
+        maxHeight:50,
+        width:85,
+        justifyContent:'center',
+    },
+    inputButton: {
+        height:50,
+        backgroundColor: 'lightblue',
+        justifyContent:'center',
+        alignItems:'center',
+    },
+    titleText: {
+        fontSize:40,
+        fontWeight:'bold',
+        fontStyle:'italic',
+    }
 });
