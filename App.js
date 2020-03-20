@@ -4,6 +4,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import BottomTabNavigator from './src/navigation/BottomTabNavigator';
 import Login from './src/screens/Login';
 import CreateAccount from './src/screens/CreateAccount'
+import InputPersonalInfo from './src/screens/InputPersonalInfo'
 import { createStore } from 'redux'
 import { Provider } from 'react-redux'
 import rootReducer from './src/reducers' // Importing the index (do not need specifying)
@@ -27,6 +28,7 @@ export default function App() {
                 <Stack.Navigator >
                     <Stack.Screen name="Login" options={{ headerLeft: null }} component={Login} />
                     <Stack.Screen name="CreateAccount" component={CreateAccount} />
+                    <Stack.Screen name="InputPersonalInfo" component={InputPersonalInfo}/>
                     <Stack.Screen name="Main" options={{ headerLeft: null }} component={BottomTabNavigator} />
             </Stack.Navigator>
         </NavigationContainer>
