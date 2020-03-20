@@ -18,18 +18,18 @@ export const updateBirthdayAction = (birthday) => {
         birthday:birthday,
     }
 }
-export const updateHeightAction = (met_height, imp_height) => {
+export const updateHeightAction = (m_height, i_height) => {
     return {
         type: UPDATE_HEIGHT,
-        met_height:met_height,
-        imp_height:imp_height,
+        m_height:m_height,
+        i_height:i_height,
     }
 }
-export const updateWeightAction = (met_weight, imp_height) => {
+export const updateWeightAction = (m_weight, i_height) => {
     return {
         type: UPDATE_WEIGHT,
-        met_weight:met_weight,
-        imp_height:imp_height,
+        m_weight:m_weight,
+        i_height:i_height,
     }
 }
 export const updateSexAction = (sex) => {
@@ -44,10 +44,10 @@ export const updateAllPersonalInfoAction = (personal) => {
         type: UPDATE_ALL_PERSONAL_INFO,
         name: personal.name,
         birthday: personal.birthday.seconds,
-        met_height: personal.met_height,
-        imp_height: personal.imp_height,
-        met_weight: personal.met_weight,
-        imp_weight: personal.imp_weight,
+        m_height: personal.m_height,
+        i_height: personal.i_height,
+        m_weight: personal.m_weight,
+        i_weight: personal.i_weight,
         weight: personal.weight,
         sex: personal.sex,
     }

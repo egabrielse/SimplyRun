@@ -8,11 +8,12 @@ import {UPDATE_NAME,
 //Initial state of the store 
 const initialState = {
     name:null,
+    email:null,
     birthday: null,
-    met_height: null,
-    imp_height: null,
-    met_weight:null,
-    imp_height:null,
+    m_height: null,
+    i_height: null,
+    m_weight:null,
+    i_weight:null,
     sex:"male",
 }
 
@@ -28,12 +29,12 @@ const PersonalInfoReducer = (state = initialState, action) => {
             return {...state, birthday: action.birthday}
 
         case UPDATE_HEIGHT:
-            console.log("PersonalInfoReducer (",action.type,"): updating met_height from",state.met_height,"to",action.met_height)
-            return {...state, met_height: action.met_height, imp_height: action.imp_height}
+            console.log("PersonalInfoReducer (",action.type,"): updating m_height from",state.m_height,"to",action.m_height)
+            return {...state, m_height: action.m_height, i_height: action.i_height}
             
         case UPDATE_WEIGHT:
-            console.log("PersonalInfoReducer (",action.type,"): updating met_weight from",state.met_weight,"to",action.met_weight)
-            return {...state, met_weight: action.met_weight, imp_height: action.imp_height}
+            console.log("PersonalInfoReducer (",action.type,"): updating m_weight from",state.m_weight,"to",action.m_weight)
+            return {...state, m_weight: action.m_weight, i_weight: action.i_weight}
 
         case UPDATE_SEX:
             console.log("PersonalInfoReducer (",action.type,"): updating sex from",state.sex,"to",action.sex)
@@ -43,12 +44,12 @@ const PersonalInfoReducer = (state = initialState, action) => {
             console.log("PersonalInfoReducer ( UPDATE_ALL_PERSONAL_INFO ) updating all personal info fields")
             return { ...state,
                 name: action.name,
+                email: action.email,
                 birthday: action.birthday,
-                met_height: action.met_height,
-                imp_height: action.imp_height,
-                met_weight: action.met_weight,
-                imp_height: action.imp_height,
-                weight: action.weight,
+                m_height: action.m_height,
+                i_height: action.i_height,
+                m_weight: action.m_weight,
+                i_weight: action.i_weight,
                 sex: action.sex}
 
         default:
