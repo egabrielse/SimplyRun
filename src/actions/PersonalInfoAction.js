@@ -48,7 +48,6 @@ export const updateAllPersonalInfoAction = (personal) => {
         i_height: personal.i_height,
         m_weight: personal.m_weight,
         i_weight: personal.i_weight,
-        weight: personal.weight,
         sex: personal.sex,
     }
 }
