@@ -8,6 +8,8 @@ import firebaseConfig from '../config/firebaseConfig';
 import { connect } from 'react-redux';
 import {updateAllPersonalInfoAction} from '../actions/PersonalInfoAction';
 import {updateAllSettingsAction} from '../actions/SettingsAction';
+import {convertInchesToCentimeters, convertPoundsToKilograms, convertCentimetersToInches, 
+    convertKilogramsToPounds} from '../constants/ConversionFunctions';
 
 //References to the root of the firestore database
 const firestore = firebase.firestore();
@@ -27,35 +29,37 @@ class editSettings extends Component {
             month: "",
             day: "",
             year: "",
-            display_time_switch: this.props.display_time_switch,
-            display_pace_switch: this.props.display_pace_switch,
-            display_distance_switch: this.props.display_distance_switch,
-            display_calories_switch: this.props.display_calories_switch,
+            display_time_switch: this.props.display_time,
+            display_pace_switch: this.props.display_pace,
+            display_distance_switch: this.props.display_distance,
+            display_calories_switch: this.props.display_calories,
             metric: this.props.metric,
-            update_frequency: this.props.update_frequency
+            update_frequency: this.props.update_frequency.toString()
         };
     }
 
     componentDidMount() {
-            console.log(this.props);
             var date = new Date((this.props.birthday)*1000);
             var big = "";
             var little = "";
-            // determine ftm/incm based on imperial/metric
+            var w = "";
+            // determine ftm/incm and weight based on imperial/metric
             if(this.props.metric) {
-                // deal with later
-                // big = Math.floor(testData.data().personal.height / 100).toString();
-                // little = Math.floor(testData.data().personal.height % 100).toString();
+                var h = convertInchesToCentimeters(this.props.height);
+                big = Math.floor(h / 100).toString();
+                little = Math.floor(h % 100).toString();
+                w = convertPoundsToKilograms(this.props.weight.toString());
             } else {
                 big = Math.floor(this.props.height / 12).toString();
                 little = Math.floor(this.props.height % 12).toString();
+                w = this.props.weight.toString();
             }
             this.setState({
                 ftm: big,
                 incm: little,
-                weight: this.props.weight,
+                weight: w,
                 year: date.getFullYear().toString(),
-                month: months[date.getMonth()],
+                month: months[date.getMonth()], 
                 day: date.getDate().toString()
             })
     }
@@ -99,8 +103,9 @@ class editSettings extends Component {
             name: this.state.name,
             email: this.state.email,
             sex: this.state.sex,
-            height: this.convertMeasurementsToHeight(this.state.ftm, this.state.incm),
-            weight: this.state.weight,
+            height: ((this.state.metric) ? convertCentimetersToInches(this.convertMeasurementsToHeight(this.state.ftm, this.state.incm))
+                : this.convertMeasurementsToHeight(this.state.ftm, this.state.incm)),
+            weight: ((this.state.metric) ? convertKilogramsToPounds(this.state.weight) : this.state.weight),
             birthday: (new Date(this.state.month + " " + this.state.day + ", " + this.state.year)),
         }
         let settings = {
@@ -117,12 +122,18 @@ class editSettings extends Component {
         .then(() => {
             console.log("Successfully updated settings")
 
+            // put it into format to make redux happy
+            personal.birthday = {
+                seconds: personal.birthday.getTime() / 1000
+            }
+
             // Update all personal info in store
             this.props.dispatch(updateAllPersonalInfoAction(personal))
             // Update all settings info in store 
             this.props.dispatch(updateAllSettingsAction(settings))
 
             this.props.navigation.navigate('SETTINGS');
+            console.log(this.props);
         }).catch(function(error) {
             console.log("InputPersonalInfo:", error.message)
             Alert.alert(error.message);
@@ -334,7 +345,6 @@ class editSettings extends Component {
                         <TouchableOpacity
                             style={styles.saveButton}
                             onPress={() => {
-                                console.log(this.props);
                                 this.sendToFirebase();
                                 }
                             }>

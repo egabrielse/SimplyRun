@@ -6,6 +6,7 @@ import firebaseConfig from '../config/firebaseConfig';
 import { connect } from 'react-redux';
 import {updateAllPersonalInfoAction} from '../actions/PersonalInfoAction';
 import {updateAllSettingsAction} from '../actions/SettingsAction';
+import {convertInchesToCentimeters, convertPoundsToKilograms} from '../constants/ConversionFunctions';
 
 //References to the root of the firestore database
 const firestore = firebase.firestore();
@@ -16,18 +17,13 @@ class Settings extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            height: "",
             weight: "",
-            age: "",
             stats_to_display: []
         };
     }
 
     getInfo = () => {
-        var feet = Math.floor(this.props.height/12);
-        var inches = this.props.height%12;
-
-        var stats = [];
+    var stats = [];
         if(this.props.display_time) {
             stats.push(" Time");
         }
@@ -41,9 +37,7 @@ class Settings extends Component {
             stats.push(" Calories");
         }
         this.setState({
-            height: feet + "'" + inches + '"',
             weight: this.props.weight,
-            age: Math.floor(((Math.round(new Date().getTime()/1000)) - this.props.birthday)/(3600*24*365)),
             stats_to_display: stats
         })
     }
@@ -59,14 +53,17 @@ class Settings extends Component {
                     <Text style = {styles.title}>My Profile</Text>
                     <Text style = {styles.text}> Name: {this.props.name}</Text>
                     <Text style = {styles.text}> Email: {this.props.email}</Text>
-                    <Text style = {styles.text}> Height: {this.state.height}</Text>
-                    <Text style = {styles.text}> Weight: {this.state.weight} lbs</Text>
+                    <Text style = {styles.text}> Height: {(this.props.metric ? 
+                        (Math.floor(this.props.height / 100) + "m " + Math.round(this.props.height % 100) 
+                        + "cm") : (Math.floor(this.props.height / 12) + "' ") + Math.round(this.props.height % 12) 
+                        + '"')}</Text>
+                    <Text style = {styles.text}> Weight: {this.props.weight} {(this.props.metric ? "kg" : "lbs")}</Text>
                     <Text style = {styles.text}> Sex: {this.props.sex}</Text>
-                    <Text style = {styles.text}> Age: {this.state.age}</Text>
+                    <Text style = {styles.text}> Age: {this.props.age}</Text>
                     <Text> </Text>
                     <Text style = {styles.title}>Settings</Text>
-                    <Text style = {styles.text}> Unit: {this.props.metric} </Text>
-                    <Text style = {styles.text}> Stats Displayed: {this.state.stats_to_display.toString()} </Text>
+                    <Text style = {styles.text}> Unit: {(this.props.metric ? "Metric" : "Imperial")} </Text>
+                    <Text style = {styles.text}> Stats Displayed: {this.props.stats_to_display} </Text>
                     <Text style = {styles.text}> Update Frequency: {this.props.update_frequency} </Text>
                     <TouchableOpacity
                         style={styles.button}
@@ -117,11 +114,17 @@ function mapStateToProps(state) {
     return {
         name: state.PersonalInfoReducer.name,
         email: state.PersonalInfoReducer.email,
-        birthday: state.PersonalInfoReducer.birthday,
-        height: state.PersonalInfoReducer.height,
-        weight: state.PersonalInfoReducer.weight,
+        age: Math.floor(((Math.round(new Date().getTime()/1000)) - state.PersonalInfoReducer.birthday)/(3600*24*365)),
+        height: ((state.SettingsReducer.metric) ?  (convertInchesToCentimeters(state.PersonalInfoReducer.height)) : 
+            state.PersonalInfoReducer.height),
+        weight: ((state.SettingsReducer.metric) ? (convertPoundsToKilograms(state.PersonalInfoReducer.weight)) :
+            state.PersonalInfoReducer.weight),
         sex: state.PersonalInfoReducer.sex,
 
+        stats_to_display: ("" + ((state.SettingsReducer.display_time) ? "Time, " : "")
+            + ((state.SettingsReducer.display_pace) ? "Pace, " : "")
+            + ((state.SettingsReducer.display_distance) ? "Distance, " : "")
+            + ((state.SettingsReducer.display_calories) ? "Calories, " : "")).slice(0, -2),
         display_calories: state.SettingsReducer.display_calories,
         display_distance: state.SettingsReducer.display_distance,
         display_pace: state.SettingsReducer.display_pace,
