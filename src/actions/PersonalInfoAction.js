@@ -41,6 +41,7 @@ export const updateAllPersonalInfoAction = (personal) => {
     return {
         type: UPDATE_ALL_PERSONAL_INFO,
         name: personal.name,
+        email: personal.email,
         birthday: personal.birthday.seconds,
         height: personal.height,
         weight: personal.weight,
