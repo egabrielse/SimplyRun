@@ -26,7 +26,7 @@ export default class Settings extends Component {
     }
 
     getInfo = () => {
-        var ref = firestore.collection('users').doc('JUMxTNt8lET0JYQXWHLJJrjrQ6G2');
+        var ref = firestore.collection('users').doc(firebase.auth().currentUser.uid);
         ref.get().then(testData => {
             console.log(testData.data());
             var feet = Math.floor(testData.data().personal.height/12);
@@ -49,8 +49,8 @@ export default class Settings extends Component {
                 stats.push(" Calories");
             }
             this.setState({
-                name: testData.data().name,
-                email: testData.data().email,
+                name: testData.data().personal.name,
+                email: testData.data().personal.email,
                 height: feet + "'" + inches + '"',
                 weight: testData.data().personal.weight,
                 sex: testData.data().personal.sex,
@@ -85,7 +85,7 @@ export default class Settings extends Component {
                     <TouchableOpacity
                         style={styles.button}
                         onPress={() => {
-                            this.props.navigation.navigate("EDIT", {refresh: this.getInfo});
+                            this.props.navigation.navigate("EDIT");
                             }
                         }>
                         <Text style={styles.buttonText}>Edit Profile</Text>
