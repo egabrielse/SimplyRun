@@ -36,6 +36,7 @@ const PersonalInfoReducer = (state = initialState, action) => {
             console.log("PersonalInfoReducer (",action.type,"): updating m_weight from",state.m_weight,"to",action.m_weight)
             return {...state, m_weight: action.m_weight, i_weight: action.i_weight}
 
+        
         case UPDATE_SEX:
             console.log("PersonalInfoReducer (",action.type,"): updating sex from",state.sex,"to",action.sex)
             return {...state, sex: action.sex}
