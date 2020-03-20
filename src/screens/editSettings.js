@@ -82,7 +82,6 @@ class editSettings extends Component {
     }
 
     sendToFirebase = () => {
-        console.log(this.state);
         if (this.state.name === null) {
             console.log("InputPersonalInfo: name is null")
             Alert.alert("Please provide a name.")
@@ -132,6 +131,10 @@ class editSettings extends Component {
             this.props.dispatch(updateAllPersonalInfoAction(personal))
             // Update all settings info in store 
             this.props.dispatch(updateAllSettingsAction(settings))
+
+            this.props.navigation.navigate('SETTINGS');
+
+            console.log(firebase.auth().currentUser);
         }).catch(function(error) {
             console.log("InputPersonalInfo:", error.message)
             Alert.alert(error.message);
@@ -141,6 +144,21 @@ class editSettings extends Component {
     render() {
         return (
             <ScrollView>
+                <View style={{flex:1, flexDirection:'row', alignItems:'center'}}>
+                <Text>Name:</Text>
+                    <TextInput
+                        value={this.state.name}
+                        onChangeText={(text) => this.setState({name:text})}
+                    />
+                </View>
+                <View style={{flex:1, flexDirection:'row', alignItems:'center'}}>
+                <Text>Email:</Text>
+                    <TextInput
+                        value={this.state.email}
+                        onChangeText={(text) => this.setState({email:text})}
+                    />
+                </View>
+
                 <View>
                     {/*Buttons for choosing Metric vs Imperial Measurements*/}
                     <View style={{ minHeight:25, flexDirection:'row', justifyContent:'center',alignItems:'center', paddingTop:10}}>
@@ -332,8 +350,8 @@ class editSettings extends Component {
                         <TouchableOpacity
                             style={styles.saveButton}
                             onPress={() => {
+                                console.log(this.props);
                                 this.sendToFirebase();
-                                this.props.navigation.navigate('SETTINGS');
                                 }
                             }>
                             <Text style={styles.buttonText}>Save Changes</Text>
