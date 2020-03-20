@@ -18,8 +18,20 @@ class EndRun extends Component {
     }
 
 
+    getUser = () => {
+        console.log(firebase.auth().currentUser.uid)
+       firestore.collection('users').doc('testSendRunInfo').collection("RunLog").get()
+            .then(snapshot => {
+                snapshot
+                    .docs
+                    .forEach(doc => {
+                        console.log(doc.id)
+                    });
+            });
+    }
+
     sendToFirebase = () => {
-        firestore.collection('users').doc('testSendRunInfo').set({
+        firestore.collection('users').doc(firebase.auth().currentUser.uid).collection("RunLog").add({
             distance: this.props.distance,
             runtime: this.props.time,
             pace: this.props.pace,
@@ -31,6 +43,7 @@ class EndRun extends Component {
     saveRun = () => {
         Alert.alert("Run Saved")
         this.sendToFirebase();
+        this.getUser();
         this.props.navigation.navigate('SimplyRun');
     }
 
@@ -51,7 +64,7 @@ class EndRun extends Component {
     render() {
         return (
             
-            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', bottom: 2}}  >
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', bottom: 2, backgroundColor: 'powderblue'}}  >
                 <Text style = {{fontSize: 20, paddingBottom: 240}} > {"Run Complete"} </Text>
                 <Text >{"Time: " + this.props.time} </Text>
                 <Text style = {{left: 10}}>{"Distance: " + this.props.distance} </Text>

@@ -4,12 +4,15 @@ import firebaseConfig from '../config/firebaseConfig'
 import { connect } from 'react-redux'
 import StartButton from "../runbutton/StartButton"
 import StopRunButton from "../runbutton/StopRunButton"
+import MapView from 'react-native-maps';
 //Firebase initialzation 
 firebaseConfig
 
 var display = "\n" + "Time:00:00:00"  +
     "\n" + "Distance: 0.0" + "\n" + "Pace: 0.0" + "\n" + "Calories: 0.0 "
 class SimplyRun extends Component {
+
+    
 
     state = {
         stats: display,
@@ -18,7 +21,9 @@ class SimplyRun extends Component {
         startRun: true,
         paused: false,
         button: false,
-        stopButton: false
+        stopButton: false,
+        latitude: 37.78825,
+        longitude: -122.4324,
     }
 
     formatStats = () => {
@@ -133,6 +138,26 @@ class SimplyRun extends Component {
         }
     }
 
+    componentDidMount() {
+
+        navigator.geolocation.getCurrentPosition(
+            position => {
+                const location = JSON.stringify(position);
+
+   
+                this.setState({ latitude: position.coords.latitude })
+                this.setState({ longitude: position.coords.longitude })
+
+            },
+            error => Alert.alert(error.message),
+            { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
+        );
+
+
+
+    }
+
+
     componentWillUnmount = () => {
         clearInterval(this.intervalId);
     }
@@ -140,23 +165,49 @@ class SimplyRun extends Component {
     render() {
         return (
 
-            <View style={{ alignItems: 'center', justifyContent: "center"}}>    
-                <Text style={{ fontSize: 15 }}> {this.state.current}</Text>
-                {
-                    this.state.displayStat ? < Text style={{
-                        paddingVertical: 50, fontSize: 15 }}> {this.state.stats}</Text> : null
-                }
 
-                {
-                    this.state.button ? < StartButton onPress={this.start}  pauseButton={true} />:
-                                      < StartButton onPress={this.start} pauseButton={false} />
-                }
-            
-                {
-                    !this.state.button && this.state.stopButton ?
-                        <StopRunButton style={{ fontSize: 20}} onLongPress={this.endRunButton} title={'STOP'} /> : null                  
-                }
-              </View>
+            <View style={{ flex: 1, }}>
+
+                <MapView
+                    showsUserLocation={true} region={{
+                        latitude: this.state.latitude,
+                        longitude: this.state.longitude,
+                        latitudeDelta: 0.0922,
+                        longitudeDelta: 0.0421
+
+                    }}
+                    style={{ flex: 2 }}
+                />
+                <View style={{
+                    alignItems: 'center', justifyContent: "center", flex: 1.5, backgroundColor: 'powderblue',
+                }}>
+                    <Text style={{ fontSize: 15 }}> {this.state.current}</Text>
+                    {
+                        this.state.displayStat ? < Text style={{
+                             paddingBottom:10, fontSize: 15
+                        }}> {this.state.stats}</Text> : null
+                    }
+
+                    <View style={{
+                        flexDirection: 'row', justifyContent: 'space-around', paddingBottom: 10 
+                    }}>
+                        {
+                            this.state.button ? < StartButton onPress={this.start} pauseButton={true} /> :
+                                < StartButton onPress={this.start} pauseButton={false} />
+
+                        }
+                        <Text>  </Text>
+                        {
+                            !this.state.button && this.state.stopButton ?
+                                <StopRunButton style={{ fontSize: 20 }} onLongPress={this.endRunButton} title={'STOP'} /> : null
+                        }
+
+                    </View>
+
+
+                </View>
+            </View>
+
         );
     }
 }
