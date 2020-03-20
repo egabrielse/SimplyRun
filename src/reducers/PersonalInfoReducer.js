@@ -9,8 +9,10 @@ import {UPDATE_NAME,
 const initialState = {
     name:null,
     birthday: null,
-    height: null,
-    weight:null,
+    met_height: null,
+    imp_height: null,
+    met_weight:null,
+    imp_height:null,
     sex:"male",
 }
 
@@ -26,12 +28,12 @@ const PersonalInfoReducer = (state = initialState, action) => {
             return {...state, birthday: action.birthday}
 
         case UPDATE_HEIGHT:
-            console.log("PersonalInfoReducer (",action.type,"): updating height from",state.height,"to",action.height)
-            return {...state, height: action.height}
+            console.log("PersonalInfoReducer (",action.type,"): updating met_height from",state.met_height,"to",action.met_height)
+            return {...state, met_height: action.met_height, imp_height: action.imp_height}
             
         case UPDATE_WEIGHT:
-            console.log("PersonalInfoReducer (",action.type,"): updating weight from",state.weight,"to",action.weight)
-            return {...state, weight: action.weight}
+            console.log("PersonalInfoReducer (",action.type,"): updating met_weight from",state.met_weight,"to",action.met_weight)
+            return {...state, met_weight: action.met_weight, imp_height: action.imp_height}
 
         case UPDATE_SEX:
             console.log("PersonalInfoReducer (",action.type,"): updating sex from",state.sex,"to",action.sex)
@@ -40,11 +42,14 @@ const PersonalInfoReducer = (state = initialState, action) => {
         case UPDATE_ALL_PERSONAL_INFO:
             console.log("PersonalInfoReducer ( UPDATE_ALL_PERSONAL_INFO ) updating all personal info fields")
             return { ...state,
-                name:action.name,
-                birthday:action.birthday,
-                height:action.height,
-                weight:action.weight,
-                sex:action.sex}
+                name: action.name,
+                birthday: action.birthday,
+                met_height: action.met_height,
+                imp_height: action.imp_height,
+                met_weight: action.met_weight,
+                imp_height: action.imp_height,
+                weight: action.weight,
+                sex: action.sex}
 
         default:
             console.log("PersonalInfoReducer (",action.type,"): default case (no change to state)")

@@ -8,6 +8,10 @@ import ModalDropdown from 'react-native-modal-dropdown';
 import {months, days, years} from '../constants/Date'
 import {updateAllPersonalInfoAction} from '../actions/PersonalInfoAction'
 import {updateAllSettingsAction} from '../actions/SettingsAction'
+import {convertInchesToCentimeters,
+    convertCentimetersToInches,
+    convertPoundsToKilograms,
+    convertKilogramsToPounds} from '../constants/ConversionFunctions'
 
 //References to the root of the firestore database
 const firestore = firebase.firestore();
@@ -27,16 +31,40 @@ class InputPersonalInfo extends Component {
         year:null,
     }
 
-    convertMeasurementsToHeight = (ftm, incm) => {
+    calculateHeight = (metric, ftm, incm) => {
         if (this.state.metric) {
-            console.log("InputPersonalInfo: convertMeasurementsToHeight Metric Conversion")
-            // User chose metric
-            return (+(100 * ftm) + +incm)
+            console.log("InputPersonalInfo: calculateHeight (Metric)")
+            if (metric) { // Simply return the total centimeters
+                return Number(+(100 * ftm) + +incm)
+            } else { // Return total centimeters converted into inches
+                return convertCentimetersToInches(Number(+(100 * ftm) + +incm))
+            }
 
         } else {
-            // User chose imperial
-            console.log("InputPersonalInfo: convertMeasurementsToHeight Imperial Conversion")
-            return (+(12*ftm) + +incm)
+            console.log("InputPersonalInfo: calculateHeight (Imperial)")
+            if (metric) { // Return total inches converted into centimeters
+                return convertInchesToCentimeters(Number(+(12*ftm) + +incm))
+            } else { // Simply return total inches
+                return Number(+(12*ftm) + +incm)
+            }
+        }
+    }
+
+    calculateWeight = (metric, weight) => {
+        if (this.state.metric) {
+            console.log("InputPersonalInfo: calculateWeight (Metric)")
+            if (metric) { // Simply return weight as is
+                return Number(weight)
+            } else { // Return weight converted into pounds
+                return convertKilogramsToPounds(Number(weight))
+            }
+        } else {
+            console.log("InputPersonalInfo: calculateWeight (Metric)")
+            if (metric) { // Return weight converted into kilograms
+                return convertPoundsToKilograms(Number(weight))
+            } else { // Simply return weight as is
+                return Number(weight)
+            }
         }
     }
 
@@ -67,10 +95,13 @@ class InputPersonalInfo extends Component {
 
         let user = firebase.auth().currentUser;
         let personal = {
+            email: user.email,
             name: this.state.name,
             sex: this.state.sex,
-            height: this.convertMeasurementsToHeight(this.state.ftm, this.state.incm),
-            weight: this.state.weight,
+            m_height: this.calculateHeight(true, this.state.ftm, this.state.incm),
+            i_height: this.calculateHeight(false, this.state.ftm, this.state.incm),
+            m_weight: this.calculateWeight(true, this.state.weight),
+            i_weight: this.calculateWeight(false, this.state.weight),
             birthday: (new Date(this.state.month + " " + this.state.day + ", " + this.state.year)),
         }
         let settings = {
