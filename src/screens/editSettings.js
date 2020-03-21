@@ -39,29 +39,30 @@ class editSettings extends Component {
     }
 
     componentDidMount() {
-            var date = new Date((this.props.birthday)*1000);
-            var big = "";
-            var little = "";
-            var w = "";
-            // determine ftm/incm and weight based on imperial/metric
-            if(this.props.metric) {
-                var h = convertInchesToCentimeters(this.props.height);
-                big = Math.floor(h / 100).toString();
-                little = Math.floor(h % 100).toString();
-                w = convertPoundsToKilograms(this.props.weight.toString());
-            } else {
-                big = Math.floor(this.props.height / 12).toString();
-                little = Math.floor(this.props.height % 12).toString();
-                w = this.props.weight.toString();
-            }
-            this.setState({
-                ftm: big,
-                incm: little,
-                weight: w,
-                year: date.getFullYear().toString(),
-                month: months[date.getMonth()], 
-                day: date.getDate().toString()
-            })
+        // get milliseconds for date to convert into day/month/year
+        var date = new Date((this.props.birthday)*1000);
+        var big = "";
+        var little = "";
+        var w = "";
+        // determine ftm/incm and weight based on imperial/metric
+        if(this.props.metric) {
+            var h = convertInchesToCentimeters(this.props.height);
+            big = Math.floor(h / 100).toString();
+            little = Math.floor(h % 100).toString();
+            w = convertPoundsToKilograms(this.props.weight).toString();
+        } else {
+            big = Math.floor(this.props.height / 12).toString();
+            little = Math.floor(this.props.height % 12).toString();
+            w = this.props.weight.toString();
+        }
+        this.setState({
+            ftm: big,
+            incm: little,
+            weight: w,
+            year: date.getFullYear().toString(),
+            month: months[date.getMonth()], 
+            day: date.getDate().toString()
+        })
     }
     
     convertMeasurementsToHeight = (ftm, incm) => {
@@ -76,35 +77,44 @@ class editSettings extends Component {
     }
 
     sendToFirebase = () => {
-        if (this.state.name === null) {
-            console.log("InputPersonalInfo: name is null")
+        // ensure fields aren't left blank
+        if (this.state.name === null || this.state.name === "") {
+            console.log("InputPersonalInfo: name is null or blank")
             Alert.alert("Please provide a name.")
             return
         }
-        if (this.state.ftm === null || this.state.incm === null) {
-            console.log("InputPersonalInfo: ftm and/or incm are/is null")
+        if (this.state.ftm === null || this.state.ftm === "" || this.state.incm === null || this.state.incm === "") {
+            console.log("InputPersonalInfo: ftm and/or incm are/is null or blank")
             Alert.alert("Please provide a height.")
             return
         }
-        if (this.state.ftm === null || this.state.incm === null) {
-            console.log("InputPersonalInfo: ftm and/or incm are/is null")
+        if (this.state.weight === null || this.state.weight === "") {
+            console.log("InputPersonalInfo: ftm and/or incm are/is null or blank")
             Alert.alert("Please provide a weight.")
             return
         }
-        
-        if (this.state.month === null || this.state.day === null || this.state.year === null) {
-            console.log("InputPersonalInfo: month and/or day and/or year are/is null")
+        if (this.state.month === null || this.state.day === null || this.state.year === null ||
+                this.state.month === "" || this.state.day === "" || this.state.year === "") {
+            console.log("InputPersonalInfo: month and/or day and/or year are/is null or blank")
             Alert.alert("Please provide a full birth date.")
             return
         }
+        if (this.state.update_frequency === null || this.state.update_frequency === "") {
+            console.log("SettingsInfo: update_frequncy is null or blank")
+            Alert.alert("Please provide an update frequency.")
+            return
+        }
 
+        // put into proper format for sending to firebase
         let user = firebase.auth().currentUser;
         let personal = {
             name: this.state.name,
             email: this.state.email,
             sex: this.state.sex,
+            // height is always stored in inches in firebase, converted locally if user has metric selected
             height: ((this.state.metric) ? convertCentimetersToInches(this.convertMeasurementsToHeight(this.state.ftm, this.state.incm))
                 : this.convertMeasurementsToHeight(this.state.ftm, this.state.incm)),
+            // same for weight as height, always stored in pounds in firebase and converted if needed later
             weight: ((this.state.metric) ? convertKilogramsToPounds(this.state.weight) : this.state.weight),
             birthday: (new Date(this.state.month + " " + this.state.day + ", " + this.state.year)),
         }
@@ -117,12 +127,13 @@ class editSettings extends Component {
             display_calories: this.state.display_calories_switch,
         }
 
+        // update firebase, then update redux
         firestore.collection('users').doc(user.uid)
         .update({ personal, settings})
         .then(() => {
             console.log("Successfully updated settings")
 
-            // put it into format to make redux happy
+            // put it into different to make redux happy
             personal.birthday = {
                 seconds: personal.birthday.getTime() / 1000
             }
@@ -131,9 +142,8 @@ class editSettings extends Component {
             this.props.dispatch(updateAllPersonalInfoAction(personal))
             // Update all settings info in store 
             this.props.dispatch(updateAllSettingsAction(settings))
-
+            // navigate back to default settings screen
             this.props.navigation.navigate('SETTINGS');
-            console.log(this.props);
         }).catch(function(error) {
             console.log("InputPersonalInfo:", error.message)
             Alert.alert(error.message);
@@ -143,6 +153,7 @@ class editSettings extends Component {
     render() {
         return (
             <ScrollView>
+                {/* Textinput for user's name */}
                 <View style={{flex:1, flexDirection:'row', alignItems:'center'}}>
                 <Text>Name:</Text>
                     <TextInput
@@ -223,7 +234,7 @@ class editSettings extends Component {
                         </View>
 
 
-                        {/*TextInputs for inputing user's height*/}
+                        {/*TextInputs for inputing user's height and weight*/}
                         <View style={{ minHeight:25, flexDirection:'row', justifyContent:'center',alignItems:'center', paddingTop:10}}>
                             <Text style={{flex:4, alignContent:'center', justifyContent:'center'}}>Height:</Text>
                             <Text style={{flex:2, alignContent:'center', justifyContent:'center', paddingLeft:10}}>Weight:</Text>
@@ -298,6 +309,7 @@ class editSettings extends Component {
                                 </TouchableOpacity>
                             </View>
                         </View>
+                    {/* Textinput for update frequency of audio feedback on runs */}
                     <View style={styles.row}>
                         <Text>Update Frequency:</Text> 
                         <TextInput
@@ -309,6 +321,7 @@ class editSettings extends Component {
                         />
                     </View>
                     <Text>Stats to Display on Run Screen:</Text>
+                    {/* Switches for what stats the user wants displayed on the run screen */}
                     <View style={styles.row}>
                         <Text>Time: </Text>
                         <Switch  
@@ -342,6 +355,7 @@ class editSettings extends Component {
                             }}/>
                     </View>
                     <View style={styles.row}>
+                        {/* Save changes, then navigate back to settings page (called in the send function) */}
                         <TouchableOpacity
                             style={styles.saveButton}
                             onPress={() => {
@@ -350,6 +364,7 @@ class editSettings extends Component {
                             }>
                             <Text style={styles.buttonText}>Save Changes</Text>
                         </TouchableOpacity>
+                        {/* Cancel changes and navigate back to settings */}
                         <TouchableOpacity
                             style={styles.cancelButton}
                             onPress={() => {
@@ -391,7 +406,7 @@ const styles = StyleSheet.create({
         flexDirection: "row"
       },
     saveButton: {
-        marginRight:40,
+        marginRight:20,
         marginLeft:40,
         marginTop:10,
         paddingTop:10,
@@ -403,7 +418,7 @@ const styles = StyleSheet.create({
       },
     cancelButton: {
         marginRight:40,
-        marginLeft:40,
+        marginLeft:20,
         marginTop:10,
         paddingTop:10,
         paddingBottom:10,

@@ -14,38 +14,6 @@ const firestore = firebase.firestore();
 firebaseConfig
 
 class Settings extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            weight: "",
-            stats_to_display: []
-        };
-    }
-
-    getInfo = () => {
-    var stats = [];
-        if(this.props.display_time) {
-            stats.push(" Time");
-        }
-        if(this.props.display_pace) {
-            stats.push(" Pace");
-        }
-        if(this.props.display_distance) {
-            stats.push(" Distance");
-        }
-        if(this.props.display_calories) {
-            stats.push(" Calories");
-        }
-        this.setState({
-            weight: this.props.weight,
-            stats_to_display: stats
-        })
-    }
-
-    componentDidMount() {
-        this.getInfo();
-    }
-
     render() {
         return (
             <ScrollView>
@@ -112,6 +80,7 @@ const styles = StyleSheet.create({
 
 function mapStateToProps(state) {
     return {
+        // all local states based on global props so that when editSettings changes them, they are updated here
         name: state.PersonalInfoReducer.name,
         email: state.PersonalInfoReducer.email,
         age: Math.floor(((Math.round(new Date().getTime()/1000)) - state.PersonalInfoReducer.birthday)/(3600*24*365)),
