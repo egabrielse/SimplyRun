@@ -4,12 +4,15 @@ import firebaseConfig from '../config/firebaseConfig'
 import { connect } from 'react-redux'
 import StartButton from "../runbutton/StartButton"
 import StopRunButton from "../runbutton/StopRunButton"
-import MapView from 'react-native-maps';
+import MapView, {Polyline} from 'react-native-maps';
 //Firebase initialzation 
 firebaseConfig
 
 var display = "\n" + "Time:00:00:00"  +
     "\n" + "Distance: 0.0" + "\n" + "Pace: 0.0" + "\n" + "Calories: 0.0 "
+
+const haversine = require('haversine');
+
 class SimplyRun extends Component {
 
     
@@ -24,6 +27,9 @@ class SimplyRun extends Component {
         stopButton: false,
         latitude: 37.78825,
         longitude: -122.4324,
+        coordinates: [],
+        distance: 0,
+        previousPosition: {}
     }
 
     formatStats = () => {
@@ -140,14 +146,17 @@ class SimplyRun extends Component {
 
     componentDidMount() {
 
-        navigator.geolocation.getCurrentPosition(
+        navigator.geolocation.watchPosition(
             position => {
                 const location = JSON.stringify(position);
 
    
                 this.setState({ latitude: position.coords.latitude })
                 this.setState({ longitude: position.coords.longitude })
-
+                var currentPosition = position.coords;
+                this.setState({coordinates: this.state.coordinates.concat([currentPosition])})
+                this.setState({distance: this.state.distance + this.coordDistance(currentPosition)})
+                this.setState({previousPosition: currentPosition})
             },
             error => Alert.alert(error.message),
             { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
@@ -157,12 +166,16 @@ class SimplyRun extends Component {
 
     }
 
+    coordDistance = position => {
+        return haversine(this.state.previousPosition, position) || 0;
+    }
 
     componentWillUnmount = () => {
         clearInterval(this.intervalId);
     }
 
     render() {
+        
         return (
 
 
@@ -177,7 +190,12 @@ class SimplyRun extends Component {
 
                     }}
                     style={{ flex: 2 }}
-                />
+                    followsUserLocation = {true}>
+
+                    <Polyline coordinates = {this.state.coordinates} strokeWidth = {5} />
+                    
+                </MapView>
+
                 <View style={{
                     alignItems: 'center', justifyContent: "center", flex: 1.5, backgroundColor: 'powderblue',
                 }}>
