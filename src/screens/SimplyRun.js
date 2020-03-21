@@ -41,7 +41,7 @@ class SimplyRun extends Component {
         
         this.setState({
             stats: "\n" + "Time" + ":" + formatHour + ":" + formatMin + ":" + formatSec +
-                "\n" + "Distance: 0.0" + "\n" + "Pace: 0.0" + "\n" + "Calories: 0.0 ",
+                "\n" + "Distance: " + this.state.distance.toFixed(2) + "\n" + "Pace: 0.0" + "\n" + "Calories: 0.0 ",
         })
 
     }
@@ -144,19 +144,17 @@ class SimplyRun extends Component {
         }
     }
 
-    componentDidMount() {
+    componentDidMount = () => {
 
-        navigator.geolocation.watchPosition(
+        this.watchID = navigator.geolocation.watchPosition(
             position => {
-                const location = JSON.stringify(position);
-
-   
-                this.setState({ latitude: position.coords.latitude })
-                this.setState({ longitude: position.coords.longitude })
+  
                 var currentPosition = position.coords;
-                this.setState({coordinates: this.state.coordinates.concat([currentPosition])})
-                this.setState({distance: this.state.distance + this.coordDistance(currentPosition)})
-                this.setState({previousPosition: currentPosition})
+                this.setState({ coordinates: this.state.coordinates.concat([currentPosition]) })
+                Alert.alert("Current: " + position.coords.longitude, + " ", position.coords.latitude + "/n") +
+                    Alert.alert("previous: " + this.state.previousPosition.longitude + " " + this.state.previousPosition.latitude)
+                this.setState({ distance: this.state.distance + this.coordDistance(currentPosition) })
+                this.setState({ previousPosition: currentPosition })
             },
             error => Alert.alert(error.message),
             { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
@@ -166,33 +164,32 @@ class SimplyRun extends Component {
 
     }
 
-    coordDistance = position => {
+    coordDistance = (position) => {
         return haversine(this.state.previousPosition, position) || 0;
     }
 
     componentWillUnmount = () => {
+        navigator.geolocation.clearWatch(this.watchID);
         clearInterval(this.intervalId);
     }
 
     render() {
-        
-        return (
 
+
+        return (
+            
+    
 
             <View style={{ flex: 1, }}>
 
                 <MapView
-                    showsUserLocation={true} region={{
-                        latitude: this.state.latitude,
-                        longitude: this.state.longitude,
-                        latitudeDelta: 0.0922,
-                        longitudeDelta: 0.0421
-
-                    }}
+                    showsUserLocation={true}
                     style={{ flex: 2 }}
-                    followsUserLocation = {true}>
+                    followsUserLocation={true}
+             >
 
-                    <Polyline coordinates = {this.state.coordinates} strokeWidth = {5} />
+                    <Polyline coordinates={this.state.coordinates} strokeWidth={5} />
+ 
                     
                 </MapView>
 
@@ -200,6 +197,7 @@ class SimplyRun extends Component {
                     alignItems: 'center', justifyContent: "center", flex: 1.5, backgroundColor: 'powderblue',
                 }}>
                     <Text style={{ fontSize: 15 }}> {this.state.current}</Text>
+           
                     {
                         this.state.displayStat ? < Text style={{
                              paddingBottom:10, fontSize: 15
