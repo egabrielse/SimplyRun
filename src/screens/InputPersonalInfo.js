@@ -8,6 +8,7 @@ import ModalDropdown from 'react-native-modal-dropdown';
 import {months, days, years} from '../constants/Date'
 import {updateAllPersonalInfoAction} from '../actions/PersonalInfoAction'
 import {updateAllSettingsAction} from '../actions/SettingsAction'
+import {convertCentimetersToInches, convertKilogramsToPounds} from '../constants/ConversionFunctions'
 
 //References to the root of the firestore database
 const firestore = firebase.firestore();
@@ -27,16 +28,27 @@ class InputPersonalInfo extends Component {
         year:null,
     }
 
-    convertMeasurementsToHeight = (ftm, incm) => {
+    convertHeightToInches = (ftm, incm) => {
         if (this.state.metric) {
-            console.log("InputPersonalInfo: convertMeasurementsToHeight Metric Conversion")
-            // User chose metric
-            return (+(100 * ftm) + +incm)
+            console.log("InputPersonalInfo: convertHeightToInches (Metric)")
+            let inches = convertCentimetersToInches(Number(+(100 * ftm) + +incm))
+            return inches
 
         } else {
-            // User chose imperial
-            console.log("InputPersonalInfo: convertMeasurementsToHeight Imperial Conversion")
-            return (+(12*ftm) + +incm)
+            console.log("InputPersonalInfo: convertHeightToInches (Imperial)")
+            return Number(+(12*ftm) + +incm)
+        }
+    }
+
+    convertWeightToPounds = (weight) => {
+        if (this.state.metric) {
+            console.log("InputPersonalInfo: convertWeightToPounds (Metric)")
+            let pounds = convertKilogramsToPounds(Number(weight))
+            return pounds
+
+        } else {
+            console.log("InputPersonalInfo: convertWeightToPounds (Imperial)")
+            return Number(weight)
         }
     }
 
@@ -68,9 +80,10 @@ class InputPersonalInfo extends Component {
         let user = firebase.auth().currentUser;
         let personal = {
             name: this.state.name,
+            email: user.email,
             sex: this.state.sex,
-            height: this.convertMeasurementsToHeight(this.state.ftm, this.state.incm),
-            weight: this.state.weight,
+            height: this.convertHeightToInches(this.state.ftm, this.state.incm),
+            weight: this.convertWeightToPounds(this.state.weight),
             birthday: (new Date(this.state.month + " " + this.state.day + ", " + this.state.year)),
         }
         let settings = {

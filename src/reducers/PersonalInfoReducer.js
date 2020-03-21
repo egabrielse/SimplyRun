@@ -41,6 +41,7 @@ const PersonalInfoReducer = (state = initialState, action) => {
             console.log("PersonalInfoReducer ( UPDATE_ALL_PERSONAL_INFO ) updating all personal info fields")
             return { ...state,
                 name:action.name,
+                email:action.email,
                 birthday:action.birthday,
                 height:action.height,
                 weight:action.weight,
