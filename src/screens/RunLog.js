@@ -140,7 +140,7 @@ class RunLog extends Component {
           <Text style = {styles.totals}> Average Pace: 9:22 min/mi </Text>
           <Text style = {styles.totals}> Total Calories: {this.state.total_calories} </Text>
           <Text style = {styles.text}> Here is a list of all the beautiful runs you have been on, {this.props.name}! </Text>
-          <Table borderStyle={{borderWidth: 2, borderColor: '#c8e1ff'}}>
+          <Table borderStyle={{borderWidth: 1, borderColor: '#444444'}}>
             <Row data={this.state.tableHead} style={styles.head} textStyle={styles.text}/>
             <Rows data={this.state.tableData} textStyle={styles.text}/>
           </Table>
@@ -214,12 +214,11 @@ export default connect(mapStateToProps)(RunLog);
 const styles = StyleSheet.create({
 
   container: { flex: 1, padding: 16, paddingTop: 30, backgroundColor: '#fff' },
-  head: { height: 40, backgroundColor: '#f1f8ff' },
+  head: { height: 40, backgroundColor: '#A44CA0' },
   text: { margin: 6 },
 
   title: {
     fontSize: 26,
-    fontWeight: "bold",
     textAlign: "center",
     padding: 5
 },
@@ -230,7 +229,6 @@ totals: {
 },
 date: {
   fontSize: 20,
-  fontWeight: "bold",
   textAlign: "center",
   padding: 5
 },
@@ -244,23 +242,21 @@ button: {
     marginTop:10,
     paddingTop:10,
     paddingBottom:10,
-    backgroundColor:'#A44CA0',
+    backgroundColor:'#BBBBBB',
     borderRadius:10,
     borderWidth: 1,
-    borderColor: '#fff',
-    color: "yellow"
+    borderColor: '#fff'
   },
   backbutton: {
     marginLeft: 15,
-    marginRight: 120,
+    marginRight: 300,
     marginTop:10,
     paddingTop:10,
     paddingBottom:10,
-    backgroundColor:'#A44CA0',
+    backgroundColor:'#BBBBBB',
     borderRadius:5,
     borderWidth: 1,
-    borderColor: '#fff',
-    color: "yellow"
+    borderColor: '#fff'
   },
 buttonText: {
     color:'#fff',
