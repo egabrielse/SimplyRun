@@ -92,10 +92,10 @@ class InputPersonalInfo extends Component {
         let settings = {
             metric: this.state.metric,
             update_frequency:0,
-            display_time:false,
-            display_distance:false,
-            display_pace:false,
-            display_calories:false,
+            display_time:true,
+            display_distance:true,
+            display_pace:true,
+            display_calories:true,
         }
 
         console.log("InputPersonalInfo: personal:",personal,"settings:",settings)
@@ -105,7 +105,9 @@ class InputPersonalInfo extends Component {
         .then(() => {
             console.log("InputPersonalInfo: Successfully added user's personal info to firestore")
 
-            personal.birthday = secondsSinceBirth;
+            personal.birthday = {
+                seconds: secondsSinceBirth
+            }
 
             // Update all personal info in store
             this.props.dispatch(updateAllPersonalInfoAction(personal))

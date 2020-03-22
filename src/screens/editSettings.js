@@ -63,6 +63,7 @@ class editSettings extends Component {
             month: months[date.getMonth()], 
             day: date.getDate().toString()
         })
+        console.log(this.props);
     }
     
     convertMeasurementsToHeight = (ftm, incm) => {
@@ -99,9 +100,10 @@ class editSettings extends Component {
             Alert.alert("Please provide a full birth date.")
             return
         }
-        if (this.state.update_frequency === null || this.state.update_frequency === "") {
-            console.log("SettingsInfo: update_frequncy is null or blank")
-            Alert.alert("Please provide an update frequency.")
+        if (this.state.update_frequency === null || this.state.update_frequency === "" || 
+                isNaN(this.state.update_frequency) || this.state.update_frequency < 0) {
+            console.log("SettingsInfo: update_frequncy is null, blank, or not a number.")
+            Alert.alert("Please provide a positive number for update frequency.")
             return
         }
 
@@ -174,7 +176,18 @@ class editSettings extends Component {
                             {/*Metric Button*/}
                             <View style={{flex:1}}>
                                 <TouchableOpacity 
-                                    onPress={() => this.setState({metric:true})}
+                                    onPress={() => {
+                                        if(!this.state.metric) {
+                                            var inches = +(this.state.ftm * 12) + +this.state.incm;
+                                            var cm = convertInchesToCentimeters(inches);
+                                            this.setState({
+                                                ftm: Math.floor(cm / 100).toString(),
+                                                incm: Math.round(cm % 100).toString(),
+                                                weight: convertPoundsToKilograms(this.state.weight).toString()
+                                            })
+                                        }
+                                        this.setState({metric:true});
+                                    }}
                                     disabled={(this.state.metric ? true : false)}>
                                     <View style={{
                                             backgroundColor:(this.state.metric ? 'lightgreen': 'lightgray'),
@@ -189,7 +202,18 @@ class editSettings extends Component {
                             {/*Imperial Button*/}
                             <View style={{flex:1}}>
                                 <TouchableOpacity
-                                    onPress={() => this.setState({metric:false})}
+                                    onPress={() => {
+                                        if(this.state.metric) {
+                                            var cm = +(this.state.ftm * 100) + +this.state.incm;
+                                            var inches = convertCentimetersToInches(cm);
+                                            this.setState({
+                                                ftm: Math.floor(inches / 12).toString(),
+                                                incm: Math.round(inches % 12).toString(),
+                                                weight: convertKilogramsToPounds(this.state.weight).toString()
+                                            })
+                                        }
+                                        this.setState({metric:false})
+                                    }}
                                     disabled={(this.state.metric ? false : true)}>
                                     <View style={{
                                             backgroundColor:(this.state.metric ? 'lightgray': 'lightgreen'),
