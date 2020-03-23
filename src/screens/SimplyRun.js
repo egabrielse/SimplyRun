@@ -29,7 +29,11 @@ class SimplyRun extends Component {
         longitude: -122.4324,
         coordinates: [],
         distance: 0,
-        previousPosition: {}
+        previousPosition: {},
+        ms: 0,
+        secs: 0,
+        mins: 0,
+        hrs: 0
     }
 
     formatStats = () => {
@@ -85,8 +89,8 @@ class SimplyRun extends Component {
         if (this.state.startRun) {
             this.setState({ current: "Tracking Run" })
             this.setState({ button: true, stopButton: true, startRun: false})
-       
-            this.intervalID = setInterval(() => {
+
+            setTimeout(() => this.intervalID = setInterval(() => {
                 var diff = startTime - new Date().getTime();
                 var hr = Math.floor(-diff / 3600000)
                 var mili = -diff - 3600000 * hr
@@ -98,15 +102,16 @@ class SimplyRun extends Component {
                 sec = sec.toFixed(0);
                 this.setState({ hour: parseInt(hr), min: parseInt(min), sec: parseInt(sec), mili: parseInt(mili) })
                 this.formatStats()
-            }, 1);
+            }, 1000), 1000 / 60);
+       
         } else {           
             if (this.state.paused) {
                 this.setState({ current: "Tracking Run" })
                 var pauseSec = this.state.sec;
                 var pauseMin = this.state.min;
                 var pauseHour = this.state.hour;
-               
-                this.intervalID = setInterval(() => {
+
+                setTimeout(() => this.intervalID = setInterval(() => {
                     this.setState({ button: true })
                     var diff = startTime - new Date().getTime();
                     var hr = Math.floor(-diff / 3600000)
@@ -133,7 +138,9 @@ class SimplyRun extends Component {
                     }
                     this.setState({ hour: newHour, min: newMin, sec: newSec, mili: parseInt(mili) }); 
                     this.formatStats()
-                }, 1);
+                }, 1000), 1000 / 60);
+               
+                
             } else {
                 this.setState({ current: "Run Paused" })
                 this.setState({ button: false })
@@ -142,6 +149,90 @@ class SimplyRun extends Component {
                 clearInterval(this.intervalID);
             }
         }
+    }
+
+    start2 = () => {
+        
+        if (!this.state.startRun & this.state.paused) {
+            this.setState({paused: false})
+        }
+
+        if (this.state.startRun) {
+            this.setState({ current: "Tracking Run" })
+            this.setState({ button: true, stopButton: true, startRun: false})
+
+            setTimeout(() => this.intervalID = setInterval(() => {
+                this.setState({secs: this.state.secs + 1});
+                if(this.state.ms == 100) {
+                    this.setState({secs: this.state.secs + 1})
+                    this.setState({ms: 0})
+                }
+        
+                if(this.state.secs == 60) {
+                    this.setState({mins: this.state.mins + 1})
+                    this.setState({secs: 0})
+                }
+        
+                if(this.state.mins == 60) {
+                    this.setState({hrs: this.state.hrs + 1})
+                    this.setState({mins: 0})
+                }
+                this.formatStats2();
+            }, 1000), 1000 / 60);
+            
+            
+            
+            
+        } else {
+            if (this.state.paused) {
+                this.setState({ current: "Tracking Run" })
+                this.setState({ button: true })
+
+                setTimeout(() => this.intervalID = setInterval(() => {
+                    this.setState({ms: this.state.ms + 1});
+    
+                    if(this.state.ms == 100) {
+                        this.setState({secs: this.state.secs + 1})
+                        this.setState({ms: 0})
+                    }
+            
+                    if(this.state.secs == 60) {
+                        this.setState({mins: this.state.mins + 1})
+                        this.setState({secs: 0})
+                    }
+            
+                    if(this.state.mins == 60) {
+                        this.setState({hrs: this.state.hrs + 1})
+                        this.setState({mins: 0})
+                    }
+                    this.formatStats2();
+                }, 1000), 1000 / 60);
+
+                
+            } else {
+                this.setState({ current: "Run Paused" })
+                this.setState({ button: false })
+                this.setState({ stopButton: true })
+                this.setState({ paused: true })
+                clearInterval(this.intervalID);
+            }
+        }
+        console.log(this.state.ms)
+
+    }
+
+    formatStats2 = () => {
+        var formatSec = "" + this.state.secs; formatSec = formatSec.padStart(2, '0');
+
+        var formatMin = "" + this.state.mins; formatMin = formatMin.padStart(2, '0')
+
+        var formatHour = "" + this.state.hrs; formatHour = formatHour.padStart(2, '0')
+        
+        this.setState({
+            stats: "\n" + "Time" + ":" + formatHour + ":" + formatMin + ":" + formatSec +
+                "\n" + "Distance: " + this.state.distance.toFixed(2) + "\n" + "Pace: 0.0" + "\n" + "Calories: 0.0 ",
+        })
+
     }
 
     componentDidMount = () => {
