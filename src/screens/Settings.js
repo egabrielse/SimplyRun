@@ -41,6 +41,7 @@ class Settings extends Component {
                         }>
                         <Text style={styles.buttonText}>Edit Profile</Text>
                     </TouchableOpacity>
+                    {/* Logout button. Redirects to login screen. */}
                     <TouchableOpacity
                         style={styles.logoutButton}
                         onPress={() => {
@@ -55,7 +56,7 @@ class Settings extends Component {
                         <Text style={styles.buttonText}>Logout</Text>
                     </TouchableOpacity>
                     {/* Allows user to delete their account. First asks for confirmation, then either cancels the
-                    request or deletes the account and navigates back to the application's home screen. */}
+                    request or deletes the account and navigates back to the login screen. */}
                     <TouchableOpacity
                       style={styles.deleteButton}
                       onPress={() => {
@@ -67,6 +68,7 @@ class Settings extends Component {
                                     text: "Yes", onPress: () => {
                                         var user = firebase.auth().currentUser;
                                         var uid = user.uid;
+                                        // deletes firestore entry, then deletes firebase auth object
                                         firestore.collection('users').doc(uid).delete().then(() => {
                                             console.log("Account " + this.props.name + " removed from firestore");
                                             user.delete().then(() => {
