@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
 import { Text, View, TextInput, TouchableOpacity, Alert, KeyboardAvoidingView } from 'react-native';
 import firebaseConfig from '../config/firebaseConfig' 
-import firebase from 'firebase';
+import * as firebase from 'firebase';
+import '@firebase/firestore';
 import { connect } from 'react-redux'
+
 //Initialize firebase
 firebaseConfig
-const firestore = firebase.firestore();
+const Firestore = firebase.firestore();
 
 class EndRun extends Component {
-
     state = {
         notes: ""
     }
@@ -16,35 +17,29 @@ class EndRun extends Component {
     writeNote = (note) => {
         this.setState({notes: note})
     }
-
-
-    getUser = () => {
-        console.log(firebase.auth().currentUser.uid)
-       firestore.collection('users').doc('testSendRunInfo').collection("RunLog").get()
-            .then(snapshot => {
-                snapshot
-                    .docs
-                    .forEach(doc => {
-                        console.log(doc.id)
-                    });
-            });
-    }
-
     sendToFirebase = () => {
-        firestore.collection('users').doc(firebase.auth().currentUser.uid).collection("RunLog").add({
+        Firestore.collection('users').doc(firebase.auth().currentUser.uid).collection("RunLog").add({
+            calories: this.props.calories,
             distance: this.props.distance,
-            runtime: this.props.time,
-            pace: this.props.pace,
-            calories: this.props.calories
+            end_time: this.props.endTime,
+            note: this.state.notes,
+            route: this.props.route,
+            start_time: this.props.startTime,
+            time: this.props.time,
+            pace: this.props.pace
         })
     }
-
 
     saveRun = () => {
         Alert.alert("Run Saved")
         this.sendToFirebase();
-        this.getUser();
+        this.props.clearRun();
         this.props.navigation.navigate('SimplyRun');
+    }
+
+    dontSave = () => {
+        this.props.clearRun();
+        this.props.navigation.navigate('SimplyRun')
     }
 
     discardRun = () => {
@@ -52,7 +47,7 @@ class EndRun extends Component {
             'Confirm Discard Run',
             'Would you like to end your run?',
             [
-                { text: 'Yes', onPress: () => { this.props.navigation.navigate('SimplyRun'); } },
+                { text: 'Yes', onPress: () => { this.dontSave() } },
                 {
                     text: 'No',
                     style: 'cancel',
@@ -134,16 +129,18 @@ function mapStateToProps(state) {
         time: state.endRunReducer.time,
         distance: state.endRunReducer.distance,
         pace: state.endRunReducer.pace,
-        calories: state.endRunReducer.calories
+        calories: state.endRunReducer.calories,
+        startTime: state.endRunReducer.startTime,
+        endTime: state.endRunReducer.endTime,
+        route: state.endRunReducer.route
 
     }
 }
 //Sends actions to the reducer in the App.js file 
 function mapDispatchtoProps(dispatch) {
     return {
-        sendTime: (time) => dispatch({ type: "ENDRUN", time}),
- 
-
+        sendTime: (time) => dispatch({ type: "ENDRUN", time }),
+        clearRun: () => dispatch({ type: "CLEARRUN" })
     }
 }
 

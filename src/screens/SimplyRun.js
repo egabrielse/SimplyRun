@@ -4,7 +4,9 @@ import firebaseConfig from '../config/firebaseConfig'
 import { connect } from 'react-redux'
 import StartButton from "../runbutton/StartButton"
 import StopRunButton from "../runbutton/StopRunButton"
-import MapView, {Polyline} from 'react-native-maps';
+import MapView, { Polyline } from 'react-native-maps';
+import * as firebase from 'firebase';
+import '@firebase/firestore';
 //Firebase initialzation 
 firebaseConfig
 
@@ -15,7 +17,6 @@ const haversine = require('haversine');
 
 class SimplyRun extends Component {
 
-    
 
     state = {
         stats: display,
@@ -25,15 +26,15 @@ class SimplyRun extends Component {
         paused: false,
         button: false,
         stopButton: false,
-        latitude: 37.78825,
-        longitude: -122.4324,
         coordinates: [],
         distance: 0,
         previousPosition: {},
         ms: 0,
         secs: 0,
         mins: 0,
-        hrs: 0
+        hrs: 0,
+        startTime: "",
+        route: ""
     }
 
     formatStats = () => {
@@ -42,7 +43,7 @@ class SimplyRun extends Component {
         var formatMin = "" + this.state.min; formatMin = formatMin.padStart(2, '0')
 
         var formatHour = "" + this.state.hour; formatHour = formatHour.padStart(2, '0')
-        
+
         this.setState({
             stats: "\n" + "Time" + ":" + formatHour + ":" + formatMin + ":" + formatSec +
                 "\n" + "Distance: " + this.state.distance.toFixed(2) + "\n" + "Pace: 0.0" + "\n" + "Calories: 0.0 ",
@@ -56,11 +57,12 @@ class SimplyRun extends Component {
         this.props.navigation.navigate('EndRun');
         var totalTimeSecs = (this.state.hour * 60 * 60) + (this.state.min * 60) + this.state.sec + (this.state.mili / 1000);
         //Using Redux to pass info to the EndRun Screen
-        time = this.props.sendRunStats(totalTimeSecs, "Test Ditance", "Test Pace", "Test Calories")
-        this.setState({ hour: 0, min: 0, sec: 0, mili: 0 })
+        time = this.props.sendRunStats(totalTimeSecs, this.state.distance,
+            "Test Pace", "Test Calories", this.state.startTime, new Date(), this.state.route)
+        this.setState({ hour: 0, min: 0, sec: 0, mili: 0, distance: 0 })
         this.formatStats()
         this.setState({ endRun: false })
-    } 
+    }
 
     endRunButton = () => {
         Alert.alert(
@@ -70,8 +72,7 @@ class SimplyRun extends Component {
                 { text: 'Yes', onPress: () => { this.endRun() } },
                 {
                     text: 'No',
-                    style: 'cancel',
-                }
+                    style: 'cancel'}
             ],
             { cancelable: false },
         );
@@ -80,15 +81,19 @@ class SimplyRun extends Component {
 
     start = () => {
         //Get Inital start of run time 
-        var startTime = new Date().getTime()
        
+        var startTime = new Date().getTime()
+      
+
         if (!this.state.startRun & this.state.paused) {
-            this.setState({paused: false})
+            this.setState({ paused: false })
         }
         //Run has not started yet
         if (this.state.startRun) {
+            this.setState({ startTime: new Date()  })
+            this.startTracking()
             this.setState({ current: "Tracking Run" })
-            this.setState({ button: true, stopButton: true, startRun: false})
+            this.setState({ button: true, stopButton: true, startRun: false })
 
             setTimeout(() => this.intervalID = setInterval(() => {
                 var diff = startTime - new Date().getTime();
@@ -102,11 +107,18 @@ class SimplyRun extends Component {
                 sec = sec.toFixed(0);
                 this.setState({ hour: parseInt(hr), min: parseInt(min), sec: parseInt(sec), mili: parseInt(mili) })
                 this.formatStats()
-            }, 1000), 1000 / 60);
-       
-        } else {           
+            }, 1), 500 / 60);
+
+        } else {
             if (this.state.paused) {
                 this.setState({ current: "Tracking Run" })
+                navigator.geolocation.getCurrentPosition(
+                    position => {
+                        var currentPosition = position.coords;
+                        this.setState({ previousPosition: currentPosition })
+                    }
+                )
+                this.startTracking()
                 var pauseSec = this.state.sec;
                 var pauseMin = this.state.min;
                 var pauseHour = this.state.hour;
@@ -136,123 +148,43 @@ class SimplyRun extends Component {
                         newMin = newMin - 60;
                         newHour = newHour + 1;
                     }
-                    this.setState({ hour: newHour, min: newMin, sec: newSec, mili: parseInt(mili) }); 
+                    this.setState({ hour: newHour, min: newMin, sec: newSec, mili: parseInt(mili) });
                     this.formatStats()
-                }, 1000), 1000 / 60);
-               
-                
+                }, 500), 1000 / 60);
+
+
             } else {
                 this.setState({ current: "Run Paused" })
                 this.setState({ button: false })
                 this.setState({ stopButton: true })
                 this.setState({ paused: true })
+         
                 clearInterval(this.intervalID);
+                clearInterval(this.intervalTrackingID)
             }
         }
     }
 
-    start2 = () => {
-        
-        if (!this.state.startRun & this.state.paused) {
-            this.setState({paused: false})
-        }
 
-        if (this.state.startRun) {
-            this.setState({ current: "Tracking Run" })
-            this.setState({ button: true, stopButton: true, startRun: false})
 
-            setTimeout(() => this.intervalID = setInterval(() => {
-                this.setState({secs: this.state.secs + 1});
-                if(this.state.ms == 100) {
-                    this.setState({secs: this.state.secs + 1})
-                    this.setState({ms: 0})
+   
+    startTracking = () => {
+        setTimeout(() => this.intervalTrackingID = setInterval(() => {
+            navigator.geolocation.getCurrentPosition(
+                position => {
+                    var currentPosition = position.coords;
+          
+                    this.setState({ coordinates: this.state.coordinates.concat([currentPosition]) })
+                    this.setState({ distance: this.state.distance + this.coordDistance(currentPosition) })
+                    this.setState({ previousPosition: currentPosition })
+                    geopoint = new firebase.firestore.GeoPoint(currentPosition.latitude, currentPosition.longitude)
+                    this.setState(prevState => ({
+                        route: [...prevState.route, geopoint]
+                    }))                
                 }
-        
-                if(this.state.secs == 60) {
-                    this.setState({mins: this.state.mins + 1})
-                    this.setState({secs: 0})
-                }
-        
-                if(this.state.mins == 60) {
-                    this.setState({hrs: this.state.hrs + 1})
-                    this.setState({mins: 0})
-                }
-                this.formatStats2();
-            }, 1000), 1000 / 60);
-            
-            
-            
-            
-        } else {
-            if (this.state.paused) {
-                this.setState({ current: "Tracking Run" })
-                this.setState({ button: true })
 
-                setTimeout(() => this.intervalID = setInterval(() => {
-                    this.setState({ms: this.state.ms + 1});
-    
-                    if(this.state.ms == 100) {
-                        this.setState({secs: this.state.secs + 1})
-                        this.setState({ms: 0})
-                    }
-            
-                    if(this.state.secs == 60) {
-                        this.setState({mins: this.state.mins + 1})
-                        this.setState({secs: 0})
-                    }
-            
-                    if(this.state.mins == 60) {
-                        this.setState({hrs: this.state.hrs + 1})
-                        this.setState({mins: 0})
-                    }
-                    this.formatStats2();
-                }, 1000), 1000 / 60);
-
-                
-            } else {
-                this.setState({ current: "Run Paused" })
-                this.setState({ button: false })
-                this.setState({ stopButton: true })
-                this.setState({ paused: true })
-                clearInterval(this.intervalID);
-            }
-        }
-        console.log(this.state.ms)
-
-    }
-
-    formatStats2 = () => {
-        var formatSec = "" + this.state.secs; formatSec = formatSec.padStart(2, '0');
-
-        var formatMin = "" + this.state.mins; formatMin = formatMin.padStart(2, '0')
-
-        var formatHour = "" + this.state.hrs; formatHour = formatHour.padStart(2, '0')
-        
-        this.setState({
-            stats: "\n" + "Time" + ":" + formatHour + ":" + formatMin + ":" + formatSec +
-                "\n" + "Distance: " + this.state.distance.toFixed(2) + "\n" + "Pace: 0.0" + "\n" + "Calories: 0.0 ",
-        })
-
-    }
-
-    componentDidMount = () => {
-
-        this.watchID = navigator.geolocation.watchPosition(
-            position => {
-  
-                var currentPosition = position.coords;
-                this.setState({ coordinates: this.state.coordinates.concat([currentPosition]) })
-                Alert.alert("Current: " + position.coords.longitude, + " ", position.coords.latitude + "/n") +
-                    Alert.alert("previous: " + this.state.previousPosition.longitude + " " + this.state.previousPosition.latitude)
-                this.setState({ distance: this.state.distance + this.coordDistance(currentPosition) })
-                this.setState({ previousPosition: currentPosition })
-            },
-            error => Alert.alert(error.message),
-            { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
-        );
-
-
-
+            )
+        }, 10000), 1000);
     }
 
     coordDistance = (position) => {
@@ -260,17 +192,12 @@ class SimplyRun extends Component {
     }
 
     componentWillUnmount = () => {
-        navigator.geolocation.clearWatch(this.watchID);
-        clearInterval(this.intervalId);
+
+        clearInterval(this.intervalId, this.intervalTrackingID);
     }
 
     render() {
-
-
         return (
-            
-    
-
             <View style={{ flex: 1, }}>
 
                 <MapView
@@ -310,8 +237,6 @@ class SimplyRun extends Component {
                         }
 
                     </View>
-
-
                 </View>
             </View>
 
@@ -324,13 +249,20 @@ function mapStateToProps(state) {
         time: state.endRunReducer.time,
         distance: state.endRunReducer.distance,
         pace: state.endRunReducer.pace,
-        calories: state.endRunReducer.calories
+        calories: state.endRunReducer.calories,
+        startTime: state.endRunReducer.startTime,
+        endTime: state.endRunReducer.endTime,
+        route: state.endRunReducer.route
     }
 }
 //Sends actions to the reducer in the App.js file 
 function mapDispatchtoProps(dispatch) {
     return {
-        sendRunStats: (time, distance,pace,calories) => dispatch({ type: "ENDRUN", time, distance, pace, calories}),
+        sendRunStats: (time, distance, pace, calories,startTime,endTime, route) => dispatch({
+            type: "ENDRUN", time, distance,
+            pace, calories, startTime, endTime,
+            route
+        }),
        
     }
 }
