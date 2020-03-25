@@ -4,7 +4,7 @@ import {UPDATE_DISP_CAL,
     UPDATE_DISP_TIME,
     UPDATE_METRIC,
     UPDATE_UPDATE_FREQ,
-    UPDATE_ALL_SETTINGS,} from '../actions/PersonalInfoAction'
+    UPDATE_ALL_SETTINGS,} from '../actions/SettingsAction'
 
 //Initial state of the store 
 const initialState = {
