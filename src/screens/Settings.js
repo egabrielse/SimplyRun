@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, TouchableOpacity, StyleSheet } from 'react-native';
+import { Text, View, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import firebase from 'firebase';
 import firebaseConfig from '../config/firebaseConfig';
@@ -34,12 +34,59 @@ class Settings extends Component {
                     <Text style = {styles.text}> Stats Displayed: {this.props.stats_to_display} </Text>
                     <Text style = {styles.text}> Update Frequency: {this.props.update_frequency} </Text>
                     <TouchableOpacity
-                        style={styles.button}
+                        style={styles.editButton}
                         onPress={() => {
                             this.props.navigation.navigate("EDIT");
                             }
                         }>
                         <Text style={styles.buttonText}>Edit Profile</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={styles.logoutButton}
+                        onPress={() => {
+                            firebase.auth().signOut().then(() => {
+                                console.log("Logout successful");
+                                this.props.navigation.navigate("Login");
+                            }).catch(() => {
+                                console.log("ERROR: problem logging user out");
+                            })
+                            }
+                        }>
+                        <Text style={styles.buttonText}>Logout</Text>
+                    </TouchableOpacity>
+                    {/* Allows user to delete their account. First asks for confirmation, then either cancels the
+                    request or deletes the account and navigates back to the application's home screen. */}
+                    <TouchableOpacity
+                      style={styles.deleteButton}
+                      onPress={() => {
+                        Alert.alert(
+                            'Warning',
+                            'Are you sure you want to delete your account? This cannot be undone.',
+                            [
+                                {
+                                    text: "Yes", onPress: () => {
+                                        var user = firebase.auth().currentUser;
+                                        var uid = user.uid;
+                                        firestore.collection('users').doc(uid).delete().then(() => {
+                                            console.log("Account " + this.props.name + " removed from firestore");
+                                            user.delete().then(() => {
+                                                console.log("Account " + this.props.name + " from firebase auth.");
+                                            }).catch(() => {
+                                                console.log("ERROR: problem deleting user from firebase auth");
+                                            })
+                                            this.props.navigation.navigate('Login');
+                                        }).catch(() => {
+                                            console.log("ERROR: problem deleting user from firestore.");
+                                        })
+                                    }
+                                },
+                                {text: 'No', style: 'cancel'}
+                            ],
+                            { cancelable: false }
+                          );
+                        }
+                      }>
+                      <Text style={styles.buttonText}>Delete Account</Text>
                     </TouchableOpacity>
                 </View>
             </ScrollView>
@@ -58,7 +105,7 @@ const styles = StyleSheet.create({
         textAlign: "center",
         padding: 2
     },
-    button: {
+    editButton: {
         marginLeft: 120,
         marginRight: 120,
         marginTop:10,
@@ -67,8 +114,7 @@ const styles = StyleSheet.create({
         backgroundColor:'#A44CA0',
         borderRadius:10,
         borderWidth: 1,
-        borderColor: '#fff',
-        color: "yellow"
+        borderColor: '#fff'
       },
     buttonText: {
         color:'#fff',
@@ -76,6 +122,28 @@ const styles = StyleSheet.create({
         paddingLeft : 25,
         paddingRight : 25
       },
+    deleteButton: {
+        marginLeft: 120,
+        marginRight: 120,
+        marginTop:10,
+        paddingTop:10,
+        paddingBottom:10,
+        backgroundColor:'#F05353',
+        borderRadius:10,
+        borderWidth: 1,
+        borderColor: '#fff'
+      },
+    logoutButton: {
+        marginLeft: 120,
+        marginRight: 120,
+        marginTop:10,
+        paddingTop:10,
+        paddingBottom:10,
+        backgroundColor:'#4dff4d',
+        borderRadius:10,
+        borderWidth: 1,
+        borderColor: '#fff'
+      }
 });
 
 function mapStateToProps(state) {
