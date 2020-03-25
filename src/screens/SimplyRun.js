@@ -107,7 +107,7 @@ class SimplyRun extends Component {
                 sec = sec.toFixed(0);
                 this.setState({ hour: parseInt(hr), min: parseInt(min), sec: parseInt(sec), mili: parseInt(mili) })
                 this.formatStats()
-            }, 1), 500 / 60);
+            }, 500), 1000 / 60);
 
         } else {
             if (this.state.paused) {
