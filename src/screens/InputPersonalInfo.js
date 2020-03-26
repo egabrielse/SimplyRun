@@ -77,6 +77,9 @@ class InputPersonalInfo extends Component {
             return
         }
 
+        let birthDate = (new Date(this.state.month + " " + this.state.day + ", " + this.state.year));
+        let secondsSinceBirth = (birthDate.getTime() / 1000);
+
         let user = firebase.auth().currentUser;
         let personal = {
             name: this.state.name,
@@ -84,15 +87,15 @@ class InputPersonalInfo extends Component {
             sex: this.state.sex,
             height: this.convertHeightToInches(this.state.ftm, this.state.incm),
             weight: this.convertWeightToPounds(this.state.weight),
-            birthday: (new Date(this.state.month + " " + this.state.day + ", " + this.state.year)),
+            birthday: birthDate,
         }
         let settings = {
             metric: this.state.metric,
             update_frequency:0,
-            display_time:false,
-            display_distance:false,
-            display_pace:false,
-            display_calories:false,
+            display_time:true,
+            display_distance:true,
+            display_pace:true,
+            display_calories:true,
         }
 
         console.log("InputPersonalInfo: personal:",personal,"settings:",settings)
@@ -101,6 +104,10 @@ class InputPersonalInfo extends Component {
         .set({ personal, settings})
         .then(() => {
             console.log("InputPersonalInfo: Successfully added user's personal info to firestore")
+
+            personal.birthday = {
+                seconds: secondsSinceBirth
+            }
 
             // Update all personal info in store
             this.props.dispatch(updateAllPersonalInfoAction(personal))
