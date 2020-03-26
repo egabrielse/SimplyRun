@@ -9,6 +9,12 @@ import MapView, {Polyline} from 'react-native-maps';
 
 class RunLog extends Component {
 
+  constructor(props) {
+    super(props);
+    this.formatTime = this.formatTime.bind(this);
+    this.formatPace = this.formatPace.bind(this);
+  }
+
 	state = {
         tableHead: ['Date', 'Distance', 'Time', 'Pace'],
         tableData: [],
@@ -49,6 +55,29 @@ class RunLog extends Component {
     
     // }
 
+  
+    //takes seconds and converts to HH:MM:SS format
+  formatTime(time) {
+    var hours = Math.trunc(time / 3600);
+    time %= 3600;
+    var minutes = Math.trunc(time / 60);
+    var seconds = (time % 60).toFixed(2);
+    if (hours   < 10) hours   = "0" + hours;
+    if (minutes < 10) minutes = "0" + minutes;
+    if (seconds < 10) seconds = "0" + seconds;
+
+    return hours + ":" + minutes + ":" + seconds;
+  }  
+
+  //takes seconds and converts to MM:SS format
+  formatPace(time) {
+    var seconds = Math.trunc(time % 60);
+    var minutes = Math.trunc(time / 60);
+    if (seconds < 10) seconds = "0" + seconds;
+
+    return minutes + ":" + seconds;
+  }  
+
 	async componentDidMount() {
     
       //get all runs in runlog and populate table
@@ -58,20 +87,25 @@ class RunLog extends Component {
       var average_pace = 0;
       var total_calories = 0;
       await firebaseConfig.firestore().collection("users").doc(firebaseConfig.auth().currentUser.uid)
-                                      .collection("RunLog").get().then(function(querySnapshot) {
-        querySnapshot.forEach(function(doc) {
+                                      .collection("RunLog").get().then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
             const rowData = [];
             total_time += doc.get("time");
             total_distance += doc.get("distance");
-            
             total_calories += doc.get("calories");
             rowData.push(doc.get("start_time").toDate().toString().substring(0,16));  //fix this formatting
-            rowData.push(doc.get("distance"));
-            rowData.push(doc.get("time"));
-            rowData.push(doc.get("time"));
+            rowData.push(doc.get("distance") + " mi");
+
+            //format and add time
+            rowData.push(this.formatTime(doc.get("time")));
+            rowData.push(this.formatPace(doc.get("pace")) + " min/mi");
             tableData.push(rowData);
         });
+
+        average_pace = this.formatPace(total_time / total_distance);
+        total_time = this.formatTime(total_time);
       });
+
 
     this.setState({
       tableData : tableData,
@@ -91,10 +125,6 @@ class RunLog extends Component {
   //  alert("Id is" + id);
   }
 
-  //TODO
-  calculatePace() {
-
-  }
 
   async RunDetails() {
     var id = "Cve802M0hLrEKHGfYG14";
@@ -104,11 +134,11 @@ class RunLog extends Component {
           var date = null;
           var route = [];
           await firebaseConfig.firestore().collection("users").doc(firebaseConfig.auth().currentUser.uid)
-                                          .collection("RunLog").doc(id).get().then(function(doc) {
+                                          .collection("RunLog").doc(id).get().then((doc) => {
                 const rowData = [];
-                modalData.push("Time: " + doc.get("time") + "\n");  //fix this formatting
-                modalData.push("Distance: " + doc.get("distance") + "\n");
-                modalData.push("Pace: 7:22 min/mi" + "\n");
+                modalData.push("Time: " + this.formatTime(doc.get("time")) + "\n");  //fix this formatting
+                modalData.push("Distance: " + doc.get("distance")  + " miles\n");
+                modalData.push("Pace: " + doc.get("pace") + " mi/min\n");
                 modalData.push("Calories: " + doc.get("calories") + "\n");
                 modalData.push("Notes: " + doc.get("note") + "\n");
                 date = doc.get("start_time").toDate().toString()
@@ -136,10 +166,9 @@ class RunLog extends Component {
         <View>
           <Text style = {styles.title}> Run Log </Text>
           <Text style = {styles.totals}> Total Time: {this.state.total_time} </Text>
-          <Text style = {styles.totals}> Total Distance: {this.state.total_distance} </Text>
-          <Text style = {styles.totals}> Average Pace: 9:22 min/mi </Text>
+          <Text style = {styles.totals}> Total Distance: {this.state.total_distance} miles </Text>
+          <Text style = {styles.totals}> Average Pace: {this.state.average_pace} min/mi </Text>
           <Text style = {styles.totals}> Total Calories: {this.state.total_calories} </Text>
-          <Text style = {styles.text}> Here is a list of all the beautiful runs you have been on, {this.props.name}! </Text>
           <Table borderStyle={{borderWidth: 1, borderColor: '#444444'}}>
             <Row data={this.state.tableHead} style={styles.head} textStyle={styles.text}/>
             <Rows data={this.state.tableData} textStyle={styles.text}/>
