@@ -99,6 +99,7 @@ class RunLog extends Component {
             //format and add time
             rowData.push(this.formatTime(doc.get("time")));
             rowData.push(this.formatPace(doc.get("pace")) + " min/mi");
+            rowData.push(doc.id);
             tableData.push(rowData);
         });
 
@@ -119,15 +120,13 @@ class RunLog extends Component {
 
   }
 
-  setModalVisible(visible) {
+  async setModalVisible(visible, id) {
+    await this.RunDetails(id);
     this.setState({modalVisible: visible});
-    this.RunDetails();
-  //  alert("Id is" + id);
   }
 
 
-  async RunDetails() {
-    var id = "Cve802M0hLrEKHGfYG14";
+  async RunDetails(id) {
 
           //get info for specific run
           const modalData = [];
@@ -169,28 +168,32 @@ class RunLog extends Component {
           <Text style = {styles.totals}> Total Distance: {this.state.total_distance} miles </Text>
           <Text style = {styles.totals}> Average Pace: {this.state.average_pace} min/mi </Text>
           <Text style = {styles.totals}> Total Calories: {this.state.total_calories} </Text>
-          <Table borderStyle={{borderWidth: 1, borderColor: '#444444'}}>
-            <Row data={this.state.tableHead} style={styles.head} textStyle={styles.text}/>
-            <Rows data={this.state.tableData} textStyle={styles.text}/>
+          <Table borderStyle={{borderWidth: 0}}>
+            <Row data={this.state.tableHead} style={styles.head} textStyle={styles.tableTitles}/>
+            {this.state.tableData.map((rowData, index) => (
+                <TouchableHighlight underlayColor='#AAAAAA' style={[index%2 && {backgroundColor: '#DDDDDD'}]} onPress={() => this.setModalVisible(!this.state.modalVisible, rowData[rowData.length - 1])}>
+                    <Row
+                      key={index}
+                      data={rowData.slice(0, rowData.length - 1)} 
+                      textStyle={styles.text}
+                    />
+                </TouchableHighlight>    
+                  ))}
           </Table>
-          <TouchableHighlight style={styles.button} onPress={() => this.setModalVisible(!this.state.modalVisible)}>
-                <View >
-                  <Text style={styles.buttonText}>popup</Text>
-                </View>
-          </TouchableHighlight>
 
         <Modal
           animationType="slide"
           transparent={false}
-          visible={this.state.modalVisible}
-          onRequestClose={() => {
-            Alert.alert('Modal has been closed.');
-          }}>
+          visible={this.state.modalVisible}>
           <View style={{marginTop: 22}}>
             <View>
-            <TouchableHighlight style={styles.backbutton}
+            <TouchableHighlight
+              underlayColor='#AAAAAA'
+             style={styles.backbutton}
                 onPress={() => {
-                  this.setModalVisible(!this.state.modalVisible);
+                  this.setState({
+                    modalVisible: !this.state.modalVisible
+                  });
                 }}>
                 <Text style={styles.buttonText}>Back</Text>
               </TouchableHighlight>
@@ -260,6 +263,11 @@ date: {
   fontSize: 20,
   textAlign: "center",
   padding: 5
+},
+tableTitles: {
+  textAlign: "center",
+  padding: 2,
+  fontSize: 18
 },
 text: {
     textAlign: "center",
