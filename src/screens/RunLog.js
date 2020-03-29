@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { Modal, Text, TouchableOpacity, View, TextInput,StyleSheet, TouchableHighlight} from 'react-native';
+import { Modal, Text, TouchableOpacity, View, TextInput, Button, StyleSheet, TouchableHighlight, Alert } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-import { Table, Row, Rows, Col, Cols, Cell } from 'react-native-table-component';
+import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from 'react-native-table-component';
 import { connect } from 'react-redux';
 import firebaseConfig from '../config/firebaseConfig'
 import firebase from 'firebase';
