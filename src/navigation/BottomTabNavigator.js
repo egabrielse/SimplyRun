@@ -3,6 +3,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import TabBarIcon from '../components/TabBarIcon';
 import SimplyRun from '../screens/SimplyRun'
 import RunLog from '../screens/RunLog'
+import endRunNavigator from './endRunNavigator.js';
 import settingsNavigator from './settingsNavigator.js';
 
 const BottomTab = createBottomTabNavigator();
@@ -26,7 +27,7 @@ export default function BottomTabNavigator({ navigation, route }) {
       />
       <BottomTab.Screen
         name="SIMPLY_RUN"
-        component={SimplyRun}
+              component={endRunNavigator}
         options={{
           title: 'Simply Run',
           tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="md-code-working" />,

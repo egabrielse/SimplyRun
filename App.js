@@ -8,11 +8,11 @@ import InputPersonalInfo from './src/screens/InputPersonalInfo'
 import { createStore } from 'redux'
 import { Provider } from 'react-redux'
 import rootReducer from './src/reducers' // Importing the index (do not need specifying)
-import {decode, encode} from 'base-64'
+import { decode, encode } from 'base-64'
 
-if (!global.btoa) {global.btoa = encode}
+if (!global.btoa) { global.btoa = encode }
 
-if (!global.atob) {global.atob = decode}
+if (!global.atob) { global.atob = decode }
 
 //Create a stack navigator 
 const Stack = createStackNavigator();
@@ -24,15 +24,15 @@ export default function App() {
 
     return (
         <Provider store={store}>
-        <NavigationContainer >
+            <NavigationContainer >
                 <Stack.Navigator >
                     <Stack.Screen name="Login" options={{ headerLeft: null }} component={Login} />
                     <Stack.Screen name="CreateAccount" component={CreateAccount} />
                     <Stack.Screen name="InputPersonalInfo" component={InputPersonalInfo}/>
                     <Stack.Screen name="Main" options={{ headerLeft: null }} component={BottomTabNavigator} />
-            </Stack.Navigator>
-        </NavigationContainer>
-      </Provider>
+                </Stack.Navigator>
+            </NavigationContainer>
+        </Provider>
     );
 }
 
