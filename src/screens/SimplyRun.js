@@ -62,8 +62,9 @@ class SimplyRun extends Component {
         var formatHour = "" + this.state.hour; formatHour = formatHour.padStart(2, '0')
 
         var totalTimeSecs = (this.state.hour * 60 * 60) + (this.state.min * 60) + this.state.sec + (this.state.mili / 1000);
-        var pace = (totalTimeSecs / 60) / this.state.distance.toFixed(2)
+        
         if (this.state.distance !== 0) {
+            var pace = (totalTimeSecs / 60) / this.state.distance.toFixed(2)
             this.setState({ pace: pace })
         } 
 
@@ -86,8 +87,9 @@ class SimplyRun extends Component {
         this.setState({ current: "" })
         this.props.navigation.navigate('EndRun');
         var totalTimeSecs = (this.state.hour * 60 * 60) + (this.state.min * 60) + this.state.sec + (this.state.mili / 1000);
-        var pace = (totalTimeSecs / 60) / this.state.distance.toFixed(2)
+    
         if (this.state.distance !== 0) {
+            var pace = (totalTimeSecs / 60) / this.state.distance.toFixed(2)
             this.setState({ pace: pace })
         } 
         //Using Redux to pass info to the EndRun Screen
