@@ -6,7 +6,10 @@ const initialState = {
     calories: 0,
     startTime: "",
     endTime: "",
-    route: []
+    route: [],
+    hours: 0,
+    mins: 0,
+    secs: 0
     }
 
 
@@ -19,7 +22,8 @@ const endRunReducer = (state = initialState , action) => {
                 time: action.time, distance: action.distance,
                 pace: action.pace, calories: action.calories,
                 startTime: action.startTime, endTime: action.endTime,
-                route: action.route
+                route: action.route, hours: action.hours, mins: action.mins,
+                secs: action.secs
             })
         case"CLEARRUN":
             return state

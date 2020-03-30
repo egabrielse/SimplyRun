@@ -10,16 +10,12 @@ import '@firebase/firestore';
 //Firebase initialzation 
 firebaseConfig
 
-var display = "\n" + "Time:00:00:00"  +
-    "\n" + "Distance: 0.0" + "\n" + "Pace: 0.0" + "\n" + "Calories: 0.0 "
-
 const haversine = require('haversine');
 
 class SimplyRun extends Component {
-
-
+   
     state = {
-        stats: display,
+        stats: "",
         current: "",
         displayStat: true,
         startRun: true,
@@ -34,7 +30,28 @@ class SimplyRun extends Component {
         mins: 0,
         hrs: 0,
         startTime: "",
-        route: ""
+        route: "",
+        pace: 0
+    }
+    
+    componentDidMount() {
+        if (this.props.metric) {
+            this.setState({
+                stats: "\n" + "Time: 00:00:00 hr:min:sec" +
+                    "\n" + "Distance: 0.0 km" + "\n" + "Pace: 0.0 mins/km" + "\n" + "Calories: 0.0 cals "})
+
+        } else {
+            this.setState({
+                stats: "\n" + "Time: 00:00:00 hr:min:sec" +
+                    "\n" + "Distance: 0.0 miles" + "\n" + "Pace: 0.0 mins/miles" + "\n" + "Calories: 0.0 cals "
+            })
+        }
+    }
+    componentDidUpdate(prevProps) {
+        //If user changes setting change display
+        if (this.props.metric !== prevProps.metric) {
+            this.formatStats()
+        }
     }
 
     formatStats = () => {
@@ -44,10 +61,19 @@ class SimplyRun extends Component {
 
         var formatHour = "" + this.state.hour; formatHour = formatHour.padStart(2, '0')
 
-        this.setState({
-            stats: "\n" + "Time" + ":" + formatHour + ":" + formatMin + ":" + formatSec +
-                "\n" + "Distance: " + this.state.distance.toFixed(2) + "\n" + "Pace: 0.0" + "\n" + "Calories: 0.0 ",
-        })
+        if (!this.props.metric) {
+            this.setState({
+                stats: "\n" + "Time" + ": " + formatHour + ":" + formatMin + ":" + formatSec + " hr:min:sec"+ 
+                    "\n" + "Distance: " + this.state.distance.toFixed(2) +" miles" + "\n" + "Pace: " + this.state.pace.toFixed(2)+" mins/mile" + "\n" + "Calories: 0.0 cals",
+            })
+        } else {
+            this.setState({
+                stats: "\n" + "Time" + ": " + formatHour + ":" + formatMin + ":" + formatSec + " hr:min:sec" + 
+                    "\n" + "Distance: " + (this.state.distance * 1.609).toFixed(2) + " km" + "\n" + "Pace: " + (this.state.pace * .621).toFixed(2) +
+                    " mins/km" + "\n" + "Calories: 0.0 cals",
+            })
+        }
+
 
     }
 
@@ -58,8 +84,9 @@ class SimplyRun extends Component {
         var totalTimeSecs = (this.state.hour * 60 * 60) + (this.state.min * 60) + this.state.sec + (this.state.mili / 1000);
         //Using Redux to pass info to the EndRun Screen
         time = this.props.sendRunStats(totalTimeSecs, this.state.distance,
-            "Test Pace", "Test Calories", this.state.startTime, new Date(), this.state.route)
-        this.setState({ hour: 0, min: 0, sec: 0, mili: 0, distance: 0 })
+            this.state.pace, 0.0, this.state.startTime, new Date(), this.state.route, this.state.hour,
+            this.state.min, this.state.sec)
+        this.setState({ hour: 0, min: 0, sec: 0, mili: 0, distance: 0, pace: 0, })
         this.formatStats()
         this.setState({ endRun: false })
     }
@@ -72,7 +99,8 @@ class SimplyRun extends Component {
                 { text: 'Yes', onPress: () => { this.endRun() } },
                 {
                     text: 'No',
-                    style: 'cancel'}
+                    style: 'cancel'
+                }
             ],
             { cancelable: false },
         );
@@ -81,16 +109,16 @@ class SimplyRun extends Component {
 
     start = () => {
         //Get Inital start of run time 
-       
+
         var startTime = new Date().getTime()
-      
+
 
         if (!this.state.startRun & this.state.paused) {
             this.setState({ paused: false })
         }
         //Run has not started yet
         if (this.state.startRun) {
-            this.setState({ startTime: new Date()  })
+            this.setState({ startTime: new Date() })
             this.startTracking()
             this.setState({ current: "Tracking Run" })
             this.setState({ button: true, stopButton: true, startRun: false })
@@ -158,7 +186,7 @@ class SimplyRun extends Component {
                 this.setState({ button: false })
                 this.setState({ stopButton: true })
                 this.setState({ paused: true })
-         
+
                 clearInterval(this.intervalID);
                 clearInterval(this.intervalTrackingID)
             }
@@ -167,28 +195,34 @@ class SimplyRun extends Component {
 
 
 
-   
+
     startTracking = () => {
         setTimeout(() => this.intervalTrackingID = setInterval(() => {
             navigator.geolocation.getCurrentPosition(
                 position => {
                     var currentPosition = position.coords;
-          
+
                     this.setState({ coordinates: this.state.coordinates.concat([currentPosition]) })
                     this.setState({ distance: this.state.distance + this.coordDistance(currentPosition) })
                     this.setState({ previousPosition: currentPosition })
                     geopoint = new firebase.firestore.GeoPoint(currentPosition.latitude, currentPosition.longitude)
                     this.setState(prevState => ({
                         route: [...prevState.route, geopoint]
-                    }))                
+                    }))
                 }
 
             )
+            var totalTimeSecs = (this.state.hour * 60 * 60) + (this.state.min * 60) + this.state.sec + (this.state.mili / 1000);
+            var pace = (totalTimeSecs / 60) / this.state.distance
+            if (this.state.distance !== 0) {
+                this.setState({ pace: pace })
+            } 
+
         }, 10000), 1000);
     }
 
     coordDistance = (position) => {
-        return haversine(this.state.previousPosition, position) || 0;
+        return haversine(this.state.previousPosition, position, { unit: 'mile' }) || 0;
     }
 
     componentWillUnmount = () => {
@@ -204,26 +238,26 @@ class SimplyRun extends Component {
                     showsUserLocation={true}
                     style={{ flex: 2 }}
                     followsUserLocation={true}
-             >
+                >
 
                     <Polyline coordinates={this.state.coordinates} strokeWidth={5} />
- 
-                    
+
+
                 </MapView>
 
                 <View style={{
                     alignItems: 'center', justifyContent: "center", flex: 1.5, backgroundColor: 'powderblue',
                 }}>
                     <Text style={{ fontSize: 15 }}> {this.state.current}</Text>
-           
+
                     {
                         this.state.displayStat ? < Text style={{
-                             paddingBottom:10, fontSize: 15
+                            paddingBottom: 10, fontSize: 15
                         }}> {this.state.stats}</Text> : null
                     }
 
                     <View style={{
-                        flexDirection: 'row', justifyContent: 'space-around', paddingBottom: 10 
+                        flexDirection: 'row', justifyContent: 'space-around', paddingBottom: 10
                     }}>
                         {
                             this.state.button ? < StartButton onPress={this.start} pauseButton={true} /> :
@@ -252,18 +286,27 @@ function mapStateToProps(state) {
         calories: state.endRunReducer.calories,
         startTime: state.endRunReducer.startTime,
         endTime: state.endRunReducer.endTime,
-        route: state.endRunReducer.route
+        route: state.endRunReducer.route,
+        hours: state.endRunReducer.hours,
+        mins: state.endRunReducer.mins,
+        secs: state.endRunReducer.secs,
+        display_calories: state.SettingsReducer.display_calories,
+        display_distance: state.SettingsReducer.display_distance,
+        display_pace: state.SettingsReducer.display_pace,
+        display_time: state.SettingsReducer.display_time,
+        metric: state.SettingsReducer.metric,
+        update_frequency: state.SettingsReducer.update_frequency,
     }
 }
 //Sends actions to the reducer in the App.js file 
 function mapDispatchtoProps(dispatch) {
     return {
-        sendRunStats: (time, distance, pace, calories,startTime,endTime, route) => dispatch({
+        sendRunStats: (time, distance, pace, calories, startTime, endTime, route, hours, mins,secs) => dispatch({
             type: "ENDRUN", time, distance,
             pace, calories, startTime, endTime,
-            route
+            route, hours, mins,secs
         }),
-       
+
     }
 }
 

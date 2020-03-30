@@ -10,9 +10,15 @@ firebaseConfig
 const Firestore = firebase.firestore();
 
 class EndRun extends Component {
+
     state = {
-        notes: ""
+        notes: "",
+        distance: 0,
+        pace: 0,
+        timeToDisplay: ""
     }
+
+
 
     writeNote = (note) => {
         this.setState({notes: note})
@@ -29,6 +35,7 @@ class EndRun extends Component {
             pace: this.props.pace
         })
     }
+
 
     saveRun = () => {
         Alert.alert("Run Saved")
@@ -57,14 +64,19 @@ class EndRun extends Component {
         );
     }
     render() {
+
         return (
-            
-            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', bottom: 2, backgroundColor: 'powderblue'}}  >
-                <Text style = {{fontSize: 20, paddingBottom: 240}} > {"Run Complete"} </Text>
-                <Text >{"Time: " + this.props.time} </Text>
-                <Text style = {{left: 10}}>{"Distance: " + this.props.distance} </Text>
-                <Text style = {{left: 14}}>{"Pace: " + this.props.pace} </Text>
-                <Text style = {{left: 14, paddingBottom: 30}}>{"Calories: " + this.props.calories} </Text>
+
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', bottom: 2, backgroundColor: 'powderblue' }}  >
+                <Text style={{ fontSize: 20, paddingBottom: 240 }} > {"Run Complete"} </Text>
+                <Text >{"Time: " + ("" + this.props.hours).padStart(2, "0") + ":" + ("" + this.props.mins).padStart(2, "0") + ":"
+                    + ("" + this.props.secs).padStart(2, "0") + " hr:min:sec"} </Text>
+                {!this.props.metric ? < Text style={{ left: 10 }}>{"Distance: " + this.props.distance.toFixed(2) + " miles"} </Text> :
+                    <Text style={{ left: 10 }}>{"Distance: " + (this.props.distance * 1.609).toFixed(2) + " km"} </Text>}
+                {!this.props.metric ? <Text style={{ left: 14 }}>{"Pace: " + (this.props.pace).toFixed(2) + " mins/mile"} </Text>:
+                    <Text style={{ left: 14 }}>{"Pace: " + (this.props.pace * .621).toFixed(2) + " mins/km"} </Text>}
+          
+                <Text style = {{left: 14, paddingBottom: 30}}>{"Calories: " + this.props.calories + " cals"} </Text>
                 
                 <KeyboardAvoidingView behavior='padding' keyboardVerticalOffset='100' style={{alignItems: 'center'}}>
                     <TextInput style={{ paddingLeft: 7, borderWidth: 5, borderColor: 'black', right: 0, width: 200 }}
@@ -132,7 +144,16 @@ function mapStateToProps(state) {
         calories: state.endRunReducer.calories,
         startTime: state.endRunReducer.startTime,
         endTime: state.endRunReducer.endTime,
-        route: state.endRunReducer.route
+        route: state.endRunReducer.route,
+        hours: state.endRunReducer.hours,
+        mins: state.endRunReducer.mins,
+        secs: state.endRunReducer.secs,
+        display_calories: state.SettingsReducer.display_calories,
+        display_distance: state.SettingsReducer.display_distance,
+        display_pace: state.SettingsReducer.display_pace,
+        display_time: state.SettingsReducer.display_time,
+        metric: state.SettingsReducer.metric,
+        update_frequency: state.SettingsReducer.update_frequency,
 
     }
 }
