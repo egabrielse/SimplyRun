@@ -21,7 +21,7 @@ export default function BottomTabNavigator({ navigation, route }) {
         name="RUN_LOG"
         component={RunLog}
         options={{
-          title: 'Get Started',
+          title: 'Run Log',
           tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="md-code-working" />,
         }}
       />
