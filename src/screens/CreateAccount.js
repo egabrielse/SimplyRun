@@ -12,6 +12,7 @@ firebaseConfig
 
 
 class CreateAccount extends Component {
+
     state = {
         email:null,
         password:null,
@@ -20,6 +21,7 @@ class CreateAccount extends Component {
         passwordValid:false,
         confirmValid:false,
     }
+
 
     DEV_SKIP_ACCOUNT = () => {
         console.log("CreateAccount: DEV_SKIP_ACCOUNT")
