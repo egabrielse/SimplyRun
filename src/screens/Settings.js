@@ -34,6 +34,14 @@ class Settings extends Component {
                     <Text style = {styles.text}> Stats Displayed: {this.props.stats_to_display} </Text>
                     <Text style = {styles.text}> Update Frequency: {this.props.update_frequency} </Text>
                     <TouchableOpacity
+                        style={styles.updateButton}
+                        onPress={() => {
+                            this.props.navigation.navigate("EMAILPASSWORD");
+                            }
+                        }>
+                        <Text style={styles.buttonText}>Update Email/Password</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
                         style={styles.editButton}
                         onPress={() => {
                             this.props.navigation.navigate("EDIT");
@@ -114,6 +122,17 @@ const styles = StyleSheet.create({
         paddingTop:10,
         paddingBottom:10,
         backgroundColor:'#A44CA0',
+        borderRadius:10,
+        borderWidth: 1,
+        borderColor: '#fff'
+      },
+      updateButton: {
+        marginLeft: 120,
+        marginRight: 120,
+        marginTop:10,
+        paddingTop:10,
+        paddingBottom:10,
+        backgroundColor:'#C44CA0',
         borderRadius:10,
         borderWidth: 1,
         borderColor: '#fff'

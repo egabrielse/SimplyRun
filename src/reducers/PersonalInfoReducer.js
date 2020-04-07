@@ -3,11 +3,13 @@ import {UPDATE_NAME,
     UPDATE_HEIGHT,
     UPDATE_WEIGHT,
     UPDATE_SEX,
+    UPDATE_EMAIL,
     UPDATE_ALL_PERSONAL_INFO} from '../actions/PersonalInfoAction'
 
 //Initial state of the store 
 const initialState = {
     name:null,
+    email: null,
     birthday: null,
     height: null,
     weight:null,
@@ -36,6 +38,10 @@ const PersonalInfoReducer = (state = initialState, action) => {
         case UPDATE_SEX:
             console.log("PersonalInfoReducer (",action.type,"): updating sex from",state.sex,"to",action.sex)
             return {...state, sex: action.sex}
+
+        case UPDATE_EMAIL:
+            console.log("PersonalInfoReducer (",action.type,"): updating email from",state.email,"to",action.email)
+            return {...state, email: action.email}
 
         case UPDATE_ALL_PERSONAL_INFO:
             console.log("PersonalInfoReducer ( UPDATE_ALL_PERSONAL_INFO ) updating all personal info fields")

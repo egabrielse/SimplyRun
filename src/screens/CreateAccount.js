@@ -49,7 +49,7 @@ class CreateAccount extends Component {
                     this.props.navigation.navigate("InputPersonalInfo")
 
                     // Reset CreateAccount's state
-                    this.setState({ email:null,password:null,confirmPassword:null,emailValid:false,passwordValid:false, confirmValid:false})
+                    this.setState({ oldEmail:e,email:null,password:null,confirmPassword:null,emailValid:false,passwordValid:false, confirmValid:false})
 
                 })
                 .catch((error) => {
