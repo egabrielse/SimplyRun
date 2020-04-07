@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { TextInput, Text, View, Button, StyleSheet, TouchableOpacity, Switch, Alert } from 'react-native';
+import { TextInput, Text, View, StyleSheet, TouchableOpacity, Switch, Alert } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import ModalDropdown from 'react-native-modal-dropdown';
 import firebase from 'firebase';
@@ -327,7 +327,7 @@ class editSettings extends Component {
                                 </TouchableOpacity>
                             </View>
                         </View>
-                    {/* Textinput for update frequency of audio feedback on runs */}
+                    {/* Switch for whether or not to output audio feedback every mile/km */}
                     <View style={styles.row}>
                         <Text>Audio updates every mile/km: </Text> 
                         <Switch  

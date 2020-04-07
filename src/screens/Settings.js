@@ -4,8 +4,6 @@ import { ScrollView } from 'react-native-gesture-handler';
 import firebase from 'firebase';
 import firebaseConfig from '../config/firebaseConfig';
 import { connect } from 'react-redux';
-import {updateAllPersonalInfoAction} from '../actions/PersonalInfoAction';
-import {updateAllSettingsAction} from '../actions/SettingsAction';
 import {convertInchesToCentimeters, convertPoundsToKilograms} from '../constants/ConversionFunctions';
 
 //References to the root of the firestore database
@@ -33,6 +31,7 @@ class Settings extends Component {
                     <Text style = {styles.text}> Unit: {(this.props.metric ? "Metric" : "Imperial")} </Text>
                     <Text style = {styles.text}> Stats Displayed: {this.props.stats_to_display} </Text>
                     <Text style = {styles.text}> Audio Updates: {(this.props.update_frequency ? "On" : "Off")} </Text>
+                    {/* Button to update email address and/or password */}
                     <TouchableOpacity
                         style={styles.updateButton}
                         onPress={() => {
@@ -41,6 +40,7 @@ class Settings extends Component {
                         }>
                         <Text style={styles.buttonText}>Update Email/Password</Text>
                     </TouchableOpacity>
+                    {/* Button to edit non-email/password portions of profile */}
                     <TouchableOpacity
                         style={styles.editButton}
                         onPress={() => {
