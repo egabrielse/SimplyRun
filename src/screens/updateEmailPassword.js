@@ -43,26 +43,21 @@ class updateEmailPassword extends Component {
                 .then(() => {
                     console.log("Email successfully updated in firebase auth");
 
-                    let personal = {
-                        name: this.props.name,
-                        email: e,
-                        birthday: this.props.birthday, 
-                        height: this.props.height,
-                        weight: this.props.weight,
-                        sex: this.props.sex
-                    }
-                    // update firebase, then update redux for email, if changed
-                    firestore.collection('users').doc(user.uid)
-                    .update({personal: personal})
-                    .then(() => {
-                        console.log("Successfully updated email in firebase")
-                        // Update all personal info in store
-                        this.props.dispatch(updateEmailAction(e))
-                        Alert.alert("Email successfully changed!");
-                    }).catch(function(error) {
-                        console.log("InputPersonalInfo:", error.message)
-                        Alert.alert(error.message);
-                        toReturn = 0;
+                    // get personal info from firebase
+                    firestore.collection('users').doc(user.uid).get().then((doc) => {
+                        // update firebase, then update redux for email, if changed
+                        firestore.collection('users').doc(user.uid)
+                        .update({personal: doc.data().personal})
+                        .then(() => {
+                            console.log("Successfully updated email in firebase")
+                            // Update all personal info in store
+                            this.props.dispatch(updateEmailAction(e))
+                            Alert.alert("Email successfully changed!");
+                        }).catch(function(error) {
+                            console.log("InputPersonalInfo:", error.message)
+                            Alert.alert(error.message);
+                            toReturn = 0;
+                        })
                     })
                 })
                 .catch((error) => {
@@ -123,7 +118,7 @@ class updateEmailPassword extends Component {
                         style={styles.textInput}
                     />
 
-                    <Text>(leave these fields blank if you do not wish to change your password)</Text>
+                    <Text style={{fontSize: 11, margin: 5}}>(leave these fields blank if you do not wish to change your password)</Text>
 
                     {/*TextInput for password*/}
                     <TextInput
@@ -200,6 +195,7 @@ const styles = StyleSheet.create({
         maxHeight:50,
         justifyContent:'center',
         padding:5,
+        margin: 5
     },
     row: {
         flex: 1,
