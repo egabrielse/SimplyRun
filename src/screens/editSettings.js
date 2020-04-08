@@ -449,15 +449,6 @@ const styles = StyleSheet.create({
         paddingLeft : 25,
         paddingRight : 25
       },
-      inputText: {
-        borderWidth: 1,
-        borderColor: 'lightgrey',
-        height:50,
-        maxHeight:50,
-        justifyContent:'center',
-        padding:8,
-        flex:1,
-    },
     inputNumber: {
         borderWidth: 1,
         borderColor: 'lightgrey',
@@ -465,16 +456,5 @@ const styles = StyleSheet.create({
         maxHeight:50,
         width:85,
         justifyContent:'center',
-    },
-    inputButton: {
-        height:50,
-        backgroundColor: 'lightblue',
-        justifyContent:'center',
-        alignItems:'center',
-    },
-    titleText: {
-        fontSize:40,
-        fontWeight:'bold',
-        fontStyle:'italic',
     }
 });

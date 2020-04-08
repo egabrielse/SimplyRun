@@ -116,8 +116,8 @@ const styles = StyleSheet.create({
         padding: 2
     },
     editButton: {
-        marginLeft: 120,
-        marginRight: 120,
+        marginLeft: 104,
+        marginRight: 104,
         marginTop:10,
         paddingTop:10,
         paddingBottom:10,
@@ -127,8 +127,8 @@ const styles = StyleSheet.create({
         borderColor: '#fff'
       },
       updateButton: {
-        marginLeft: 120,
-        marginRight: 120,
+        marginLeft: 104,
+        marginRight: 104,
         marginTop:10,
         paddingTop:10,
         paddingBottom:10,
@@ -144,8 +144,8 @@ const styles = StyleSheet.create({
         paddingRight : 25
       },
     deleteButton: {
-        marginLeft: 120,
-        marginRight: 120,
+        marginLeft: 104,
+        marginRight: 104,
         marginTop:10,
         paddingTop:10,
         paddingBottom:10,
@@ -155,8 +155,8 @@ const styles = StyleSheet.create({
         borderColor: '#fff'
       },
     logoutButton: {
-        marginLeft: 120,
-        marginRight: 120,
+        marginLeft: 104,
+        marginRight: 104,
         marginTop:10,
         paddingTop:10,
         paddingBottom:10,
