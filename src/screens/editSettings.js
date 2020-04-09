@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { TextInput, Text, View, Button, StyleSheet, TouchableOpacity, Switch, Alert } from 'react-native';
+import { TextInput, Text, View, StyleSheet, TouchableOpacity, Switch, Alert } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import ModalDropdown from 'react-native-modal-dropdown';
 import firebase from 'firebase';
@@ -34,7 +34,7 @@ class editSettings extends Component {
             display_distance_switch: this.props.display_distance,
             display_calories_switch: this.props.display_calories,
             metric: this.props.metric,
-            update_frequency: this.props.update_frequency.toString()
+            update_frequency: this.props.update_frequency
         };
     }
 
@@ -98,12 +98,6 @@ class editSettings extends Component {
                 this.state.month === "" || this.state.day === "" || this.state.year === "") {
             console.log("InputPersonalInfo: month and/or day and/or year are/is null or blank")
             Alert.alert("Please provide a full birth date.")
-            return
-        }
-        if (this.state.update_frequency === null || this.state.update_frequency === "" || 
-                isNaN(this.state.update_frequency) || this.state.update_frequency < 0) {
-            console.log("SettingsInfo: update_frequncy is null, blank, or not a number.")
-            Alert.alert("Please provide a positive number for update frequency.")
             return
         }
 
@@ -333,16 +327,14 @@ class editSettings extends Component {
                                 </TouchableOpacity>
                             </View>
                         </View>
-                    {/* Textinput for update frequency of audio feedback on runs */}
+                    {/* Switch for whether or not to output audio feedback every mile/km */}
                     <View style={styles.row}>
-                        <Text>Update Frequency:</Text> 
-                        <TextInput
-                            style={{ height: 31, width: '15%', borderColor: 'gray', borderWidth: 1, margin: 2}}
-                            onChangeText={text => this.setState({update_frequency: text})}
-                            textAlign={'center'}
-                            value={this.state.update_frequency}
-                            placeholder="Update Frequency"
-                        />
+                        <Text>Audio updates every mile/km: </Text> 
+                        <Switch  
+                            value={this.state.update_frequency}  
+                            onValueChange ={(value) => {
+                                this.setState({update_frequency: value})
+                            }}/>
                     </View>
                     <Text>Stats to Display on Run Screen:</Text>
                     {/* Switches for what stats the user wants displayed on the run screen */}
@@ -457,15 +449,6 @@ const styles = StyleSheet.create({
         paddingLeft : 25,
         paddingRight : 25
       },
-      inputText: {
-        borderWidth: 1,
-        borderColor: 'lightgrey',
-        height:50,
-        maxHeight:50,
-        justifyContent:'center',
-        padding:8,
-        flex:1,
-    },
     inputNumber: {
         borderWidth: 1,
         borderColor: 'lightgrey',
@@ -473,16 +456,5 @@ const styles = StyleSheet.create({
         maxHeight:50,
         width:85,
         justifyContent:'center',
-    },
-    inputButton: {
-        height:50,
-        backgroundColor: 'lightblue',
-        justifyContent:'center',
-        alignItems:'center',
-    },
-    titleText: {
-        fontSize:40,
-        fontWeight:'bold',
-        fontStyle:'italic',
     }
 });

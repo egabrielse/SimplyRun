@@ -13,7 +13,7 @@ const initialState = {
     display_pace: false,
     display_time:false,
     metric:false,
-    update_frequency:0,
+    update_frequency:false,
 }
 
 //Modfies the store depending on actions 
