@@ -4,6 +4,7 @@ import firebaseConfig from '../config/firebaseConfig'
 import * as firebase from 'firebase';
 import '@firebase/firestore';
 import { connect } from 'react-redux'
+import MapView, { Polyline } from 'react-native-maps';
 
 //Initialize firebase
 firebaseConfig
@@ -66,9 +67,23 @@ class EndRun extends Component {
     render() {
 
         return (
+    
+            <View style={{ flex: 1, }}>
+                <MapView
+                    showsUserLocation={true}
+                    style={{ flex: 2 }}
+                    followsUserLocation={true}
+       
+        >
+                    <Polyline coordinates={this.props.polyline} strokeWidth={5} /> 
+                </MapView>
+            
+                <KeyboardAvoidingView behavior='padding' keyboardVerticalOffset='100' style={{ alignItems: 'center', backgroundColor: '#A44CA0' }}>
+            
+                <View style={{ justifyContent: 'center', alignItems: 'center', backgroundColor: '#A44CA0' }}  >
 
-            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', bottom: 2, backgroundColor: 'powderblue' }}  >
-                <Text style={{ fontSize: 20, paddingBottom: 240 }} > {"Run Complete"} </Text>
+
+                <Text style={{ fontSize: 20,}} > {"Run Complete"} </Text>
                 <Text >{"Time: " + ("" + this.props.hours).padStart(2, "0") + ":" + ("" + this.props.mins).padStart(2, "0") + ":"
                     + ("" + this.props.secs).padStart(2, "0") + " hr:min:sec"} </Text>
                 {!this.props.metric ? < Text style={{ left: 10 }}>{"Distance: " + this.props.distance.toFixed(2) + " miles"} </Text> :
@@ -76,9 +91,10 @@ class EndRun extends Component {
                 {!this.props.metric ? <Text style={{ left: 14 }}>{"Pace: " + (this.props.pace).toFixed(2) + " mins/mile"} </Text>:
                     <Text style={{ left: 14 }}>{"Pace: " + (this.props.pace * .621).toFixed(2) + " mins/km"} </Text>}
           
-                <Text style = {{left: 14, paddingBottom: 30}}>{"Calories: " + this.props.calories + " cals"} </Text>
-                
-                <KeyboardAvoidingView behavior='padding' keyboardVerticalOffset='100' style={{alignItems: 'center'}}>
+                <Text style = {{left: 14, paddingBottom: 10}}>{"Calories: " + this.props.calories + " cals"} </Text>
+                       
+
+               
                     <TextInput style={{ paddingLeft: 7, borderWidth: 5, borderColor: 'black', right: 0, width: 200 }}
                         placeholder="Notes     "
                         autoCapitalize="none"
@@ -114,8 +130,13 @@ class EndRun extends Component {
 
                     </TouchableOpacity>
                 </View>
-                </KeyboardAvoidingView>
-            </View>
+               
+                </View>
+
+                </KeyboardAvoidingView >
+                </View>
+             
+        
         );
     }
     
@@ -148,6 +169,7 @@ function mapStateToProps(state) {
         hours: state.endRunReducer.hours,
         mins: state.endRunReducer.mins,
         secs: state.endRunReducer.secs,
+        polyline: state.endRunReducer.polyline,
         display_calories: state.SettingsReducer.display_calories,
         display_distance: state.SettingsReducer.display_distance,
         display_pace: state.SettingsReducer.display_pace,

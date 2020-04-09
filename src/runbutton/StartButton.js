@@ -56,7 +56,7 @@ export default class StartButton extends Component {
                     justifyContent: 'center',
                     width: 80,
                     height: 80,
-                    backgroundColor: '#00ff7f',
+                    backgroundColor: '#32cd32',
                     borderRadius: 75,
                     shadowColor: '#000',
                     shadowOffset: { width: 0, height: 2 },
