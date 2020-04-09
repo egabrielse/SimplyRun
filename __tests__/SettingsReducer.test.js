@@ -9,7 +9,7 @@ const initialState = {
     display_pace: false,
     display_time:false,
     metric:false,
-    update_frequency:0,
+    update_frequency:false,
 }
 
 //Initial state of the store 
@@ -19,7 +19,7 @@ const changedState = {
     display_pace: false,
     display_time:false,
     metric:true,
-    update_frequency:10,
+    update_frequency:true,
 }
 
 
@@ -38,14 +38,14 @@ describe('SettingsReducer', () => {
             display_pace: true,
             display_time: true,
             metric: true,
-            update_frequency: 5,
+            update_frequency: true,
         })).toEqual({
             display_calories: true,
             display_distance: true,
             display_pace: true,
             display_time: true,
             metric: true,
-            update_frequency: 5,
+            update_frequency: true,
         })
     })
 })

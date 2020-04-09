@@ -8,7 +8,7 @@ describe('updateAllSettingsAction', () => {
         display_pace: false,
         display_time: true,
         metric: true,
-        update_frequency: 5,
+        update_frequency: true,
     }
 
     const expectedAction = {
@@ -18,7 +18,7 @@ describe('updateAllSettingsAction', () => {
         display_pace: false,
         display_time: true,
         metric: true,
-        update_frequency: 5,
+        update_frequency: true,
     }
     expect(updateAllSettingsAction(input)).toEqual(expectedAction)
   })
