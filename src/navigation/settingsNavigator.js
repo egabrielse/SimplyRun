@@ -3,6 +3,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import Settings from '../screens/Settings';
 import editSettings from '../screens/editSettings';
+import updateEmailPassword from '../screens/updateEmailPassword';
 
 const Stack = createStackNavigator();
 const INITIAL_ROUTE_NAME = 'Settings';
@@ -18,6 +19,10 @@ export default function settingsNavigator({ navigation, route }) {
       <Stack.Screen
         name="EDIT"
         component={editSettings}
+      />
+      <Stack.Screen
+        name="EMAILPASSWORD"
+        component={updateEmailPassword}
       />
     </Stack.Navigator>
   );
