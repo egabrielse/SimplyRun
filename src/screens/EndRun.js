@@ -85,14 +85,15 @@ class EndRun extends Component {
 
 
                         <Text style={{ fontSize: 20, }} > {"Run Complete"} </Text>
-                        <Text >{"Time: " + ("" + this.props.hours).padStart(2, "0") + ":" + ("" + this.props.mins).padStart(2, "0") + ":"
-                            + ("" + this.props.secs).padStart(2, "0") + " hr:min:sec"} </Text>
-                        {!this.props.metric ? < Text style={{ left: 10 }}>{"Distance: " + this.props.distance.toFixed(2) + " miles"} </Text> :
-                            <Text style={{ left: 10 }}>{"Distance: " + (this.props.distance * 1.609).toFixed(2) + " km"} </Text>}
-                        {!this.props.metric ? <Text style={{ left: 14 }}>{"Pace: " + (this.props.pace).toFixed(2) + " mins/mile"} </Text> :
-                            <Text style={{ left: 14 }}>{"Pace: " + (this.props.pace * .621).toFixed(2) + " mins/km"} </Text>}
+                        {this.props.display_time ?< Text > {
+                            "Time: " + ("" + this.props.hours).padStart(2, "0") + ":" + ("" + this.props.mins).padStart(2, "0") + ":"
+                            + ("" + this.props.secs).padStart(2, "0") + " hr:min:sec"} </Text>: null}
+                        {!this.props.metric && this.props.display_distance ? < Text style={{ left: 10 }}>{"Distance: " + this.props.distance.toFixed(2) + " miles"} </Text> : null}
+                        {this.props.metric && this.props.display_distance ? <Text style={{ left: 10 }}>{"Distance: " + (this.props.distance * 1.609).toFixed(2) + " km"} </Text> : null}
+                        {!this.props.metric && this.props.display_pace ? <Text style={{ left: 14 }}>{"Pace: " + (this.props.pace).toFixed(2) + " mins/mile"} </Text> : null}
+                        {this.props.metric && this.props.display_pace ? <Text style={{ left: 14 }}>{"Pace: " + (this.props.pace * .621).toFixed(2) + " mins/km"} </Text>: null}
 
-                        <Text style={{ left: 14, paddingBottom: 10 }}>{"Calories: " + this.props.calories + " cals"} </Text>
+                        {this.props.display_calories? < Text style={{ left: 14, paddingBottom: 10 }}>{"Calories: " + this.props.calories.toFixed(0) + " cals"} </Text>: null}
 
 
 
