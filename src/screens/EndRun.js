@@ -53,8 +53,8 @@ class EndRun extends Component {
 
     discardRun = () => {
         Alert.alert(
-            'Confirm Discard Run',
-            'Would you like to end your run?',
+            'Are you sure you want to discard this run?',
+            'This cannot be undone',
             [
                 { text: 'Yes', onPress: () => { this.dontSave() } },
                 {
