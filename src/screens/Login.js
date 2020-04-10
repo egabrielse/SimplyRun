@@ -4,6 +4,7 @@ import firebase from 'firebase';
 import firebaseConfig from '../config/firebaseConfig'
 import { connect } from 'react-redux'
 import { ScrollView } from 'react-native-gesture-handler';
+import {addRunAction} from '../actions/RunLogAction'
 import {createLoginAction} from '../actions/UserAuthenticationAction'
 import {updateAllPersonalInfoAction} from '../actions/PersonalInfoAction'
 import {updateAllSettingsAction} from '../actions/SettingsAction'
@@ -45,35 +46,54 @@ class Login extends Component {
                     console.log("Login: Successfully signed in existing user!")
                     let user = firebase.auth().currentUser
 
-                    // Fetch user data from the database
                     console.log("Login: Attempting to fetch user data for user with uid=", user.uid)
                     let userRef = firestore.collection('users').doc(user.uid)
-                    userRef.get()
-                    .then((doc) => {
-                        if (doc.exists){
-                            console.log("Login: Successfully fetched user data for user with uid=", user.uid)
-                            let userData = doc.data()
 
-                            // Update login info in store
-                            this.props.dispatch(createLoginAction(user))
-                            // Update all personal info in store
-                            this.props.dispatch(updateAllPersonalInfoAction(userData.personal))
-                            // Update all settings info in store 
-                            this.props.dispatch(updateAllSettingsAction(userData.settings))
+                    // Fetch User Data from firestore database
+                    userRef.get().then((doc) => {
+                        console.log("Login: Successfully fetched user data for user with uid=", user.uid)
+                        let userData = doc.data()
 
-                            // Navigate to 'Main'
-                            this.props.navigation.navigate("Main")
+                        // Update login info in store
+                        this.props.dispatch(createLoginAction(user))
+                        // Update all personal info in store
+                        this.props.dispatch(updateAllPersonalInfoAction(userData.personal))
+                        // Update all settings info in store 
+                        this.props.dispatch(updateAllSettingsAction(userData.settings))
 
-                        } else {
-                            console.log("Login: User data for user with uid=", user.uid, "not found")
-                            return
-                        }
+
+                        // ***** Fetch RunLog from firestore database *****
+                        userRef.collection("RunLog").get()
+                        .then((querySnapshot) => {
+                            querySnapshot.forEach((doc) => {
+                                const run = {
+                                    id: doc.id,
+                                    note: doc.get("note"),
+                                    time: doc.get("time"),
+                                    distance: doc.get("distance"),
+                                    pace: doc.get("pace"),
+                                    calories: doc.get("calories"),
+                                    start_time: doc.get("start_time").toDate(),
+                                    end_time: doc.get("end_time").toDate(),
+                                    route: doc.get("route"),
+                                }
+                                this.props.dispatch(addRunAction(run))
+                            })
+                        }).catch((error) => {
+                            console.log("Login: Error fetching run data:", error.message)
+                            Alert.alert(error.message)
+                        })
+
+                        // Navigate to main
+                        this.props.navigation.navigate("Main")
                     })
                     .catch((error) => {
                         console.log("Login: Error fetching user data:", error.message)
                         Alert.alert(error.message)
-                        return
+                        firebase.auth().signOut();
                     })
+
+                    
                 })
                 .catch((error) => {
                     console.log("Login: Error signing in user:", error.message)

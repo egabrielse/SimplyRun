@@ -4,8 +4,6 @@ import { ScrollView } from 'react-native-gesture-handler';
 import firebase from 'firebase';
 import firebaseConfig from '../config/firebaseConfig';
 import { connect } from 'react-redux';
-import {updateAllPersonalInfoAction} from '../actions/PersonalInfoAction';
-import {updateAllSettingsAction} from '../actions/SettingsAction';
 import {convertInchesToCentimeters, convertPoundsToKilograms} from '../constants/ConversionFunctions';
 
 //References to the root of the firestore database
@@ -32,7 +30,17 @@ class Settings extends Component {
                     <Text style = {styles.title}>Settings</Text>
                     <Text style = {styles.text}> Unit: {(this.props.metric ? "Metric" : "Imperial")} </Text>
                     <Text style = {styles.text}> Stats Displayed: {this.props.stats_to_display} </Text>
-                    <Text style = {styles.text}> Update Frequency: {this.props.update_frequency} </Text>
+                    <Text style = {styles.text}> Audio Updates: {(this.props.update_frequency ? "On" : "Off")} </Text>
+                    {/* Button to update email address and/or password */}
+                    <TouchableOpacity
+                        style={styles.updateButton}
+                        onPress={() => {
+                            this.props.navigation.navigate("EMAILPASSWORD");
+                            }
+                        }>
+                        <Text style={styles.buttonText}>Update Email/Password</Text>
+                    </TouchableOpacity>
+                    {/* Button to edit non-email/password portions of profile */}
                     <TouchableOpacity
                         style={styles.editButton}
                         onPress={() => {
@@ -108,12 +116,23 @@ const styles = StyleSheet.create({
         padding: 2
     },
     editButton: {
-        marginLeft: 120,
-        marginRight: 120,
+        marginLeft: 104,
+        marginRight: 104,
         marginTop:10,
         paddingTop:10,
         paddingBottom:10,
         backgroundColor:'#A44CA0',
+        borderRadius:10,
+        borderWidth: 1,
+        borderColor: '#fff'
+      },
+      updateButton: {
+        marginLeft: 104,
+        marginRight: 104,
+        marginTop:10,
+        paddingTop:10,
+        paddingBottom:10,
+        backgroundColor:'#C44CA0',
         borderRadius:10,
         borderWidth: 1,
         borderColor: '#fff'
@@ -125,8 +144,8 @@ const styles = StyleSheet.create({
         paddingRight : 25
       },
     deleteButton: {
-        marginLeft: 120,
-        marginRight: 120,
+        marginLeft: 104,
+        marginRight: 104,
         marginTop:10,
         paddingTop:10,
         paddingBottom:10,
@@ -136,8 +155,8 @@ const styles = StyleSheet.create({
         borderColor: '#fff'
       },
     logoutButton: {
-        marginLeft: 120,
-        marginRight: 120,
+        marginLeft: 104,
+        marginRight: 104,
         marginTop:10,
         paddingTop:10,
         paddingBottom:10,

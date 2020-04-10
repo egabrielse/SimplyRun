@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { Text, View, TextInput, TouchableOpacity, Alert, KeyboardAvoidingView } from 'react-native';
-import firebaseConfig from '../config/firebaseConfig' 
+import firebaseConfig from '../config/firebaseConfig'
 import * as firebase from 'firebase';
 import '@firebase/firestore';
 import { connect } from 'react-redux'
 import MapView, { Polyline } from 'react-native-maps';
-import {MaterialCommunityIcons} from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 //Initialize firebase
 firebaseConfig
@@ -23,7 +23,7 @@ class EndRun extends Component {
 
 
     writeNote = (note) => {
-        this.setState({notes: note})
+        this.setState({ notes: note })
     }
     sendToFirebase = () => {
         Firestore.collection('users').doc(firebase.auth().currentUser.uid).collection("RunLog").add({
@@ -68,95 +68,97 @@ class EndRun extends Component {
     render() {
 
         return (
-    
+
             <View style={{ flex: 1, }}>
                 <MapView
                     showsUserLocation={true}
                     style={{ flex: 2 }}
                     followsUserLocation={true}
-       
-        >
-                    <Polyline coordinates={this.props.polyline} strokeWidth={5} /> 
+
+                >
+                    <Polyline coordinates={this.props.polyline} strokeWidth={5} />
                 </MapView>
-            
+
                 <KeyboardAvoidingView behavior='padding' keyboardVerticalOffset='100' style={{ alignItems: 'center', backgroundColor: '#A44CA0' }}>
-            
-                <View style={{ justifyContent: 'center', alignItems: 'center', backgroundColor: '#A44CA0' }}  >
+
+                    <View style={{ justifyContent: 'center', alignItems: 'center', backgroundColor: '#A44CA0' }}  >
 
 
-                <Text style={{ fontSize: 20,}} > {"Run Complete"} </Text>
-                <Text >{"Time: " + ("" + this.props.hours).padStart(2, "0") + ":" + ("" + this.props.mins).padStart(2, "0") + ":"
-                    + ("" + this.props.secs).padStart(2, "0") + " hr:min:sec"} </Text>
-                {!this.props.metric ? < Text style={{ left: 10 }}>{"Distance: " + this.props.distance.toFixed(2) + " miles"} </Text> :
-                    <Text style={{ left: 10 }}>{"Distance: " + (this.props.distance * 1.609).toFixed(2) + " km"} </Text>}
-                {!this.props.metric ? <Text style={{ left: 14 }}>{"Pace: " + (this.props.pace).toFixed(2) + " mins/mile"} </Text>:
-                    <Text style={{ left: 14 }}>{"Pace: " + (this.props.pace * .621).toFixed(2) + " mins/km"} </Text>}
-          
-                <Text style = {{left: 14, paddingBottom: 10}}>{"Calories: " + this.props.calories + " cals"} </Text>
-                       
+                        <Text style={{ fontSize: 20, }} > {"Run Complete"} </Text>
+                        <Text >{"Time: " + ("" + this.props.hours).padStart(2, "0") + ":" + ("" + this.props.mins).padStart(2, "0") + ":"
+                            + ("" + this.props.secs).padStart(2, "0") + " hr:min:sec"} </Text>
+                        {!this.props.metric ? < Text style={{ left: 10 }}>{"Distance: " + this.props.distance.toFixed(2) + " miles"} </Text> :
+                            <Text style={{ left: 10 }}>{"Distance: " + (this.props.distance * 1.609).toFixed(2) + " km"} </Text>}
+                        {!this.props.metric ? <Text style={{ left: 14 }}>{"Pace: " + (this.props.pace).toFixed(2) + " mins/mile"} </Text> :
+                            <Text style={{ left: 14 }}>{"Pace: " + (this.props.pace * .621).toFixed(2) + " mins/km"} </Text>}
 
-               
-                    <TextInput style={{ paddingLeft: 7, borderWidth: 5, borderColor: 'black', right: 0, width: 200 }}
-                        placeholder="Notes     "
-                        autoCapitalize="none"
-                        onChangeText={note => this.writeNote(note)}
-                        value={this.state.notes}
-                        multiline
-                        blurOnSubmit={true}
-                />
-                
-                <View style = {{paddingTop: 30, flexDirection: 'row', alignContent: 'space-between'}}> 
+                        <Text style={{ left: 14, paddingBottom: 10 }}>{"Calories: " + this.props.calories + " cals"} </Text>
 
-                    <TouchableOpacity style = {{
-                        right: 20, 
-                        width: 90, 
-                        height: 90, 
-                        backgroundColor: '#FFD700',
-                        borderRadius: 200/2,
-                        alignItems: 'center' }} onPress={this.saveRun}>
 
-                        <MaterialCommunityIcons name="check" size={50} style={{paddingTop: 5}} color={"#5018D9"}/>
-                        
-                        <Text style = {{paddingBottom: 0, color: "#5018D9"}}>Save Run </Text>
-                        
-                    </TouchableOpacity>
 
-                    <TouchableOpacity style = {{
-                        left: 20,
-                        width: 90, 
-                        height: 90, 
-                        backgroundColor: 'darkorange',
-                        borderRadius: 200/2,
-                        alignItems: 'center'}} onPress={this.discardRun}>
-                        
-                        <MaterialCommunityIcons name="trash-can-outline" size={50} style={{paddingTop: 5}} color = {"#5018D9"}/>
-                        
-                        <Text style = {{paddingVertical: 0, color: "#5018D9"}}>Discard</Text>
+                        <TextInput style={{ paddingLeft: 7, borderWidth: 5, borderColor: 'black', right: 0, width: 200 }}
+                            placeholder="Notes     "
+                            autoCapitalize="none"
+                            onChangeText={note => this.writeNote(note)}
+                            value={this.state.notes}
+                            multiline
+                            blurOnSubmit={true}
+                        />
 
-                    </TouchableOpacity>
-                </View>
-               
-                </View>
+                        <View style={{ paddingTop: 30, flexDirection: 'row', alignContent: 'space-between' }}>
+
+                            <TouchableOpacity style={{
+                                right: 20,
+                                width: 90,
+                                height: 90,
+                                backgroundColor: '#FFD700',
+                                borderRadius: 200 / 2,
+                                alignItems: 'center'
+                            }} onPress={this.saveRun}>
+
+                                <MaterialCommunityIcons name="check" size={50} style={{ paddingTop: 5 }} color={"#5018D9"} />
+
+                                <Text style={{ paddingBottom: 0, color: "#5018D9" }}>Save Run </Text>
+
+                            </TouchableOpacity>
+
+                            <TouchableOpacity style={{
+                                left: 20,
+                                width: 90,
+                                height: 90,
+                                backgroundColor: 'darkorange',
+                                borderRadius: 200 / 2,
+                                alignItems: 'center'
+                            }} onPress={this.discardRun}>
+
+                                <MaterialCommunityIcons name="trash-can-outline" size={50} style={{ paddingTop: 5 }} color={"#5018D9"} />
+
+                                <Text style={{ paddingVertical: 0, color: "#5018D9" }}>Discard</Text>
+
+                            </TouchableOpacity>
+                        </View>
+
+                    </View>
 
                 </KeyboardAvoidingView >
-                </View>
-             
-        
+            </View>
+
+
         );
     }
-    
+
 }
 
 class Circle extends Component {
-    
-    render () {
+
+    render() {
         return (
-            <View style = {{
+            <View style={{
                 width: 75,
                 height: 75,
                 backgroundColor: 'darkcyan',
-                borderRadius: 200/2
-            }}/>
+                borderRadius: 200 / 2
+            }} />
         )
     }
 }

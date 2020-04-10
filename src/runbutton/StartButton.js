@@ -1,12 +1,12 @@
 import React, { Component, } from 'react';
-import { View, TouchableOpacity , Text} from 'react-native';
-import {MaterialCommunityIcons} from '@expo/vector-icons';
+import { View, TouchableOpacity, Text } from 'react-native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 class Triangle extends Component {
 
     render() {
         return (
             <View style={{
-          
+
                 width: 0,
                 height: 0,
                 backgroundColor: 'transparent',
@@ -64,22 +64,23 @@ export default class StartButton extends Component {
                     shadowOpacity: 0.8,
                     shadowRadius: 5,
                 }} delayLongPress={1000} onPress={this.props.onPress} onLongPress={this.props.onLongPress}>
-                
-                {this.props.pauseButton ? 
-                    <View style={{ flexDirection: "row", justifyContent: 'space-between'}}>
-                    
-                        <MaterialCommunityIcons name="pause" size={50} style={{paddingTop: 0}} color={"#5018D9"}/>  
 
-                    </View> : 
+                {this.props.pauseButton ?
+                    <View style={{ flexDirection: "row", justifyContent: 'space-between' }}>
+
+                        <MaterialCommunityIcons name="pause" size={50} style={{ paddingTop: 0 }} color={"#5018D9"} />
+
+                    </View> :
                     <View>
-                            
-                            <MaterialCommunityIcons name="play" size={50} style={{paddingTop: 0}} color={"#5018D9"}/>
-                        
+
+                        <MaterialCommunityIcons name="play" size={50} style={{ paddingTop: 0 }} color={"#5018D9"} />
+
                     </View>
                 }
-             
+
             </TouchableOpacity>
         )
     }
 }
+
 

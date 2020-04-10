@@ -1,6 +1,6 @@
 import React, { Component, } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
-import {MaterialCommunityIcons} from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 
 class StopSign extends Component {
@@ -25,7 +25,7 @@ class StopSign extends Component {
                 shadowRadius: 5,
             }}>
 
-            <MaterialCommunityIcons name="stop" size={50} style={{paddingTop: 0}} color={"#5018D9"}/>   
+                <MaterialCommunityIcons name="stop" size={50} style={{ paddingTop: 0 }} color={"#5018D9"} />
 
             </View>
 
@@ -40,9 +40,9 @@ export default class StopRunButton extends Component {
             <View style={{ paddingVertical: 7 }}>
 
                 <TouchableOpacity delayLongPress={1000} onLongPress={this.props.onLongPress}>
-                    <View style={{ alignItems: 'center', paddingLeft:150 }}>
+                    <View style={{ alignItems: 'center', paddingLeft: 150 }}>
                         <StopSign />
-                       <Text> Hold To End Run</Text>
+                        <Text> Hold To End Run</Text>
                     </View>
                 </TouchableOpacity>
 

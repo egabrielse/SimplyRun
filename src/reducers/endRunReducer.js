@@ -10,13 +10,13 @@ const initialState = {
     hours: 0,
     mins: 0,
     secs: 0,
-    polyline:[]
-    }
+    polyline: []
+}
 
 
 
 //Modfies the store depending on actions 
-const endRunReducer = (state = initialState , action) => {
+const endRunReducer = (state = initialState, action) => {
     switch (action.type) {
         case "ENDRUN":
             return (state, {
@@ -26,7 +26,7 @@ const endRunReducer = (state = initialState , action) => {
                 route: action.route, hours: action.hours, mins: action.mins,
                 secs: action.secs, polyline: action.polyline
             })
-        case"CLEARRUN":
+        case "CLEARRUN":
             return state
         default:
             return state

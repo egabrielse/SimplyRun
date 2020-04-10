@@ -91,7 +91,7 @@ class InputPersonalInfo extends Component {
         }
         let settings = {
             metric: this.state.metric,
-            update_frequency:0,
+            update_frequency:true,
             display_time:true,
             display_distance:true,
             display_pace:true,

@@ -1,8 +1,9 @@
-export const UPDATE_NAME = "UPDATE_ALL"
-export const UPDATE_BIRTH = "UPDATE_ALL"
-export const UPDATE_HEIGHT = "UPDATE_ALL"
-export const UPDATE_WEIGHT = "UPDATE_ALL"
-export const UPDATE_SEX = "UPDATE_ALL"
+export const UPDATE_NAME = "UPDATE_NAME"
+export const UPDATE_BIRTH = "UPDATE_BIRTH"
+export const UPDATE_HEIGHT = "UPDATE_HEIGHT"
+export const UPDATE_WEIGHT = "UPDATE_WEIGHT"
+export const UPDATE_SEX = "UPDATE_SEX"
+export const UPDATE_EMAIL = "UPDATE_EMAIL"
 export const UPDATE_ALL_PERSONAL_INFO = "UPDATE_ALL_PERSONAL_INFO"
 
 
@@ -34,6 +35,12 @@ export const updateSexAction = (sex) => {
     return {
         type: UPDATE_SEX,
         sex:sex,
+    }
+}
+export const updateEmailAction = (email) => {
+    return {
+        type: UPDATE_EMAIL,
+        email:email,
     }
 }
 

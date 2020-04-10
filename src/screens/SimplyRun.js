@@ -14,7 +14,7 @@ firebaseConfig
 const haversine = require('haversine');
 
 class SimplyRun extends Component {
-   
+
     state = {
         stats: "",
         current: "",
@@ -33,7 +33,7 @@ class SimplyRun extends Component {
         startTime: "",
         route: "",
         pace: 0,
-        calories : 0
+        calories: 0
     }
 
     componentDidUpdate(prevProps) {
@@ -55,12 +55,12 @@ class SimplyRun extends Component {
         var formatHour = "" + this.state.hour; formatHour = formatHour.padStart(2, '0')
 
         var totalTimeSecs = (this.state.hour * 60 * 60) + (this.state.min * 60) + this.state.sec + (this.state.mili / 1000);
-        
+
         if (this.state.distance !== 0) {
             var pace = (totalTimeSecs / 60) / this.state.distance
             this.setState({ pace: pace })
 
-        } 
+        }
 
 
         if (!this.props.metric) {
@@ -70,7 +70,7 @@ class SimplyRun extends Component {
                     this.setState({
                         stats: "\n" + "Time" + ": " + formatHour + ":" + formatMin + ":" + formatSec + " hr:min:sec" +
                             "\n" + "Distance: " + this.state.distance.toFixed(2) + " miles" + "\n" + "Pace: " + this.state.pace.toFixed(2) +
-                            " mins/mile" + "\n" + "Calories: "+ this.state.calories.toFixed(0),
+                            " mins/mile" + "\n" + "Calories: " + this.state.calories.toFixed(0),
                     })
                 } else if (this.props.display_pace
                     && this.props.display_time && !this.props.display_calories) {//D P T
@@ -91,7 +91,7 @@ class SimplyRun extends Component {
                         stats: "\n" + "Time" + ": " + formatHour + ":" + formatMin + ":" + formatSec + " hr:min:sec" + "\n" +
                             "Distance: " + this.state.distance.toFixed(2) + " miles" + "\n" + "Calories: " + this.state.calories.toFixed(0),
                     })
-                }else if (!this.props.display_pace
+                } else if (!this.props.display_pace
                     && !this.props.display_time && this.props.display_calories) {//D C
                     this.setState({
                         stats: "\n" + "Distance: " + this.state.distance.toFixed(2) + " miles" + "\n" + "Calories: " + this.state.calories.toFixed(0),
@@ -157,7 +157,7 @@ class SimplyRun extends Component {
                     })
                 }
             }
-   
+
         } else {
             if (this.props.display_distance) {
                 if (this.props.display_pace
@@ -195,17 +195,17 @@ class SimplyRun extends Component {
                 } else if (this.props.display_pace
                     && !this.props.display_time && !this.props.display_calories) {//D P 
                     this.setState({
-                        stats: "\n" + "Distance: " + (this.state.distance * 1.609).toFixed(2)  + " km" + "\n" + "Pace: " + this.state.pace.toFixed(2) + " mins/km"
+                        stats: "\n" + "Distance: " + (this.state.distance * 1.609).toFixed(2) + " km" + "\n" + "Pace: " + this.state.pace.toFixed(2) + " mins/km"
                     })
                 } else if (!this.props.display_pace
                     && this.props.display_time && !this.props.display_calories) {//D T
                     this.setState({
                         stats: "\n" + "Time" + ": " + formatHour + ":" + formatMin + ":" + formatSec + " hr:min:sec" +
-                            "\n" + "Distance: " + (this.state.distance * 1.609).toFixed(2)  + " km"
+                            "\n" + "Distance: " + (this.state.distance * 1.609).toFixed(2) + " km"
                     })
                 } else {//D
                     this.setState({
-                        stats: "\n" + "Distance: " + (this.state.distance * 1.609).toFixed(2)  + " km"
+                        stats: "\n" + "Distance: " + (this.state.distance * 1.609).toFixed(2) + " km"
                     })
                 }
             } else if (!this.display_distance) {
@@ -272,7 +272,7 @@ class SimplyRun extends Component {
             this.state.min, this.state.sec, this.state.coordinates)
         this.setState({ hour: 0, min: 0, sec: 0, mili: 0, distance: 0, pace: 0, calories: 0, coordinates: [] })
         //this.formatStats()
-        this.setState({stats : ""})
+        this.setState({ stats: "" })
         this.setState({ endRun: false })
     }
 
@@ -432,7 +432,7 @@ class SimplyRun extends Component {
                         <Polyline coordinates={this.state.coordinates} strokeWidth={5} />
 
 
-                    </MapView>: null
+                    </MapView> : null
                 }
 
 
@@ -494,10 +494,10 @@ function mapStateToProps(state) {
 //Sends actions to the reducer in the App.js file 
 function mapDispatchtoProps(dispatch) {
     return {
-        sendRunStats: (time, distance, pace, calories, startTime, endTime, route, hours, mins,secs, polyline) => dispatch({
+        sendRunStats: (time, distance, pace, calories, startTime, endTime, route, hours, mins, secs, polyline) => dispatch({
             type: "ENDRUN", time, distance,
             pace, calories, startTime, endTime,
-            route, hours, mins,secs, polyline
+            route, hours, mins, secs, polyline
         }),
 
     }

@@ -2,6 +2,7 @@ import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import BottomTabNavigator from './src/navigation/BottomTabNavigator';
+import Launch from './src/screens/Launch'
 import Login from './src/screens/Login';
 import CreateAccount from './src/screens/CreateAccount'
 import InputPersonalInfo from './src/screens/InputPersonalInfo'
@@ -26,8 +27,9 @@ export default function App() {
         <Provider store={store}>
             <NavigationContainer >
                 <Stack.Navigator >
-                    <Stack.Screen name="Login" options={{ headerLeft: null }} component={Login} />
-                    <Stack.Screen name="CreateAccount" component={CreateAccount} />
+                    <Stack.Screen name="Launch" options={{headerLeft: null}} component={Launch}/>
+                    <Stack.Screen name="Login" options={{ headerLeft: null }} component={Login}/>
+                    <Stack.Screen name="CreateAccount" component={CreateAccount}/>
                     <Stack.Screen name="InputPersonalInfo" component={InputPersonalInfo}/>
                     <Stack.Screen name="Main" options={{ headerLeft: null }} component={BottomTabNavigator} />
                 </Stack.Navigator>
@@ -35,32 +37,3 @@ export default function App() {
         </Provider>
     );
 }
-
-// import * as React from 'react';
-// import { Platform, StatusBar, StyleSheet, View } from 'react-native';
-// import { NavigationContainer } from '@react-navigation/native';
-// import { createStackNavigator } from '@react-navigation/stack';
-
-// import BottomTabNavigator from './src/navigation/BottomTabNavigator';
-
-// const Stack = createStackNavigator();
-
-// export default function App(props) {
-//   return (
-//     <View style={styles.container}>
-//       {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
-//       <NavigationContainer >
-//         <Stack.Navigator>
-//           <Stack.Screen name="Root" component={BottomTabNavigator} />
-//         </Stack.Navigator>
-//       </NavigationContainer>
-//     </View>
-//   );
-// }
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     backgroundColor: '#fff',
-//   },
-// });
