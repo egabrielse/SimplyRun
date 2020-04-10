@@ -6,6 +6,7 @@ import {UPDATE_NAME,
     UPDATE_EMAIL,
     UPDATE_ALL_PERSONAL_INFO} from '../actions/PersonalInfoAction'
 
+
 //Initial state of the store 
 const initialState = {
     name:null,
