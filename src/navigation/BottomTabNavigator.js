@@ -5,6 +5,7 @@ import SimplyRun from '../screens/SimplyRun'
 import RunLog from '../screens/RunLog'
 import endRunNavigator from './endRunNavigator.js';
 import settingsNavigator from './settingsNavigator.js';
+import {MaterialCommunityIcons} from "@expo/vector-icons";
 
 const BottomTab = createBottomTabNavigator();
 const INITIAL_ROUTE_NAME = 'SIMPLY_RUN';
@@ -13,24 +14,28 @@ export default function BottomTabNavigator({ navigation, route }) {
   // Set the header title on the parent stack navigator depending on the
   // currently active tab. Learn more in the documentation:
   // https://reactnavigation.org/docs/en/screen-options-resolution.html
+
   navigation.setOptions({ headerTitle: getHeaderTitle(route) });
 
+  var activeTintColor = "#5018D9";
+  var inactiveTintColor = "#CBCBCB";
+
   return (
-    <BottomTab.Navigator initialRouteName={INITIAL_ROUTE_NAME}>
+    <BottomTab.Navigator initialRouteName={INITIAL_ROUTE_NAME} tabBarOptions={{activeTintColor: "blue", inactiveTintColor: "#CBCBCB"}}>
       <BottomTab.Screen
         name="RUN_LOG"
         component={RunLog}
         options={{
           title: 'Run Log',
-          tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="md-code-working" />,
+          tabBarIcon: ({ focused }) => <MaterialCommunityIcons focused={focused} name="folder-outline" size={25} style={{paddingTop: 0}} color={ focused ? activeTintColor : inactiveTintColor} />,
         }}
       />
       <BottomTab.Screen
         name="SIMPLY_RUN"
               component={endRunNavigator}
         options={{
-          title: 'Simply Run',
-          tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="md-code-working" />,
+          title: 'Start a Run',
+          tabBarIcon: ({ focused }) => <MaterialCommunityIcons focused={focused} name="run-fast" size={25} style={{paddingTop: 0}} color={ focused ? activeTintColor : inactiveTintColor} />,
         }}
       />
       <BottomTab.Screen
@@ -38,7 +43,7 @@ export default function BottomTabNavigator({ navigation, route }) {
         component={settingsNavigator}
         options={{
           title: 'Settings',
-          tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="md-book" />,
+          tabBarIcon: ({ focused }) => <MaterialCommunityIcons focused={focused} name="settings-outline" size={25} style={{paddingTop: 0}} color={ focused ? activeTintColor : inactiveTintColor} />,
         }}
       />
     </BottomTab.Navigator>

@@ -5,6 +5,7 @@ import * as firebase from 'firebase';
 import '@firebase/firestore';
 import { connect } from 'react-redux'
 import MapView, { Polyline } from 'react-native-maps';
+import {MaterialCommunityIcons} from '@expo/vector-icons';
 
 //Initialize firebase
 firebaseConfig
@@ -113,8 +114,10 @@ class EndRun extends Component {
                         backgroundColor: 'darkcyan',
                         borderRadius: 200/2,
                         alignItems: 'center' }} onPress={this.saveRun}>
+
+                        <MaterialCommunityIcons name="check" size={50} style={{paddingTop: 5}}/>
                         
-                        <Text style = {{paddingVertical: 35}}>Save Run </Text>
+                        <Text style = {{paddingBottom: 0}}>Save Run </Text>
                         
                     </TouchableOpacity>
 
@@ -126,7 +129,9 @@ class EndRun extends Component {
                         borderRadius: 200/2,
                         alignItems: 'center'}} onPress={this.discardRun}>
                         
-                        <Text style = {{paddingVertical: 35}}>Discard Run</Text>
+                        <MaterialCommunityIcons name="trash-can-outline" size={50} style={{paddingTop: 5}}/>
+                        
+                        <Text style = {{paddingVertical: 0}}>Discard</Text>
 
                     </TouchableOpacity>
                 </View>
