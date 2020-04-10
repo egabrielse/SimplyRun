@@ -17,7 +17,7 @@ class StopSign extends Component {
                 justifyContent: 'center',
                 width: 80,
                 height: 80,
-                backgroundColor: '#FCAC16',
+                backgroundColor: '#ff6347',
                 borderRadius: 75,
                 shadowColor: '#000',
                 shadowOffset: { width: 0, height: 2 },

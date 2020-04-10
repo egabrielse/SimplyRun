@@ -1,5 +1,5 @@
 import React, { Component, } from 'react';
-import { Text, View, Button, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { Text, View, Alert } from 'react-native';
 import firebaseConfig from '../config/firebaseConfig'
 import { connect } from 'react-redux'
 import StartButton from "../runbutton/StartButton"
@@ -7,6 +7,7 @@ import StopRunButton from "../runbutton/StopRunButton"
 import MapView, { Polyline } from 'react-native-maps';
 import * as firebase from 'firebase';
 import '@firebase/firestore';
+import calculateCalories from '../calories/CalculateCalories'
 //Firebase initialzation 
 firebaseConfig
 
@@ -31,7 +32,8 @@ class SimplyRun extends Component {
         hrs: 0,
         startTime: "",
         route: "",
-        pace: 0
+        pace: 0,
+        calories : 0
     }
 
     componentDidUpdate(prevProps) {
@@ -55,9 +57,11 @@ class SimplyRun extends Component {
         var totalTimeSecs = (this.state.hour * 60 * 60) + (this.state.min * 60) + this.state.sec + (this.state.mili / 1000);
         
         if (this.state.distance !== 0) {
-            var pace = (totalTimeSecs / 60) / this.state.distance.toFixed(2)
+            var pace = (totalTimeSecs / 60) / this.state.distance
             this.setState({ pace: pace })
+
         } 
+
 
         if (!this.props.metric) {
             if (this.props.display_distance) {
@@ -66,7 +70,7 @@ class SimplyRun extends Component {
                     this.setState({
                         stats: "\n" + "Time" + ": " + formatHour + ":" + formatMin + ":" + formatSec + " hr:min:sec" +
                             "\n" + "Distance: " + this.state.distance.toFixed(2) + " miles" + "\n" + "Pace: " + this.state.pace.toFixed(2) +
-                            " mins/mile" + "\n" + "Calories: 0.0 cals",
+                            " mins/mile" + "\n" + "Calories: "+ this.state.calories.toFixed(0),
                     })
                 } else if (this.props.display_pace
                     && this.props.display_time && !this.props.display_calories) {//D P T
@@ -79,18 +83,18 @@ class SimplyRun extends Component {
                     && !this.display_time && this.props.display_calories) {//D P C
                     this.setState({
                         stats: "\n" + "Distance: " + this.state.distance.toFixed(2) + " miles" + "\n" + "Pace: " + this.state.pace.toFixed(2) +
-                            " mins/mile" + "\n" + "Calories: 0.0 cals",
+                            " mins/mile" + "\n" + "Calories: " + this.state.calories.toFixed(0),
                     })
                 } else if (!this.props.display_pace
                     && this.props.display_time && this.props.display_calories) {//D T C
                     this.setState({
                         stats: "\n" + "Time" + ": " + formatHour + ":" + formatMin + ":" + formatSec + " hr:min:sec" + "\n" +
-                            "Distance: " + this.state.distance.toFixed(2) + " miles" + "\n" + "Calories: 0.0 cals",
+                            "Distance: " + this.state.distance.toFixed(2) + " miles" + "\n" + "Calories: " + this.state.calories.toFixed(0),
                     })
                 }else if (!this.props.display_pace
                     && !this.props.display_time && this.props.display_calories) {//D C
                     this.setState({
-                        stats: "\n" + "Distance: " + this.state.distance.toFixed(2) + " miles" + "\n" + "Calories: 0.0 cals",
+                        stats: "\n" + "Distance: " + this.state.distance.toFixed(2) + " miles" + "\n" + "Calories: " + this.state.calories.toFixed(0),
                     })
                 } else if (this.props.display_pace
                     && !this.props.display_time && !this.props.display_calories) {//D P 
@@ -113,7 +117,7 @@ class SimplyRun extends Component {
                     && this.props.display_time && this.props.display_calories) {//T  P C
                     this.setState({
                         stats: "\n" + "Time" + ": " + formatHour + ":" + formatMin + ":" + formatSec + " hr:min:sec" + "\n"
-                            + "Pace: " + this.state.pace.toFixed(2) + " mins/mile" + "\n" + "Calories: 0.0 cals",
+                            + "Pace: " + this.state.pace.toFixed(2) + " mins/mile" + "\n" + "Calories: " + this.state.calories.toFixed(0),
                     })
                 } else if (this.props.display_pace
                     && this.props.display_time && !this.props.display_calories) {//T P
@@ -125,17 +129,17 @@ class SimplyRun extends Component {
                 } else if (this.props.display_pace
                     && !this.props.display_time && this.props.display_calories) {//P C
                     this.setState({
-                        stats: "\n" + "Pace: " + this.state.pace.toFixed(2) + " mins/mile" + "\n" + "Calories: 0.0 cals",
+                        stats: "\n" + "Pace: " + this.state.pace.toFixed(2) + " mins/mile" + "\n" + "Calories: " + this.state.calories.toFixed(0),
                     })
                 } else if (!this.props.display_pace
                     && this.props.display_time && this.props.display_calories) {//T C
                     this.setState({
-                        stats: "\n" + "Time" + ": " + formatHour + ":" + formatMin + ":" + formatSec + " hr:min:sec" + "\n" + "Calories: 0.0 cals",
+                        stats: "\n" + "Time" + ": " + formatHour + ":" + formatMin + ":" + formatSec + " hr:min:sec" + "\n" + "Calories: " + this.state.calories.toFixed(0),
                     })
                 } else if (!this.props.display_pace
                     && !this.props.display_time && this.props.display_calories) {//C
                     this.setState({
-                        stats: "\n" + "Calories: 0.0 cals",
+                        stats: "\n" + "Calories: " + this.state.calories.toFixed(0),
                     })
                 } else if (this.props.display_pace
                     && !this.props.display_time && !this.props.display_calories) {// P 
@@ -161,7 +165,7 @@ class SimplyRun extends Component {
                     this.setState({
                         stats: "\n" + "Time" + ": " + formatHour + ":" + formatMin + ":" + formatSec + " hr:min:sec" +
                             "\n" + "Distance: " + (this.state.distance * 1.609).toFixed(2) + " km" + "\n" + "Pace: " + (this.state.pace * .621).toFixed(2)
-                            + " mins/km" + "\n" + "Calories: 0.0 cals",
+                            + " mins/km" + "\n" + "Calories: " + this.state.calories.toFixed(0),
                     })
                 } else if (this.props.display_pace
                     && this.props.display_time && !this.props.display_calories) {//D P T
@@ -175,18 +179,18 @@ class SimplyRun extends Component {
                     && !this.display_time && this.props.display_calories) {//D P C
                     this.setState({
                         stats: "\n" + "Distance: " + (this.state.distance * 1.609).toFixed(2) + " km" + "\n" + "Pace: " + (this.state.pace * .621).toFixed(2)
-                            + " mins/km" + "\n" + "Calories: 0.0 cals",
+                            + " mins/km" + "\n" + "Calories: " + this.state.calories.toFixed(0),
                     })
                 } else if (!this.props.display_pace
                     && this.props.display_time && this.props.display_calories) {//D T C
                     this.setState({
                         stats: "\n" + "Time" + ": " + formatHour + ":" + formatMin + ":" + formatSec + " hr:min:sec" + "\n" +
-                            "Distance: " + (this.state.distance * 1.609).toFixed(2)  + " km" + "\n" + "Calories: 0.0 cals",
+                            "Distance: " + (this.state.distance * 1.609).toFixed(2) + " km" + "\n" + "Calories: " + this.state.calories.toFixed(0),
                     })
                 } else if (!this.props.display_pace
                     && !this.props.display_time && this.props.display_calories) {//D C
                     this.setState({
-                        stats: "\n" + "Distance: " + (this.state.distance * 1.609).toFixed(2) + " km" + "\n" + "Calories: 0.0 cals",
+                        stats: "\n" + "Distance: " + (this.state.distance * 1.609).toFixed(2) + " km" + "\n" + "Calories: " + this.state.calories.toFixed(0),
                     })
                 } else if (this.props.display_pace
                     && !this.props.display_time && !this.props.display_calories) {//D P 
@@ -209,7 +213,7 @@ class SimplyRun extends Component {
                     && this.props.display_time && this.props.display_calories) {//T  P C
                     this.setState({
                         stats: "\n" + "Time" + ": " + formatHour + ":" + formatMin + ":" + formatSec + " hr:min:sec" + "\n"
-                            + "Pace: " + (this.state.pace * .621).toFixed(2) + " mins/km" + "\n" + "Calories: 0.0 cals",
+                            + "Pace: " + (this.state.pace * .621).toFixed(2) + " mins/km" + "\n" + "Calories: " + this.state.calories.toFixed(0),
                     })
                 } else if (this.props.display_pace
                     && this.props.display_time && !this.props.display_calories) {//T P
@@ -221,17 +225,17 @@ class SimplyRun extends Component {
                 } else if (this.props.display_pace
                     && !this.props.display_time && this.props.display_calories) {//P C
                     this.setState({
-                        stats: "\n" + "Pace: " + (this.state.pace * .621).toFixed(2) + " mins/km" + "\n" + "Calories: 0.0 cals",
+                        stats: "\n" + "Pace: " + (this.state.pace * .621).toFixed(2) + " mins/km" + "\n" + "Calories: " + this.state.calories.toFixed(0)
                     })
                 } else if (!this.props.display_pace
                     && this.props.display_time && this.props.display_calories) {//T C
                     this.setState({
-                        stats: "\n" + "Time" + ": " + formatHour + ":" + formatMin + ":" + formatSec + " hr:min:sec" + "\n" + "Calories: 0.0 cals",
+                        stats: "\n" + "Time" + ": " + formatHour + ":" + formatMin + ":" + formatSec + " hr:min:sec" + "\n" + "Calories: " + this.state.calories.toFixed(0),
                     })
                 } else if (!this.props.display_pace
                     && !this.props.display_time && this.props.display_calories) {//C
                     this.setState({
-                        stats: "\n" + "Calories: 0.0 cals",
+                        stats: "\n" + "Calories: " + this.state.calories.toFixed(0),
                     })
                 } else if (this.props.display_pace
                     && !this.props.display_time && !this.props.display_calories) {// P 
@@ -264,9 +268,9 @@ class SimplyRun extends Component {
         }
         //Using Redux to pass info to the EndRun Screen
         time = this.props.sendRunStats(totalTimeSecs, this.state.distance,
-            this.state.pace, 0.0, this.state.startTime, new Date(), this.state.route, this.state.hour,
+            this.state.pace, this.state.calories, this.state.startTime, new Date(), this.state.route, this.state.hour,
             this.state.min, this.state.sec, this.state.coordinates)
-        this.setState({ hour: 0, min: 0, sec: 0, mili: 0, distance: 0, pace: 0, })
+        this.setState({ hour: 0, min: 0, sec: 0, mili: 0, distance: 0, pace: 0, calories: 0, coordinates: [] })
         //this.formatStats()
         this.setState({stats : ""})
         this.setState({ endRun: false })
@@ -393,6 +397,14 @@ class SimplyRun extends Component {
                 }
 
             )
+
+            if (this.state.distance !== 0) {
+                var totalTimeSecs = (this.state.hour * 60 * 60) + (this.state.min * 60) + this.state.sec + (this.state.mili / 1000);
+                let kmPerHour = ((this.state.distance * 1.609)) / ((totalTimeSecs / 60) / 60)
+                let cal = calculateCalories((this.props.weight * .435), kmPerHour, (totalTimeSecs / 60))
+                this.setState({ calories: cal })
+            }
+
         }, 10000), 1000);
     }
 
@@ -476,6 +488,7 @@ function mapStateToProps(state) {
         display_time: state.SettingsReducer.display_time,
         metric: state.SettingsReducer.metric,
         update_frequency: state.SettingsReducer.update_frequency,
+        weight: state.PersonalInfoReducer.weight
     }
 }
 //Sends actions to the reducer in the App.js file 
