@@ -111,13 +111,13 @@ class EndRun extends Component {
                         right: 20, 
                         width: 90, 
                         height: 90, 
-                        backgroundColor: 'darkcyan',
+                        backgroundColor: '#FFD700',
                         borderRadius: 200/2,
                         alignItems: 'center' }} onPress={this.saveRun}>
 
-                        <MaterialCommunityIcons name="check" size={50} style={{paddingTop: 5}}/>
+                        <MaterialCommunityIcons name="check" size={50} style={{paddingTop: 5}} color={"#5018D9"}/>
                         
-                        <Text style = {{paddingBottom: 0}}>Save Run </Text>
+                        <Text style = {{paddingBottom: 0, color: "#5018D9"}}>Save Run </Text>
                         
                     </TouchableOpacity>
 
@@ -129,9 +129,9 @@ class EndRun extends Component {
                         borderRadius: 200/2,
                         alignItems: 'center'}} onPress={this.discardRun}>
                         
-                        <MaterialCommunityIcons name="trash-can-outline" size={50} style={{paddingTop: 5}}/>
+                        <MaterialCommunityIcons name="trash-can-outline" size={50} style={{paddingTop: 5}} color = {"#5018D9"}/>
                         
-                        <Text style = {{paddingVertical: 0}}>Discard</Text>
+                        <Text style = {{paddingVertical: 0, color: "#5018D9"}}>Discard</Text>
 
                     </TouchableOpacity>
                 </View>

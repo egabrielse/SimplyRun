@@ -1,5 +1,6 @@
 import React, { Component, } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
+import {MaterialCommunityIcons} from '@expo/vector-icons';
 
 
 class StopSign extends Component {
@@ -9,62 +10,22 @@ class StopSign extends Component {
     }
     render() {
         return (
-            <View>
+            <View style={{
+                borderWidth: 2,
+                borderColor: 'rgba(0,0,0,0.2)',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: 80,
+                height: 80,
+                backgroundColor: '#FCAC16',
+                borderRadius: 75,
+                shadowColor: '#000',
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.8,
+                shadowRadius: 5,
+            }}>
 
-                <View >
-                    <View style={{
-                        width: 30,
-                        height: 75,
-                        backgroundColor: this.state.color,
-                        shadowColor: '#000',
-                        shadowOffset: { width: 0, height: 2 },
-                        shadowOpacity: 0.8,
-                        shadowRadius: 5,
-                    }} />
-                    <View style={{
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        transform: [
-                            { rotate: '90deg' }
-                        ],
-                        width: 30,
-                        height: 75,
-                        backgroundColor: this.state.color,
-                        shadowColor: '#000',
-                        shadowOffset: { width: 0, height: 2 },
-                        shadowOpacity: 0.8,
-                        shadowRadius: 5,
-                    }} />
-                    <View style={{
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        transform: [
-                            { rotate: '-45deg' }
-                        ],
-                        width: 30,
-                        height: 75,
-                        backgroundColor: this.state.color,
-                        shadowColor: '#000',
-
-
-                    }} />
-                    <View style={{
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        transform: [
-                            { rotate: '45deg' }
-                        ],
-                        width: 30,
-                        height: 75,
-                        backgroundColor: this.state.color,
-                        shadowColor: '#000',
-
-                    }} />
-
-                </View>
+            <MaterialCommunityIcons name="stop" size={50} style={{paddingTop: 0}} color={"#5018D9"}/>   
 
             </View>
 

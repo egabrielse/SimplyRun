@@ -57,7 +57,7 @@ export default class StartButton extends Component {
                     justifyContent: 'center',
                     width: 80,
                     height: 80,
-                    backgroundColor: '#32cd32',
+                    backgroundColor: '#FCAC16',
                     borderRadius: 75,
                     shadowColor: '#000',
                     shadowOffset: { width: 0, height: 2 },
@@ -68,12 +68,12 @@ export default class StartButton extends Component {
                 {this.props.pauseButton ? 
                     <View style={{ flexDirection: "row", justifyContent: 'space-between'}}>
                     
-                        <MaterialCommunityIcons name="pause" size={50} style={{paddingTop: 0}}/>  
+                        <MaterialCommunityIcons name="pause" size={50} style={{paddingTop: 0}} color={"#5018D9"}/>  
 
                     </View> : 
                     <View>
                             
-                            <MaterialCommunityIcons name="play" size={50} style={{paddingTop: 0}}/>
+                            <MaterialCommunityIcons name="play" size={50} style={{paddingTop: 0}} color={"#5018D9"}/>
                         
                     </View>
                 }
