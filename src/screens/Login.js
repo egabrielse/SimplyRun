@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
-import { Text, View, TextInput, TouchableOpacity, Alert, StyleSheet, Button, KeyboardAvoidingView} from 'react-native';
+import { ScrollView, Text, View, TextInput, TouchableOpacity, Alert, StyleSheet, Button, KeyboardAvoidingView} from 'react-native';
 import firebase from 'firebase';
-import firebaseConfig from '../config/firebaseConfig'
-import { connect } from 'react-redux'
-import { ScrollView } from 'react-native-gesture-handler';
+import firebaseConfig from '../config/firebaseConfig';
+import { connect } from 'react-redux';
 import {addRunAction} from '../actions/RunLogAction'
 import {createLoginAction} from '../actions/UserAuthenticationAction'
 import {updateAllPersonalInfoAction} from '../actions/PersonalInfoAction'

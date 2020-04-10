@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Login screen renders correctly 1`] = `
+exports[`CreateAccount screen renders correctly 1`] = `
 <RCTScrollView
   contentContainerStyle={
     Object {
@@ -68,7 +68,7 @@ exports[`Login screen renders correctly 1`] = `
               "height": 50,
               "justifyContent": "center",
               "maxHeight": 50,
-              "padding": 8,
+              "padding": 5,
             }
           }
           underlineColorAndroid="transparent"
@@ -82,6 +82,29 @@ exports[`Login screen renders correctly 1`] = `
           onSubmitEditing={[Function]}
           placeholder="Password"
           rejectResponderTermination={true}
+          returnKeyType="next"
+          secureTextEntry={true}
+          style={
+            Object {
+              "borderColor": "lightgrey",
+              "borderWidth": 1,
+              "height": 50,
+              "justifyContent": "center",
+              "maxHeight": 50,
+              "padding": 5,
+            }
+          }
+          underlineColorAndroid="transparent"
+          value={null}
+        />
+        <TextInput
+          allowFontScaling={true}
+          autoCapitalize="none"
+          keyboardType="email-address"
+          onChangeText={[Function]}
+          onSubmitEditing={[Function]}
+          placeholder="Confirm Password"
+          rejectResponderTermination={true}
           returnKeyType="done"
           secureTextEntry={true}
           style={
@@ -91,7 +114,7 @@ exports[`Login screen renders correctly 1`] = `
               "height": 50,
               "justifyContent": "center",
               "maxHeight": 50,
-              "padding": 8,
+              "padding": 5,
             }
           }
           underlineColorAndroid="transparent"
@@ -133,70 +156,8 @@ exports[`Login screen renders correctly 1`] = `
                 }
               }
             >
-              Sign In!
+              Sign Up!
             </Text>
-          </View>
-        </View>
-        <View
-          style={
-            Object {
-              "alignItems": "center",
-              "flexDirection": "row",
-              "height": 75,
-              "justifyContent": "center",
-            }
-          }
-        >
-          <Text
-            style={
-              Object {
-                "fontSize": 18,
-              }
-            }
-          >
-            Don't have an account?
-          </Text>
-          <View
-            accessibilityRole="button"
-            accessibilityStates={Array []}
-            accessible={true}
-            focusable={true}
-            isTVSelectable={true}
-            onClick={[Function]}
-            onResponderGrant={[Function]}
-            onResponderMove={[Function]}
-            onResponderRelease={[Function]}
-            onResponderTerminate={[Function]}
-            onResponderTerminationRequest={[Function]}
-            onStartShouldSetResponder={[Function]}
-            style={
-              Object {
-                "opacity": 1,
-              }
-            }
-          >
-            <View
-              style={
-                Array [
-                  Object {},
-                ]
-              }
-            >
-              <Text
-                style={
-                  Array [
-                    Object {
-                      "color": "#007AFF",
-                      "fontSize": 18,
-                      "padding": 8,
-                      "textAlign": "center",
-                    },
-                  ]
-                }
-              >
-                Sign Up!
-              </Text>
-            </View>
           </View>
         </View>
         <View
@@ -236,7 +197,7 @@ exports[`Login screen renders correctly 1`] = `
                 }
               }
             >
-              DEV:Skip Login
+              DEV:Skip Account
             </Text>
           </View>
         </View>

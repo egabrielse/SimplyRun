@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
-import { Text, View, TextInput, TouchableOpacity, Alert, StyleSheet, KeyboardAvoidingView} from 'react-native';
+import { ScrollView, Text, View, TextInput, TouchableOpacity, Alert, StyleSheet, KeyboardAvoidingView} from 'react-native';
 import firebase from 'firebase';
-import firebaseConfig from '../config/firebaseConfig'
-import { connect } from 'react-redux'
-import { ScrollView } from 'react-native-gesture-handler';
+import firebaseConfig from '../config/firebaseConfig';
+import { connect } from 'react-redux';
 import ModalDropdown from 'react-native-modal-dropdown';
 import {months, days, years} from '../constants/Date'
 import {updateAllPersonalInfoAction} from '../actions/PersonalInfoAction'

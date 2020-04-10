@@ -1,5 +1,5 @@
 import React from 'react';
-import Login from '../src/screens/Login';
+import CreateAccount from '../src/screens/CreateAccount';
 import renderer from 'react-test-renderer';
 import configureStore from 'redux-mock-store'
 import initialState from './mock_stores/initialState'
@@ -7,8 +7,7 @@ import { Provider } from 'react-redux';
 
 const createMockStore = configureStore([])
 
-
-describe("Login screen", () => {
+describe("CreateAccount screen", () => {
 
     beforeEach(() => {
         mockStore = createMockStore(initialState)
@@ -17,7 +16,7 @@ describe("Login screen", () => {
     it('renders correctly', () => {
         const tree = renderer.create(
             <Provider store={mockStore}>
-                <Login/>
+                <CreateAccount/>
             </Provider>
         ).toJSON();
         expect(tree).toMatchSnapshot();

@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
-import { Text, View, TextInput, Alert, StyleSheet, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
+import { ScrollView, Text, View, TextInput, Alert, StyleSheet, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
 import firebase from 'firebase'
 import firebaseConfig from '../config/firebaseConfig'
 import '@firebase/firestore';
 import { connect } from 'react-redux'
-import { ScrollView } from 'react-native-gesture-handler';
 import {createLoginAction} from '../actions/UserAuthenticationAction'
 
 //Firebase initialization 
