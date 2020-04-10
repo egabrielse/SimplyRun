@@ -22,12 +22,6 @@ class CreateAccount extends Component {
         confirmValid:false,
     }
 
-
-    DEV_SKIP_ACCOUNT = () => {
-        console.log("CreateAccount: DEV_SKIP_ACCOUNT")
-        this.props.navigation.navigate("InputPersonalInfo")
-    }
-
     signUp = () => {
         console.log("CreateAccount: Attempting to sign in a new user")
         let e = this.state.email;
@@ -51,7 +45,7 @@ class CreateAccount extends Component {
                     this.props.navigation.navigate("InputPersonalInfo")
 
                     // Reset CreateAccount's state
-                    this.setState({ oldEmail:e,email:null,password:null,confirmPassword:null,emailValid:false,passwordValid:false, confirmValid:false})
+                    this.setState({email:null,password:null,confirmPassword:null,emailValid:false,passwordValid:false, confirmValid:false})
 
                 })
                 .catch((error) => {
@@ -161,12 +155,6 @@ class CreateAccount extends Component {
                             </View>
                         </TouchableOpacity>
 
-                        {/*DEVELOPER BUTTON FOR SKIPPING CREATE ACCOUNT*/}
-                        <TouchableOpacity onPress={() => this.DEV_SKIP_ACCOUNT()}>
-                            <View style={{height:50, maxHeight:50, backgroundColor:"red", padding:8, justifyContent:'center', alignItems:'center'}}>
-                                <Text style={{fontSize:20,color:'white'}}>DEV:Skip Account</Text>
-                            </View>
-                        </TouchableOpacity>
                     </View>
 
                 </KeyboardAvoidingView>
