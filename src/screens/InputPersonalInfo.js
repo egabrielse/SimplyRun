@@ -3,11 +3,11 @@ import { ScrollView, Text, View, TextInput, TouchableOpacity, Alert, StyleSheet,
 import firebase from 'firebase';
 import firebaseConfig from '../config/firebaseConfig';
 import { connect } from 'react-redux';
-import ModalDropdown from 'react-native-modal-dropdown';
-import {months, days, years} from '../constants/Date'
-import {updateAllPersonalInfoAction} from '../actions/PersonalInfoAction'
-import {updateAllSettingsAction} from '../actions/SettingsAction'
-import {convertCentimetersToInches, convertKilogramsToPounds} from '../constants/ConversionFunctions'
+import RNPickerSelect from 'react-native-picker-select';
+import {months, days, years} from '../constants/Date';
+import {updateAllPersonalInfoAction} from '../actions/PersonalInfoAction';
+import {updateAllSettingsAction} from '../actions/SettingsAction';
+import {convertCentimetersToInches, convertKilogramsToPounds} from '../constants/ConversionFunctions';
 
 //References to the root of the firestore database
 const firestore = firebase.firestore();
@@ -189,34 +189,35 @@ class InputPersonalInfo extends Component {
                         </View>
 
 
+
+
                         {/*TextInput for inputing user's birthday (used for calculating age)*/}
                         <View style={{ minHeight:25, flexDirection:'row', justifyContent:'center',alignItems:'center', paddingTop:10}}>
                             <Text style={{flex:1, alignContent:'center', justifyContent:'center'}}>Birth Date:</Text>
                         </View>
                         <View style={{ minHeight:50, flexDirection:'row', justifyContent:'center',alignItems:'center'}}>
-                            <ModalDropdown
-                                defaultValue={"Month"}
-                                textStyle={{fontSize:20}}
-                                style={{fontSize:18, flex:1, borderColor:'lightgray', borderWidth:1, height:50, alignItems:'center', justifyContent:'center'}}
-                                dropdownTextStyle={{fontSize:18}}
-                                options={months}
-                                onSelect={(index, value) => this.setState({month:value})}/>
-                            <ModalDropdown
-                                defaultValue={"Day"}
-                                textStyle={{fontSize:20}}
-                                style={{fontSize:18, flex:1, borderColor:'lightgray', borderWidth:1, height:50, alignItems:'center', justifyContent:'center'}}
-                                dropdownTextStyle={{fontSize:18}}
-                                options={days}
-                                onSelect={(index, value) => this.setState({day:value})}/>
-                            <ModalDropdown
-                                defaultValue={"Year"}
-                                textStyle={{fontSize:20}}
-                                style={{fontSize:18, flex:1, borderColor:'lightgray', borderWidth:1, height:50, alignItems:'center', justifyContent:'center'}}
-                                dropdownTextStyle={{fontSize:18}}
-                                options={years}
-                                onSelect={(index, value) => this.setState({year:value})}/>
+                            <View style={styles.pickerStyle}>
+                                <RNPickerSelect
+                                    items={months}
+                                    placeholder={{label: "Month",value:null}}
+                                    value={this.state.month}
+                                    onValueChange={(value, index) => this.setState({month:value})}/>
+                            </View>
+                            <View style={styles.pickerStyle}>
+                                <RNPickerSelect
+                                    items={days}
+                                    placeholder={{label: "Day",value:null}}
+                                    value={this.state.day}
+                                    onValueChange={(value, index) => this.setState({day:value})}/>
+                            </View>
+                            <View style={styles.pickerStyle}>
+                                <RNPickerSelect
+                                    items={years}
+                                    placeholder={{label: "Year",value:null}}
+                                    value={this.state.year}
+                                    onValueChange={(value, index) => this.setState({year:value})}/>
+                            </View>
                         </View>
-
 
                         {/*TextInputs for inputing user's height*/}
                         <View style={{ minHeight:25, flexDirection:'row', justifyContent:'center',alignItems:'center', paddingTop:10}}>
@@ -342,5 +343,15 @@ const styles = StyleSheet.create({
         fontSize:40,
         fontWeight:'bold',
         fontStyle:'italic',
+    },
+    pickerStyle: {
+        fontSize:18,
+        flex:1,
+        borderColor:'lightgray',
+        borderWidth:1, height:50,
+        alignItems:'center',
+        justifyContent:'center',
+        alignContent:'center',
+        paddingHorizontal:10,
     }
   });
