@@ -17,9 +17,9 @@ class updateEmailPassword extends Component {
         this.state = {
             oldEmail: this.props.email,
             email:this.props.email,
-            oldPassword:null,
-            password:null,
-            confirmPassword:null,
+            oldPassword:"",
+            password:"",
+            confirmPassword:"",
         };
     }
 
@@ -117,7 +117,7 @@ class updateEmailPassword extends Component {
 
         // reset state and return to settings if everything went gracefully
         if(toReturn == 1) {
-            this.setState({ oldEmail:e,email:null,password:null,confirmPassword:null})
+            this.setState({ oldEmail:e,email:null,password:"",confirmPassword:""})
             this.props.navigation.navigate('SETTINGS');
         }
     }
