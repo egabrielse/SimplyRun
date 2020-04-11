@@ -190,8 +190,8 @@ class InputPersonalInfo extends Component {
                         </View>
 
 
-                                                {/*TextInput for inputing user's birthday (used for calculating age)*/}
-                                                <View style={{ minHeight:25, flexDirection:'row', justifyContent:'center',alignItems:'center', paddingTop:10}}>
+                        {/*TextInput for inputing user's birthday (used for calculating age)*/}
+                        <View style={{ minHeight:25, flexDirection:'row', justifyContent:'center',alignItems:'center', paddingTop:10}}>
                             <Text style={{flex:1, alignContent:'center', justifyContent:'center'}}>Birth Date:</Text>
                         </View>
                         <View style={{ minHeight:50, flexDirection:'row', justifyContent:'center',alignItems:'center'}}>
