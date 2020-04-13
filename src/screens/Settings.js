@@ -44,7 +44,7 @@ class Settings extends Component {
                         <Text style = {styles.title}>Settings</Text>
                         <Text style = {styles.text}> Unit: {(this.props.metric ? "Metric" : "Imperial")} </Text>
                         <Text style = {styles.text}> Stats Displayed: {this.props.stats_to_display} </Text>
-                        <Text style = {styles.text}> Audio Updates: {(this.props.update_frequency ? "On" : "Off")} </Text>
+                        {/* <Text style = {styles.text}> Audio Updates: {(this.props.update_frequency ? "On" : "Off")} </Text> */}
                         {/* Button to update email address and/or password */}
                         <TouchableOpacity
                             style={styles.updateButton}
