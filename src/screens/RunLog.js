@@ -46,7 +46,8 @@ class RunLog extends Component {
   }
 
   //takes date object and formats to MM/DD/YYYY
-  formatDate(date) {
+  formatDate(dateString) {
+    const date = new Date(dateString);
     const year = date.getFullYear().toString();
     const day = date.getDate().toString();
 
@@ -194,8 +195,8 @@ class RunLog extends Component {
           <Text style = {styles.title}> Run Log </Text>
           <Text style = {styles.totals}> Total Time: {this.formatTime(this.props.total_time)} </Text>
           <Text style = {styles.totals}> Total Distance: {this.props.total_distance.toFixed(2)} miles </Text>
-          <Text style = {styles.totals}> Average Pace: {this.formatPace((this.props.total_time / 60) / this.props.total_distance)} min/mi </Text>
-          <Text style = {styles.totals}> Total Calories: {this.props.total_calories} </Text>
+          <Text style = {styles.totals}> Average Pace: {this.props.total_distance > 0 ? this.formatPace((this.props.total_time / 60) / this.props.total_distance) : "0:00"} min/mi </Text>
+          <Text style = {styles.totals}> Total Calories: {this.props.total_calories.toFixed()} </Text>
 
         <Table borderStyle={{borderWidth: 0}}>
         <TableWrapper style={styles.head}>

@@ -33,7 +33,7 @@ const RunLogReducer = (state = initialState, action) => {
                 total_time: state.total_time + action.time,
                 total_distance: state.total_distance + action.distance,
                 total_calories: state.total_calories + action.calories,
-                average_pace: ((state.total_time)/60)/(state.total_distance)
+                //average_pace: ((state.total_time)/60)/(state.total_distance)
             }
             
 
