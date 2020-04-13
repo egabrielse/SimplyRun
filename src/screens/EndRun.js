@@ -6,6 +6,7 @@ import '@firebase/firestore';
 import { connect } from 'react-redux'
 import MapView, { Polyline } from 'react-native-maps';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import {addRunAction} from '../actions/RunLogAction'
 
 //Initialize firebase
 firebaseConfig
@@ -35,6 +36,19 @@ class EndRun extends Component {
             start_time: this.props.startTime,
             time: this.props.time,
             pace: this.props.pace
+        }).then((doc) => {
+            const run = {
+                id: doc.id,
+                calories: this.props.calories,
+                distance: this.props.distance,
+                end_time: this.props.endTime,
+                note: this.state.notes,
+                route: this.props.route,
+                start_time: this.props.startTime,
+                time: this.props.time,
+                pace: this.props.pace
+            }
+            this.props.addRun(run)
         })
     }
 
@@ -191,7 +205,8 @@ function mapStateToProps(state) {
 function mapDispatchtoProps(dispatch) {
     return {
         sendTime: (time) => dispatch({ type: "ENDRUN", time }),
-        clearRun: () => dispatch({ type: "CLEARRUN" })
+        clearRun: () => dispatch({ type: "CLEARRUN" }),
+        addRun: (run) => dispatch(addRunAction(run))
     }
 }
 
