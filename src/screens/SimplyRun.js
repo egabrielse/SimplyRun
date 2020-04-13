@@ -15,7 +15,7 @@ firebaseConfig
 
 const haversine = require('haversine');
 
-class SimplyRun extends Component {
+export class SimplyRun extends Component {
 
     state = {
         stats: "",

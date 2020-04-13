@@ -54,6 +54,7 @@
     "@babel/core": "^7.0.0",
     "babel-preset-expo": "~8.0.0",
     "jest-expo": "~36.0.1",
+    "jest-expo-enzyme": "^1.0.0",
     "react-test-renderer": "^16.13.1"
   },
   "ios": {

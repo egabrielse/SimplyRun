@@ -1,18 +1,11 @@
-import { shallow } from 'enzyme';
 import React from 'react';
-import { View, StyleSheet, Platform } from 'react-native';
-import Enzyme from 'enzyme'
-import Adapter from 'enzyme-adapter-react-16'
 import renderer from 'react-test-renderer';
-import {SimplyRun} from '../src/screens/SimplyRun'
+import SimplyRun from '../src/screens/SimplyRun'
 import configureStore from 'redux-mock-store'
 import { Provider } from 'react-redux';
 import initialState from '../__mock_stores__/initialState'
-
-
 const createMockStore = configureStore([])
 
-Enzyme.configure({ adapter: new Adapter() })
 
 jest.mock('react-native-maps', () => {
     const React = jest.requireActual('react');
@@ -53,13 +46,21 @@ jest.mock('react-native-maps', () => {
     return MockMapView;
 });
 
+describe("Run screen", () => {
 
-jest.useFakeTimers();
-test("Test Timer", () => {
-    const t = renderer.create(<SimplyRun />)
-    const instance = t.getInstance()
-    instance.start()
-    expect(instance.state.secs).toBe(0)
+    beforeEach(() => {
+        mockStore = createMockStore(initialState)
+    })
+
+    it('renders correctly', () => {
+        const tree = renderer.create(
+            <Provider store={mockStore}>
+                <SimplyRun />
+            </Provider>
+        ).toJSON();
+        expect(tree).toMatchSnapshot();
+    });
+
+
 
 })
-
