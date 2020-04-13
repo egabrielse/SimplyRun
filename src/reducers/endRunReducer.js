@@ -1,4 +1,5 @@
 
+import { END_RUN, } from '../actions/EndRunAction'
 const initialState = {
     time: 0,
     distance: 0,
@@ -18,7 +19,7 @@ const initialState = {
 //Modfies the store depending on actions 
 const endRunReducer = (state = initialState, action) => {
     switch (action.type) {
-        case "ENDRUN":
+        case END_RUN:
             return (state, {
                 time: action.time, distance: action.distance,
                 pace: action.pace, calories: action.calories,

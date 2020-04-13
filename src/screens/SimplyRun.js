@@ -8,6 +8,8 @@ import MapView, { Polyline } from 'react-native-maps';
 import * as firebase from 'firebase';
 import '@firebase/firestore';
 import calculateCalories from '../calories/CalculateCalories'
+
+import { END_RUN, } from '../actions/EndRunAction'
 //Firebase initialzation 
 firebaseConfig
 
@@ -495,7 +497,7 @@ function mapStateToProps(state) {
 function mapDispatchtoProps(dispatch) {
     return {
         sendRunStats: (time, distance, pace, calories, startTime, endTime, route, hours, mins, secs, polyline) => dispatch({
-            type: "ENDRUN", time, distance,
+            type: END_RUN, time, distance,
             pace, calories, startTime, endTime,
             route, hours, mins, secs, polyline
         }),
