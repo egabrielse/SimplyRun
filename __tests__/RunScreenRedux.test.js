@@ -137,17 +137,8 @@ describe("Run screen", () => {
 
         const enzymeWrapper = shallow(<SimplyRun store={createMockStore(s)} />)
         const component = enzymeWrapper.dive().dive();
-        console.log(component.find("StartButton").length)
+        
         component.find("StartButton").props().onPress();
-        SettingsReducer(initialState, {
-            type: UPDATE_ALL_SETTINGS,
-            display_calories: true,
-            display_distance: true,
-            display_pace: true,
-            display_time: true,
-            metric: true,
-            update_frequency: true,
-        })
         component.find("StartButton").props().onPress();
         component.find("StartButton").props().onPress();
     });

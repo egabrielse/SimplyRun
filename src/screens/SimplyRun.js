@@ -265,7 +265,7 @@ export class SimplyRun extends Component {
         var totalTimeSecs = (this.state.hour * 60 * 60) + (this.state.min * 60) + this.state.sec + (this.state.mili / 1000);
 
         if (this.state.distance !== 0) {
-            var pace = (totalTimeSecs / 60) / this.state.distance.toFixed(2)
+            var pace = (totalTimeSecs / 60) / this.state.distance
             this.setState({ pace: pace })
         }
         //Using Redux to pass info to the EndRun Screen
