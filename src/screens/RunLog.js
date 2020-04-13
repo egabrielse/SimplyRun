@@ -257,7 +257,7 @@ class RunLog extends Component {
                       longitudeDelta: 0.03,
                     }}>
                   
-                  <Polyline coordinates = {this.state.route}
+                  <Polyline coordinates = {this.state.route.length > 0 ? this.state.route : []}
                       strokeColor="#000"
                       strokeColors={[
                         '#7F0000',

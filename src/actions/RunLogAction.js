@@ -17,8 +17,10 @@ export const addRunAction = (newRun) => {
     }
     
     //get average latitude and average longitude to determine where to center the map
-    lat = lat /newRun.route.length;
-    long /= newRun.route.length;
+    if (newRun.route.length !== 0) {
+        lat = lat /newRun.route.length;
+        long /= newRun.route.length;
+    }
 
 
     return {
