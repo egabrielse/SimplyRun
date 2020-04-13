@@ -5,7 +5,7 @@ import * as firebase from 'firebase';
 import '@firebase/firestore';
 
 export const addRunAction = (newRun) => {
-    var route = [];
+//    var route = [];
     var lat = 0;
     var long = 0;
   
@@ -14,12 +14,14 @@ export const addRunAction = (newRun) => {
         geopoint = newRun.route[i]
         lat += geopoint.latitude;
         long += geopoint.longitude;
-        route.push({latitude: geopoint.latitude, longitude: geopoint.longitude});
+    //    route.push({latitude: geopoint.latitude, longitude: geopoint.longitude});
     }
     
     //get average latitude and average longitude to determine where to center the map
-    lat = lat /newRun.route.length;
-    long /= newRun.route.length;
+    if (newRun.route.length !== 0) {
+        lat = lat /newRun.route.length;
+        long /= newRun.route.length;
+    }
 
 
     return {
@@ -32,7 +34,7 @@ export const addRunAction = (newRun) => {
         calories: newRun.calories,
         start_time: newRun.start_time.toString(),
         end_time: newRun.end_time.toString(),
-        route: route,
+        route: newRun.route,
         lat: Number(lat.toFixed(6)),
         long: Number(long.toFixed(6)),
     }
