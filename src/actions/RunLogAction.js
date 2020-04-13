@@ -1,5 +1,6 @@
 export const ADD_RUN = "ADD_RUN"
 export const DELETE_RUN = "DELETE_RUN"
+export const RESET_RUNS = "RESET_RUNS"
 import * as firebase from 'firebase';
 import '@firebase/firestore';
 
@@ -41,5 +42,11 @@ export const deleteRunAction = (id) => {
     return {
         type: DELETE_RUN,
         id:id,
+    }
+}
+
+export const resetRunsAction = () => {
+    return {
+        type: RESET_RUNS,
     }
 }

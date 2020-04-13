@@ -17,72 +17,102 @@ class updateEmailPassword extends Component {
         this.state = {
             oldEmail: this.props.email,
             email:this.props.email,
-            password:null,
-            confirmPassword:null,
+            oldPassword:"",
+            password:"",
+            confirmPassword:"",
         };
     }
 
     sendToFirebase = () => {
         let e = this.state.email;
+        let p0 = this.state.oldPassword;
         let p = this.state.password;
         let p2 = this.state.confirmPassword;
 
         let user = firebase.auth().currentUser;
+        var credential = firebase.auth.EmailAuthProvider.credential(
+            this.state.oldEmail,
+            p0
+        );
 
         // flag variable. Determines whether function should navigate back to settings upon execution
         let toReturn = 1;
 
-        // update email if it changed
-        if(e != null && e.trim() != "" && e !== this.state.oldEmail) {
-            user.updateEmail(e)
-                .then(() => {
-                    console.log("Email successfully updated in firebase auth");
+        if(p0 === null || p0 === "") {
+            Alert.alert("Please provide your old password.");
+            toReturn = 0;
+        }
 
-                    // get personal info from firebase to quickly update email
-                    firestore.collection('users').doc(user.uid).get().then((doc) => {
-                        // update firebase, then update redux for email, if changed
-                        firestore.collection('users').doc(user.uid)
-                        .update({personal: doc.data().personal})
-                        .then(() => {
-                            console.log("Successfully updated email in firebase")
-                            // Update all personal info in store
-                            this.props.dispatch(updateEmailAction(e))
-                            Alert.alert("Email successfully changed!");
-                        }).catch(function(error) {
-                            console.log("InputPersonalInfo:", error.message)
-                            Alert.alert(error.message);
-                            toReturn = 0;
+        // update email if it changed
+        if(e != null && e.trim() != "" && e !== this.state.oldEmail && toReturn === 1) {
+            // re-authenticate user
+            user.reauthenticateWithCredential(credential).then(() => {
+                user.updateEmail(e)
+                    .then(() => {
+                        console.log("Email successfully updated in firebase auth");
+    
+                        // get personal info from firebase to quickly update email
+                        firestore.collection('users').doc(user.uid).get().then((doc) => {
+    
+                            // update email in firestore
+                            let newPersonal = doc.data().personal;
+                            newPersonal.email = e;
+    
+                            // update firebase, then update redux for email, if changed
+                            firestore.collection('users').doc(user.uid)
+                            .update({personal: newPersonal})
+                            .then(() => {
+                                console.log("Successfully updated email in firebase")
+                                // Update all personal info in store
+                                this.props.dispatch(updateEmailAction(e))
+                                Alert.alert("Email successfully changed!");
+                            }).catch(function(error) {
+                                console.log("InputPersonalInfo:", error.message)
+                                Alert.alert(error.message);
+                                toReturn = 0;
+                            })
                         })
                     })
-                })
-                .catch((error) => {
-                    Alert.alert(error.message);
-                    toReturn = 0;
-                });
+                    .catch((error) => {
+                        Alert.alert(error.message);
+                        toReturn = 0;
+                    });
+            }).catch((error) => {
+                console.log("UpdateEmail: An error occurred while reauthenticating");
+                Alert.alert("An error occurred while reauthenticating");
+                toReturn = 0;
+            })
         } else {
             console.log("User did not attempt to change email.");
         }
 
         // update password if it changed
-        if(p != null && p.trim() != "" && p2 != null && p2.trim() != "") {
+        if(p != null && p.trim() != "" && p2 != null && p2.trim() != "" && toReturn === 1) {
             // update password if p and p2 match
             if (p === p2) {
-                user.updatePassword(p)
-                .then(() => {
-                    console.log("Password successfully updated!");
-                    Alert.alert("Password successfully updated!");
-                })
-                .catch((error) => {
-                    Alert.alert(error.message);
+                // re-authenticate user
+                user.reauthenticateWithCredential(credential).then(() => {
+                    user.updatePassword(p)
+                    .then(() => {
+                        console.log("Password successfully updated!");
+                        Alert.alert("Password successfully updated!");
+                    })
+                    .catch((error) => {
+                        Alert.alert(error.message);
+                        toReturn = 0;
+                    });
+                }).catch((error) => {
+                    console.log("UpdatePassword: An error occurred while reauthenticating");
+                    Alert.alert("An error occurred while reauthenticating");
                     toReturn = 0;
-                });
+                })
             } else {
                 console.log("UpdatePassword: password and confirmPassword do not match.");
                 Alert.alert("Passwords do not match.");
                 toReturn = 0;
             }
-        } else {
-            if((p != null && p.trim() != "") || (p2 != null && p2.trim() != "")) {
+        } else if(toReturn === 1) {
+            if((p != null && p.trim() != "") || (p2 != null && p2.trim() != "" )) {
                 console.log("User only filled out one of the password fields.");
                 Alert.alert("Please fill out both password boxes if you wish to change your password.")
             } else {
@@ -91,8 +121,8 @@ class updateEmailPassword extends Component {
         }
 
         // reset state and return to settings if everything went gracefully
-        if(toReturn == 1) {
-            this.setState({ oldEmail:e,email:null,password:null,confirmPassword:null})
+        if(toReturn === 1) {
+            this.setState({ oldEmail:e,email:null,password:"",confirmPassword:""})
             this.props.navigation.navigate('SETTINGS');
         }
     }
@@ -106,9 +136,27 @@ class updateEmailPassword extends Component {
                         placeholder="Email"
                         value={this.state.email}
                         onChangeText={(text) => this.setState({email: text})}
+                        textContentType='oneTimeCode'
                         autoCapitalize='none'
                         returnKeyType={'next'}
                         onSubmitEditing={() => { this.passwordInput.focus(); }}
+                        keyboardType='email-address'
+                        style={styles.textInput}
+                    />
+
+                    <Text style={{fontSize: 11, margin: 5}}>Please provide your old password to confirm your identity</Text>
+
+                    {/*TextInput for old password*/}
+                    <TextInput
+                        placeholder="Old Password" 
+                        value={this.state.oldPassword}
+                        onChangeText={(text) => this.setState({oldPassword: text})}
+                        textContentType='oneTimeCode'
+                        secureTextEntry
+                        autoCapitalize='none'
+                        returnKeyType={'next'}
+                        ref={(input) => { this.passwordInput = input; }}
+                        onSubmitEditing={() => {this.confirm.focus()}}
                         keyboardType='email-address'
                         style={styles.textInput}
                     />
@@ -120,6 +168,7 @@ class updateEmailPassword extends Component {
                         placeholder="Password" 
                         value={this.state.password}
                         onChangeText={(text) => this.setState({password: text})}
+                        textContentType='oneTimeCode'
                         secureTextEntry
                         autoCapitalize='none'
                         returnKeyType={'next'}
@@ -135,6 +184,7 @@ class updateEmailPassword extends Component {
                         placeholder="Confirm Password" 
                         value={this.state.confirmPassword}
                         onChangeText={(text) => this.setState({confirmPassword: text})}
+                        textContentType='oneTimeCode'
                         secureTextEntry
                         autoCapitalize='none'
                         returnKeyType={'done'}
