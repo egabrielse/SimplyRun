@@ -4,7 +4,8 @@ import {UPDATE_NAME,
     UPDATE_WEIGHT,
     UPDATE_SEX,
     UPDATE_EMAIL,
-    UPDATE_ALL_PERSONAL_INFO} from '../actions/PersonalInfoAction'
+    UPDATE_ALL_PERSONAL_INFO,
+    RESET_ALL} from '../actions/PersonalInfoAction'
 
 
 //Initial state of the store 
@@ -53,6 +54,16 @@ const PersonalInfoReducer = (state = initialState, action) => {
                 height:action.height,
                 weight:action.weight,
                 sex:action.sex}
+
+        case RESET_ALL:
+            console.log("PersonalInfoReducer ( RESET_ALL ) resetting all personal info fields to initial values")
+            return { ...state,
+                name:null,
+                email: null,
+                birthday: null,
+                height: null,
+                weight:null,
+                sex:"male",}
 
         default:
             console.log("PersonalInfoReducer (",action.type,"): default case (no change to state)")

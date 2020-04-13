@@ -329,14 +329,14 @@ class editSettings extends Component {
                             </View>
                         </View>
                     {/* Switch for whether or not to output audio feedback every mile/km */}
-                    <View style={styles.row}>
+                    {/* <View style={styles.row}>
                         <Text>Audio updates every mile/km: </Text> 
                         <Switch  
                             value={this.state.update_frequency}  
                             onValueChange ={(value) => {
                                 this.setState({update_frequency: value})
                             }}/>
-                    </View>
+                    </View> */}
                     <Text>Stats to Display on Run Screen:</Text>
                     {/* Switches for what stats the user wants displayed on the run screen */}
                     <View style={styles.row}>

@@ -1,4 +1,5 @@
 import {UPDATE_ALL_SETTINGS,} from '../actions/SettingsAction'
+import {RESET_ALL_SETTINGS,} from '../actions/SettingsAction'
 
 //Initial state of the store 
 const initialState = {
@@ -22,6 +23,17 @@ const SettingsReducer = (state = initialState, action) => {
                 display_time: action.display_time,
                 metric: action.metric,
                 update_frequency: action.update_frequency,
+            }
+
+        case RESET_ALL_SETTINGS:
+            console.log("SettingsReducer ( RESET_ALL_SETTINGS ): resetting all settings fields")
+            return { ...state,
+                display_calories:false,
+                display_distance: false,
+                display_pace: false,
+                display_time:false,
+                metric:false,
+                update_frequency:false,
             }
 
         default:

@@ -1,5 +1,6 @@
 import {ADD_RUN,
-        DELETE_RUN} from '../actions/RunLogAction'
+        DELETE_RUN,
+        RESET_RUNS} from '../actions/RunLogAction'
 
 //Initial state of the store 
 const initialState = {
@@ -59,6 +60,15 @@ const RunLogReducer = (state = initialState, action) => {
                 }
             }
 
+        case RESET_RUNS:
+            console.log("RunLogReducer: ( RESET_RUNS ): resetting runs in store.")
+            return {...state, 
+                runs:[],
+                total_time:0,
+                total_distance:0,
+                total_calories:0,
+                // average_pace:0,
+            }
 
         default:
             console.log("RunLogReducer (",action.type,"): default case (no change to state)")
