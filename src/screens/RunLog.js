@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import firebaseConfig from '../config/firebaseConfig'
 import firebase from 'firebase';
 import MapView, {Polyline} from 'react-native-maps';
+import { deleteRunAction } from '../actions/RunLogAction';
 
 class RunLog extends Component {
 
@@ -15,13 +16,11 @@ class RunLog extends Component {
         modalVisible: false,
         modalData: [],
         date: null,
-        total_time: null,
-        total_distance: null,
-        average_pace: null,
-        total_calories: null,
         route: [],
         lat: 0,
-        long: 0
+        long: 0,
+        selectedRun: null,
+        ascendingSort: true,
     };
 
   //takes seconds and converts to HH:MM:SS format
@@ -29,7 +28,7 @@ class RunLog extends Component {
     var hours = Math.trunc(time / 3600);
     time %= 3600;
     var minutes = Math.trunc(time / 60);
-    var seconds = (time % 60).toFixed(2);
+    var seconds = (time % 60).toFixed();
     if (hours   < 10) hours   = "0" + hours;
     if (minutes < 10) minutes = "0" + minutes;
     if (seconds < 10) seconds = "0" + seconds;
@@ -37,104 +36,155 @@ class RunLog extends Component {
     return hours + ":" + minutes + ":" + seconds;
   }  
 
-  //takes seconds and converts to MM:SS format
+  //takes pace and converts to MM:SS format
   formatPace(time) {
-    var seconds = Math.trunc(time % 60);
-    var minutes = Math.trunc(time / 60);
+    var seconds = Math.trunc(time * 60 % 60);
+    var minutes = Math.trunc(time);
     if (seconds < 10) seconds = "0" + seconds;
 
     return minutes + ":" + seconds;
-  }  
+  }
+
+  //takes date object and formats to MM/DD/YYYY
+  formatDate(dateString) {
+    const date = new Date(dateString);
+    const year = date.getFullYear().toString();
+    const day = date.getDate().toString();
+
+    return (date.getMonth() + 1) + "/" + day + "/" + year;
+  }
+
+  //sorts data in table based on column selected
+  sortTable(field, ascending) {
+    const sortedTableData = this.state.tableData.sort(function(a,b) {
+      if (a[field] === b[field]) {
+        return 0;
+      }
+      else if (ascending) {
+        return (a[field] < b[field]) ? -1 : 1;
+      }
+      else return (a[field] > b[field]) ? -1 : 1;
+  });
+      this.setState({
+        tableData: sortedTableData,
+        ascendingSort: !this.state.ascendingSort
+      });
+  }
+  
+
 
   async componentDidMount() {
-    
-      //get all runs in runlog and populate table
-      const tableData = [];
-      var total_time = 0;
-      var total_distance = 0;
-      var average_pace = 0;
-      var total_calories = 0;
-      await firebaseConfig.firestore().collection("users").doc(firebaseConfig.auth().currentUser.uid)
-                                      .collection("RunLog").get().then((querySnapshot) => {
-        querySnapshot.forEach((doc) => {
-            const rowData = [];
-            total_time += doc.get("time");
-            total_distance += doc.get("distance");
-            total_calories += doc.get("calories");
-            rowData.push(doc.get("start_time").toDate().toString().substring(0,16));
-            rowData.push(doc.get("distance").toFixed(2) + " mi");
-
-            //format and add time & pace
-            rowData.push(this.formatTime(doc.get("time")));
-            rowData.push(this.formatPace(doc.get("pace")) + " min/mi");
-            rowData.push(doc.id);
-            tableData.push(rowData);
-        });
-
-        average_pace = this.formatPace(total_time / total_distance);
-        total_time = this.formatTime(total_time);
-        total_distance = total_distance.toFixed(2);
-      });
-
-
-    this.setState({
-      tableData : tableData,
-      total_time: total_time,
-      total_distance: total_distance,
-      average_pace: average_pace,
-      total_calories: total_calories,
+    const tableData = [];
+    this.props.runs.forEach(run => {
+      const rowData = [];
+      rowData.push(this.formatDate(run.start_time)); //fix formatting
+      rowData.push(run.distance.toFixed(2) + " mi");
+      rowData.push(this.formatTime(run.time));
+      rowData.push(this.formatPace(run.pace) + " min/mi");
+      rowData.push(run.id);
+      tableData.push(rowData);
     });
 
+    await this.setState({
+      tableData : tableData,
+    });
+
+    //sort by date by default
+    this.sortTable(0, true);
+  
   }
 
+  async componentDidUpdate(prevProps, prevState) {
+
+    //if amount of runs has changed after delete/add, update table
+    if (prevProps.runs.length !== this.props.runs.length) {
+
+      const tableData = [];
+      this.props.runs.forEach(run => {
+      const rowData = [];
+      rowData.push(this.formatDate(run.start_time)); //fix formatting
+      rowData.push(run.distance.toFixed(2) + " mi");
+      rowData.push(this.formatTime(run.time));
+      rowData.push(this.formatPace(run.pace) + " min/mi");
+      rowData.push(run.id);
+      tableData.push(rowData);
+      });
+
+      this.state.tableData = tableData;
+
+      //sort by date by default
+      this.sortTable(0, true);
+    }
+  
+  }
+
+
+  //fetches run details and displays modal
   async setModalVisible(visible, id) {
-    await this.RunDetails(id);
-    this.setState({modalVisible: visible});
+     await this.RunDetails(id);
+     this.setState({modalVisible: visible});
   }
 
 
+  ConfirmDeleteRun() {
+    Alert.alert(
+      'Delete Run',
+      'Would you like to delete this run?',
+      [
+          {
+          text: 'No',
+          style: 'cancel'
+          },
+          { text: 'Yes', onPress: () => {
+             firebaseConfig.firestore().collection("users").doc(firebaseConfig.auth().currentUser.uid)
+                                       .collection("RunLog").doc(this.state.selectedRun.id).delete();
+
+            this.props.dispatch(deleteRunAction(this.state.selectedRun.id))
+            alert('Run deleted');
+            this.componentDidMount();
+            this.setState({modalVisible: !this.state.modalVisible});
+
+            }
+          }
+          
+      ],
+      { cancelable: false },
+  );
+  }
+
+
+  //gets info for selected run
   async RunDetails(id) {
 
-          //get info for specific run
-          const modalData = [];
-          var date = null;
-          var route = [];
-          var lat = 0;
-          var long = 0;
-          await firebaseConfig.firestore().collection("users").doc(firebaseConfig.auth().currentUser.uid)
-                                          .collection("RunLog").doc(id).get().then((doc) => {
-                const rowData = [];
-                modalData.push("Time: " + this.formatTime(doc.get("time")) + "\n");
-                modalData.push("Distance: " + doc.get("distance").toFixed(2)  + " miles\n");
-                modalData.push("Pace: " + this.formatPace(doc.get("pace")) + " mi/min\n");
-                modalData.push("Calories: " + doc.get("calories") + "\n");
-                modalData.push("Notes: " + doc.get("note") + "\n");
-                date = doc.get("start_time").toDate().toString();
-
-                //build route
-                doc.get("route").forEach(geopoint => {
-                  lat += geopoint.latitude;
-                  long += geopoint.longitude;
-                  route.push({latitude: geopoint.latitude, longitude: geopoint.longitude});
-                });
-
-                //get average latitude and average longitude to determine where to center the map
-                lat /= doc.get("route").length;
-                long /= doc.get("route").length;
-          });
-
-          
-
-        //temporary way to display date
-        date = date.substring(0,16);
-    
+    await this.props.runs.forEach(run => {
+      if (run.id === id) {
         this.setState({
-          modalData : modalData,
-          date: date,
-          route: route,
-          lat: lat,
-          long: long
+          selectedRun: run,
         });
+      }
+    });
+    if (this.state.selectedRun === null) {
+      alert("Unable to load run details.")
+      return;
+    }
+    const modalData = [];
+    modalData.push("Time: " + this.formatTime(this.state.selectedRun.time) + "\n");
+    modalData.push("Distance: " + this.state.selectedRun.distance.toFixed(2)  + " miles\n");
+    modalData.push("Pace: " + this.formatPace(this.state.selectedRun.pace) + " mi/min\n");
+    modalData.push("Calories: " + this.state.selectedRun.calories + "\n");
+    modalData.push("Notes: " + this.state.selectedRun.note + "\n");
+    const date = this.formatDate(this.state.selectedRun.start_time);
+    const lat = this.state.selectedRun.lat;
+    const long = this.state.selectedRun.long;
+    const route = this.state.selectedRun.route;
+
+    this.setState({
+      modalData : modalData,
+      date: date,
+      route: route,
+      lat: lat,
+      long: long
+    });
   }
 
 
@@ -143,16 +193,28 @@ class RunLog extends Component {
       <ScrollView >
         <View>
           <Text style = {styles.title}> Run Log </Text>
-          <Text style = {styles.totals}> Total Time: {this.state.total_time} </Text>
-          <Text style = {styles.totals}> Total Distance: {this.state.total_distance} miles </Text>
-          <Text style = {styles.totals}> Average Pace: {this.state.average_pace} min/mi </Text>
-          <Text style = {styles.totals}> Total Calories: {this.state.total_calories} </Text>
-          <Table borderStyle={{borderWidth: 0}}>
-            <Row data={this.state.tableHead} style={styles.head} textStyle={styles.tableTitles}/>
+          <Text style = {styles.totals}> Total Time: {this.formatTime(this.props.total_time)} </Text>
+          <Text style = {styles.totals}> Total Distance: {this.props.total_distance.toFixed(2)} miles </Text>
+          <Text style = {styles.totals}> Average Pace: {this.props.total_distance > 0 ? this.formatPace((this.props.total_time / 60) / this.props.total_distance) : "0:00"} min/mi </Text>
+          <Text style = {styles.totals}> Total Calories: {this.props.total_calories.toFixed()} </Text>
+
+        <Table borderStyle={{borderWidth: 0}}>
+        <TableWrapper style={styles.head}>
+            {this.state.tableHead.map((title, index) => (
+                    <Cell key={index}
+                      data={title}
+                      style={styles.head} 
+                      textStyle={styles.tableTitles}
+                      onPress={() => this.sortTable(index, this.state.ascendingSort)}
+                    />
+            ))}
+            </TableWrapper>
+            
             {this.state.tableData.map((rowData, index) => (
                 <TouchableHighlight key={index} underlayColor='#AAAAAA' style={[index%2 && {backgroundColor: '#DDDDDD'}]} onPress={() => this.setModalVisible(!this.state.modalVisible, rowData[rowData.length - 1])}>
                     <Row
                       data={rowData.slice(0, rowData.length - 1)} 
+                      style={styles.table}
                       textStyle={styles.text}
                     />
                 </TouchableHighlight>    
@@ -165,6 +227,7 @@ class RunLog extends Component {
           visible={this.state.modalVisible}>
           <View style={{marginTop: 22}}>
             <View>
+              <View style={{ flexDirection: 'row' }}>
             <TouchableHighlight
               underlayColor='#AAAAAA'
              style={styles.backbutton}
@@ -176,6 +239,16 @@ class RunLog extends Component {
                 <Text style={styles.buttonText}>Back</Text>
               </TouchableHighlight>
 
+            <TouchableHighlight
+              underlayColor='#AAAAAA'
+              style={styles.deletebutton}
+                onPress={() => {
+                  this.ConfirmDeleteRun();
+                }}>
+                <Text style={styles.buttonText}>Delete</Text>
+            </TouchableHighlight>
+            </View>
+
               <Text style={styles.title}>Run Details</Text>
               <MapView style={styles.map}
                     region={{
@@ -185,7 +258,7 @@ class RunLog extends Component {
                       longitudeDelta: 0.03,
                     }}>
                   
-                  <Polyline coordinates = {this.state.route}
+                  <Polyline coordinates = {this.state.route.length > 0 ? this.state.route : []}
                       strokeColor="#000"
                       strokeColors={[
                         '#7F0000',
@@ -215,6 +288,10 @@ const mapStateToProps = state => {
   return {
       user: state.user,
       name: state.PersonalInfoReducer.name,
+      runs: state.RunLogReducer.runs,
+      total_time: state.RunLogReducer.total_time,
+      total_distance: state.RunLogReducer.total_distance,
+      total_calories: state.RunLogReducer.total_calories
   }
 }
 
@@ -224,7 +301,8 @@ export default connect(mapStateToProps)(RunLog);
 const styles = StyleSheet.create({
 
   container: { flex: 1, padding: 16, paddingTop: 30, backgroundColor: '#fff' },
-  head: { height: 40, backgroundColor: '#A44CA0' },
+  head: { height: 40, flex: 1, flexDirection: 'row', backgroundColor: '#A44CA0' },
+  table: {height: 40},
   text: { margin: 6 },
 
   title: {
@@ -264,11 +342,21 @@ button: {
   },
   backbutton: {
     marginLeft: 15,
-    marginRight: 300,
     marginTop:10,
     paddingTop:10,
     paddingBottom:10,
     backgroundColor:'#BBBBBB',
+    borderRadius:5,
+    borderWidth: 1,
+    borderColor: '#fff'
+  },
+  deletebutton: {
+    marginRight: 15,
+    marginLeft: 200,
+    marginTop:10,
+    paddingTop:10,
+    paddingBottom:10,
+    backgroundColor:'#c5050c',
     borderRadius:5,
     borderWidth: 1,
     borderColor: '#fff'
