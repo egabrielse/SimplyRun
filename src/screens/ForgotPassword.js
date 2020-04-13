@@ -12,7 +12,7 @@ import {updateAllSettingsAction} from '../actions/SettingsAction'
 //Firebase initialzation 
 firebaseConfig
 
-class ForgotPassword extends Component {
+export class ForgotPassword extends Component {
     state = {
         email:null,
         // password:null,
@@ -47,21 +47,23 @@ class ForgotPassword extends Component {
         }
     }
 
-    confirmResetCode = () => {
-        this.setState({
-            verified:true,
-        })
-    }
+    // confirmResetCode = () => {
+    //     this.setState({
+    //         verified:true,
+    //     })
+    // }
 
     // changePassword = () => {
     //     this.props.navigation.navigate("Login")
     // }
 
     updateEmail = (text) => {
-        if (text != null && text.trim() != "" && text.length >= 8) {
-            this.setState({email:text, emailValid:true})
-        } else {
-            this.setState({email:text, emailValid:false})
+        if (text != null && text.trim() != "") {
+            if (text.length >= 8) {
+                this.setState({email:text, emailValid:true})
+            } else {
+                this.setState({email:text, emailValid:false})
+            }
         }
     }
     // updatePassword = (text) => {

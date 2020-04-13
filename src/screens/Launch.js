@@ -5,7 +5,6 @@ import firebase from 'firebase';
 import firebaseConfig from '../config/firebaseConfig'
 import { connect } from 'react-redux'
 import {addRunAction} from '../actions/RunLogAction'
-import {createLoginAction} from '../actions/UserAuthenticationAction'
 import {updateAllPersonalInfoAction} from '../actions/PersonalInfoAction'
 import {updateAllSettingsAction} from '../actions/SettingsAction'
 
@@ -30,8 +29,6 @@ class Launch extends Component {
                 console.log("Launch: Successfully fetched user data for user with uid=", user.uid)
                 let userData = doc.data()
 
-                // Update login info in store
-                this.props.dispatch(createLoginAction(user))
                 // Update all personal info in store
                 this.props.dispatch(updateAllPersonalInfoAction(userData.personal))
                 // Update all settings info in store 
