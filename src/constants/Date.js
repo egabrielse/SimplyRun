@@ -3,11 +3,35 @@ const yearRange = () => {
     let endYear = new Date().getFullYear() - 10
     let years = []
     for (let i = endYear; i >= startYear; i--) {
-        years.push(i)
+        years.push({label:String(i),value:String(i)})
     }
     return years
 }
 
-export const months = ['January','February','March','April','May','June','July','August','September','October','November','December']
-export const days = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31]
+const monthRange = () => {
+    let startMonth = 1
+    let endMonth = 31
+    let months = []
+    for (let i = startMonth; i <= endMonth; i++) {
+        months.push({label:String(i),value:String(i)})
+    }
+    return months
+}
+
+
+export const months = [
+    {label:'January',value:'January'},
+    {label:'February',value:'February'},
+    {label:'March',value:'March'},
+    {label:'April',value:'April'},
+    {label:'May',value:'May'},
+    {label:'June',value:'June'},
+    {label:'July',value:'July'},
+    {label:'August',value:'August'},
+    {label:'September',value:'September'},
+    {label:'October',value:'October'},
+    {label:'November',value:'November'},
+    {label:'December',value:'December'}
+]
+export const days = monthRange()
 export const years = yearRange()

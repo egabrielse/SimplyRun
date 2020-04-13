@@ -84,9 +84,36 @@ class RunLog extends Component {
       tableData.push(rowData);
     });
 
-    this.setState({
+    await this.setState({
       tableData : tableData,
     });
+
+    //sort by date by default
+    this.sortTable(0, true);
+  
+  }
+
+  async componentDidUpdate(prevProps, prevState) {
+
+    //if amount of runs has changed after delete/add, update table
+    if (prevProps.runs.length !== this.props.runs.length) {
+
+      const tableData = [];
+      this.props.runs.forEach(run => {
+      const rowData = [];
+      rowData.push(this.formatDate(run.start_time)); //fix formatting
+      rowData.push(run.distance.toFixed(2) + " mi");
+      rowData.push(this.formatTime(run.time));
+      rowData.push(this.formatPace(run.pace) + " min/mi");
+      rowData.push(run.id);
+      tableData.push(rowData);
+      });
+
+      this.state.tableData = tableData;
+
+      //sort by date by default
+      this.sortTable(0, true);
+    }
   
   }
 

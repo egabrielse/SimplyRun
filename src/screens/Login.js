@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, TextInput, TouchableOpacity, Alert, StyleSheet, Button, KeyboardAvoidingView} from 'react-native';
+import { Text, View, TextInput, TouchableOpacity, Alert, StyleSheet, KeyboardAvoidingView} from 'react-native';
 import firebase from 'firebase';
 import firebaseConfig from '../config/firebaseConfig'
 import { connect } from 'react-redux'
@@ -22,14 +22,14 @@ class Login extends Component {
         passwordValid:false,
     }
 
-    // DEVELOPER FUNCTION: Used to bypass the login/create account screens
-    DEV_SKIP_LOGIN = () => {
-        this.props.navigation.navigate('Main')
-    }
-
     // Function to navigate to the CreateAcount Screen
     goToCreateAccount = () => {
         this.props.navigation.navigate('CreateAccount');
+    }
+
+    // Function to navigate to the CreateAcount Screen
+    gotToForgotPassword = () => {
+        this.props.navigation.navigate('ForgotPassword');
     }
 
     signIn = () => {
@@ -119,6 +119,7 @@ class Login extends Component {
             this.setState({email:text, emailValid:false})
         }
     }
+
     updatePassword = (text) => {
         if (text != null && text.trim() != "" && text.length >= 8) {
             this.setState({password:text, passwordValid:true})
@@ -184,16 +185,14 @@ class Login extends Component {
                         {/*Button for changing to the CreateAccount screen*/}
                         <View style={{flexDirection:'row', justifyContent:'center', alignItems:'center', height:75}}>
                             <Text style={{fontSize:18}}>Don't have an account?</Text>
-                            <Button title="Sign Up!" onPress={this.goToCreateAccount}/>
+                            <Text style={{fontSize:18, color:'#076fd9', paddingLeft:10}} onPress={this.goToCreateAccount}>Sign Up!</Text>
                         </View>
 
+                        {/*Button for resetting forgotten password*/}
+                        <View style={{justifyContent:'center', alignItems:'center', height:25}}>
+                            <Text style={{fontSize:18, color:'#076fd9'}} onPress={this.gotToForgotPassword}>Forgot Password?</Text>
+                        </View>
 
-                        {/*DEVELOPER BUTTON FOR SKIPPING LOGIN*/}
-                        <TouchableOpacity onPress={() => this.DEV_SKIP_LOGIN()}>
-                            <View style={{height:50, maxHeight:50, backgroundColor:"red", padding:8, justifyContent:'center', alignItems:'center'}}>
-                                <Text style={{fontSize:20,color:'white'}}>DEV:Skip Login</Text>
-                            </View>
-                        </TouchableOpacity>
 
                     </View>
                 </KeyboardAvoidingView>

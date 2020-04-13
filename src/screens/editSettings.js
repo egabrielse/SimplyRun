@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { TextInput, Text, View, StyleSheet, TouchableOpacity, Switch, Alert } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-import ModalDropdown from 'react-native-modal-dropdown';
+import RNPickerSelect from 'react-native-picker-select';
 import firebase from 'firebase';
 import {months, days, years} from '../constants/Date';
 import firebaseConfig from '../config/firebaseConfig';
@@ -60,7 +60,7 @@ class editSettings extends Component {
             incm: little,
             weight: w,
             year: date.getFullYear().toString(),
-            month: months[date.getMonth()], 
+            month: months[date.getMonth()].label, 
             day: date.getDate().toString()
         })
         console.log(this.props);
@@ -78,6 +78,7 @@ class editSettings extends Component {
     }
 
     sendToFirebase = () => {
+        console.log("Edit Settings:", this.state.month)
         // ensure fields aren't left blank
         if (this.state.name === null || this.state.name === "") {
             console.log("InputPersonalInfo: name is null or blank")
@@ -228,27 +229,27 @@ class editSettings extends Component {
                             <Text style={{flex:1, alignContent:'center', justifyContent:'center'}}>Birth Date:</Text>
                         </View>
                         <View style={{ minHeight:50, flexDirection:'row', justifyContent:'center',alignItems:'center'}}>
-                            <ModalDropdown
-                                defaultValue={this.state.month}
-                                textStyle={{fontSize:20}}
-                                style={{fontSize:18, flex:1, borderColor:'lightgray', borderWidth:1, height:50, alignItems:'center', justifyContent:'center'}}
-                                dropdownTextStyle={{fontSize:18}}
-                                options={months}
-                                onSelect={(index, value) => this.setState({month:value})}/>
-                            <ModalDropdown
-                                defaultValue={this.state.day}
-                                textStyle={{fontSize:20}}
-                                style={{fontSize:18, flex:1, borderColor:'lightgray', borderWidth:1, height:50, alignItems:'center', justifyContent:'center'}}
-                                dropdownTextStyle={{fontSize:18}}
-                                options={days}
-                                onSelect={(index, value) => this.setState({day:value})}/>
-                            <ModalDropdown
-                                defaultValue={this.state.year}
-                                textStyle={{fontSize:20}}
-                                style={{fontSize:18, flex:1, borderColor:'lightgray', borderWidth:1, height:50, alignItems:'center', justifyContent:'center'}}
-                                dropdownTextStyle={{fontSize:18}}
-                                options={years}
-                                onSelect={(index, value) => this.setState({year:value})}/>
+                            <View style={styles.pickerStyle}>
+                                <RNPickerSelect
+                                    items={months}
+                                    placeholder={{label: "Month",value:null}}
+                                    value={this.state.month}
+                                    onValueChange={(value, index) => this.setState({month:value})}/>
+                            </View>
+                            <View style={styles.pickerStyle}>
+                                <RNPickerSelect
+                                    items={days}
+                                    placeholder={{label: "Day",value:null}}
+                                    value={this.state.day}
+                                    onValueChange={(value, index) => this.setState({day:value})}/>
+                            </View>
+                            <View style={styles.pickerStyle}>
+                                <RNPickerSelect
+                                    items={years}
+                                    placeholder={{label: "Year",value:null}}
+                                    value={this.state.year}
+                                    onValueChange={(value, index) => this.setState({year:value})}/>
+                            </View>
                         </View>
 
 
@@ -456,5 +457,15 @@ const styles = StyleSheet.create({
         maxHeight:50,
         width:85,
         justifyContent:'center',
+    },
+    pickerStyle: {
+        fontSize:18,
+        flex:1,
+        borderColor:'lightgray',
+        borderWidth:1, height:50,
+        alignItems:'center',
+        justifyContent:'center',
+        alignContent:'center',
+        paddingHorizontal:10,
     }
 });

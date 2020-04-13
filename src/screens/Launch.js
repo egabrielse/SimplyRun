@@ -18,63 +18,61 @@ firebaseConfig
 class Launch extends Component {
     constructor(props){
         super(props)
-    }
+        
+        const user = firebase.auth().currentUser
+        if (user) {
+            console.log("Launch: Attempting to fetch user data for user with uid=", user.uid)
+            let userData = firestore.collection('users').doc(user.uid)
+            let runData = userData.collection('RunLog')
 
-    componentDidMount() {
-        firebase.auth().onAuthStateChanged((user) => {
-            if (user) {
-                console.log("Launch: Attempting to fetch user data for user with uid=", user.uid)
-                let userData = firestore.collection('users').doc(user.uid)
-                let runData = userData.collection('RunLog')
+            // Fetch User Data from firestore database
+            userData.get().then((doc) => {
+                console.log("Launch: Successfully fetched user data for user with uid=", user.uid)
+                let userData = doc.data()
 
-                // Fetch User Data from firestore database
-                userData.get().then((doc) => {
-                    console.log("Launch: Successfully fetched user data for user with uid=", user.uid)
-                    let userData = doc.data()
+                // Update login info in store
+                this.props.dispatch(createLoginAction(user))
+                // Update all personal info in store
+                this.props.dispatch(updateAllPersonalInfoAction(userData.personal))
+                // Update all settings info in store 
+                this.props.dispatch(updateAllSettingsAction(userData.settings))
 
-                    // Update login info in store
-                    this.props.dispatch(createLoginAction(user))
-                    // Update all personal info in store
-                    this.props.dispatch(updateAllPersonalInfoAction(userData.personal))
-                    // Update all settings info in store 
-                    this.props.dispatch(updateAllSettingsAction(userData.settings))
-
-                    // ***** Fetch Run Log from firestore database *****
-                    runData.get().then((querySnapshot) => {
-                        querySnapshot.forEach((doc) => {
-                            const run = {
-                                id: doc.id,
-                                note: doc.get("note"),
-                                time: doc.get("time"),
-                                distance: doc.get("distance"),
-                                pace: doc.get("pace"),
-                                calories: doc.get("calories"),
-                                start_time: doc.get("start_time").toDate(),
-                                end_time: doc.get("end_time").toDate(),
-                                route: doc.get("route"),
-                            }
-                            this.props.dispatch(addRunAction(run))
-                        })
-                    }).catch((error) => {
-                        console.log("Launch: Error fetching run data:", error.message)
-                        Alert.alert(error.message)
+                // ***** Fetch Run Log from firestore database *****
+                runData.get().then((querySnapshot) => {
+                    querySnapshot.forEach((doc) => {
+                        const run = {
+                            id: doc.id,
+                            note: doc.get("note"),
+                            time: doc.get("time"),
+                            distance: doc.get("distance"),
+                            pace: doc.get("pace"),
+                            calories: doc.get("calories"),
+                            start_time: doc.get("start_time").toDate(),
+                            end_time: doc.get("end_time").toDate(),
+                            route: doc.get("route"),
+                        }
+                        this.props.dispatch(addRunAction(run))
                     })
-
-                    // Navigate to main
-                    this.props.navigation.navigate("Main")
-                })
-                .catch((error) => {
-                    console.log("Launch: Error fetching user data:", error.message)
+                }).catch((error) => {
+                    console.log("Launch: Error fetching run data:", error.message)
                     Alert.alert(error.message)
-                    firebase.auth().signOut();
-                    this.props.navigation.navigate("Login")
                 })
-            } else {
-                console.log("Launch: No current user is signed in.")
+
+                // Navigate to main
+                this.props.navigation.navigate("Main")
+            })
+            .catch((error) => {
+                console.log("Launch: Error fetching user data:", error.message)
+                Alert.alert(error.message)
+                firebase.auth().signOut();
                 this.props.navigation.navigate("Login")
-            }
-        })        
+            })
+        } else {
+            console.log("Launch: No current user is signed in.")
+            this.props.navigation.navigate("Login")
+        }
     }
+
     
     render() {
         return (
