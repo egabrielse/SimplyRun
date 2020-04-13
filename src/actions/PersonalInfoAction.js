@@ -5,6 +5,7 @@ export const UPDATE_WEIGHT = "UPDATE_WEIGHT"
 export const UPDATE_SEX = "UPDATE_SEX"
 export const UPDATE_EMAIL = "UPDATE_EMAIL"
 export const UPDATE_ALL_PERSONAL_INFO = "UPDATE_ALL_PERSONAL_INFO"
+export const RESET_ALL = "RESET_ALL"
 
 
 export const updateNameAction = (name) => {
@@ -43,7 +44,6 @@ export const updateEmailAction = (email) => {
         email:email,
     }
 }
-
 export const updateAllPersonalInfoAction = (personal) => {
     return {
         type: UPDATE_ALL_PERSONAL_INFO,
@@ -53,5 +53,10 @@ export const updateAllPersonalInfoAction = (personal) => {
         height: personal.height,
         weight: personal.weight,
         sex: personal.sex,
+    }
+}
+export const resetAllAction = () => {
+    return {
+        type: RESET_ALL,
     }
 }
