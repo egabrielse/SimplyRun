@@ -38,8 +38,13 @@ class updateEmailPassword extends Component {
         // flag variable. Determines whether function should navigate back to settings upon execution
         let toReturn = 1;
 
+        if(p0 === null || p0 === "") {
+            Alert.alert("Please provide your old password.");
+            toReturn = 0;
+        }
+
         // update email if it changed
-        if(e != null && e.trim() != "" && e !== this.state.oldEmail) {
+        if(e != null && e.trim() != "" && e !== this.state.oldEmail && toReturn === 1) {
             // re-authenticate user
             user.reauthenticateWithCredential(credential).then(() => {
                 user.updateEmail(e)
@@ -82,7 +87,7 @@ class updateEmailPassword extends Component {
         }
 
         // update password if it changed
-        if(p != null && p.trim() != "" && p2 != null && p2.trim() != "") {
+        if(p != null && p.trim() != "" && p2 != null && p2.trim() != "" && toReturn === 1) {
             // update password if p and p2 match
             if (p === p2) {
                 // re-authenticate user
@@ -106,8 +111,8 @@ class updateEmailPassword extends Component {
                 Alert.alert("Passwords do not match.");
                 toReturn = 0;
             }
-        } else {
-            if((p != null && p.trim() != "") || (p2 != null && p2.trim() != "")) {
+        } else if(toReturn === 1) {
+            if((p != null && p.trim() != "") || (p2 != null && p2.trim() != "" )) {
                 console.log("User only filled out one of the password fields.");
                 Alert.alert("Please fill out both password boxes if you wish to change your password.")
             } else {
@@ -116,7 +121,7 @@ class updateEmailPassword extends Component {
         }
 
         // reset state and return to settings if everything went gracefully
-        if(toReturn == 1) {
+        if(toReturn === 1) {
             this.setState({ oldEmail:e,email:null,password:"",confirmPassword:""})
             this.props.navigation.navigate('SETTINGS');
         }
@@ -138,6 +143,8 @@ class updateEmailPassword extends Component {
                         keyboardType='email-address'
                         style={styles.textInput}
                     />
+
+                    <Text style={{fontSize: 11, margin: 5}}>Please provide your old password to confirm your identity</Text>
 
                     {/*TextInput for old password*/}
                     <TextInput

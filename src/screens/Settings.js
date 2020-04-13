@@ -6,6 +6,9 @@ import firebase from 'firebase';
 import firebaseConfig from '../config/firebaseConfig';
 import { connect } from 'react-redux';
 import {convertInchesToCentimeters, convertPoundsToKilograms} from '../constants/ConversionFunctions';
+import {resetAllAction} from '../actions/PersonalInfoAction';
+import {resetRunsAction} from '../actions/RunLogAction';
+import {resetAllSettingsAction} from '../actions/SettingsAction';
 
 //References to the root of the firestore database
 const firestore = firebase.firestore();
@@ -64,6 +67,9 @@ class Settings extends Component {
                         <TouchableOpacity
                             style={styles.logoutButton}
                             onPress={() => {
+                                this.props.dispatch(resetAllAction());
+                                this.props.dispatch(resetRunsAction());
+                                this.props.dispatch(resetAllSettingsAction());
                                 firebase.auth().signOut().then(() => {
                                     console.log("Logout successful");
                                     this.props.navigation.navigate("Login");
