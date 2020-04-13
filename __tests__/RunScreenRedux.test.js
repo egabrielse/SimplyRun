@@ -5,7 +5,16 @@ import configureStore from 'redux-mock-store'
 import { Provider } from 'react-redux';
 import initialState from '../__mock_stores__/initialState'
 const createMockStore = configureStore([])
+import { shallow, mount } from 'enzyme';
+import Enzyme from 'enzyme'
+import Adapter from 'enzyme-adapter-react-16'
+import StartButton from '../src/runbutton/StartButton';
+import { View } from 'react-native'
+import { UPDATE_ALL_SETTINGS } from '../src/actions/SettingsAction'
+import SettingsReducer from '../src/reducers/SettingsReducer'
 
+
+Enzyme.configure({ adapter: new Adapter() })
 
 jest.mock('react-native-maps', () => {
     const React = jest.requireActual('react');
@@ -59,6 +68,88 @@ describe("Run screen", () => {
             </Provider>
         ).toJSON();
         expect(tree).toMatchSnapshot();
+    });
+
+
+
+})
+
+function setup() {
+    const props = {
+        start: jest.fn()
+    }
+
+    const enzymeWrapper = shallow(<SimplyRun store={createMockStore(initialState)} />)
+
+    return {
+        props,
+        enzymeWrapper
+    }
+}
+
+describe("Run screen", () => {
+
+  
+
+    it('Start Pause, Stop', () => {
+        const enzymeWrapper = shallow(<SimplyRun store={createMockStore(initialState)} />)
+        const component = enzymeWrapper.dive().dive();
+        console.log(component.find("StartButton").length)
+        component.find("StartButton").props().onPress();
+        component.find("StartButton").props().onPress();
+        component.find("StopRunButton").props().onLongPress();
+    });
+
+
+
+    it('Change Settings', () => {
+        s = {
+            SettingsReducer: {
+                display_calories: true,
+                display_distance: true,
+                display_pace: true,
+                display_time: true,
+                metric: true,
+                update_frequency: false,
+            },
+
+            endRunReducer: {
+                time: 0,
+                distance: 0,
+                pace: 0,
+                calories: 0,
+                startTime: "",
+                endTime: "",
+                route: [],
+                hours: 0,
+                mins: 0,
+                secs: 0
+            },
+            PersonalInfoReducer: {
+                name: null,
+                email: null,
+                birthday: null,
+                height: null,
+                weight: 100,
+                sex: "male",
+            }
+        }
+
+        const enzymeWrapper = shallow(<SimplyRun store={createMockStore(s)} />)
+        const component = enzymeWrapper.dive().dive();
+        console.log(component.find("StartButton").length)
+        component.find("StartButton").props().onPress();
+        SettingsReducer(initialState, {
+            type: UPDATE_ALL_SETTINGS,
+            display_calories: true,
+            display_distance: true,
+            display_pace: true,
+            display_time: true,
+            metric: true,
+            update_frequency: true,
+        })
+        component.find("StartButton").props().onPress();
+        component.find("StartButton").props().onPress();
     });
 
 

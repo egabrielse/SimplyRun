@@ -54,12 +54,32 @@ jest.mock('react-native-maps', () => {
 });
 
 
-jest.useFakeTimers();
+
 test("Test Timer", () => {
     const t = renderer.create(<SimplyRun />)
     const instance = t.getInstance()
     instance.start()
     expect(instance.state.secs).toBe(0)
 
+
 })
+    
+
+test("Format Stats", () => {
+    const t = renderer.create(<SimplyRun />)
+    const instance = t.getInstance()
+    instance.formatStats();
+    expect(instance.state.stats).toBe("")
+})
+
+test("Start Tracking", () => {
+    const t = renderer.create(<SimplyRun />)
+    const instance = t.getInstance()
+    instance.startTracking();
+    expect(instance.state.calories).toBe(0)
+    expect(instance.state.distance).toBe(0)
+    expect(instance.state.secs).toBe(0)
+    
+})
+
 
