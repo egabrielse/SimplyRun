@@ -28,7 +28,7 @@ describe('addRunAction', () => {
         calories: 0,
         start_time: "Sun Mar 22 2020 07:48:54 GMT-0500 (Central Daylight Time)",
         end_time: "Sun Mar 22 2020 08:00:54 GMT-0500 (Central Daylight Time)",
-        route: [{latitude:43.073051,longitude:-89.40123},{latitude:43.073053,longitude:-89.40123}],
+        route: [point1,point2],
         lat:43.073052,
         long:-89.40123,
     }
