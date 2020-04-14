@@ -8,12 +8,14 @@ import MapView, { Polyline } from 'react-native-maps';
 import * as firebase from 'firebase';
 import '@firebase/firestore';
 import calculateCalories from '../calories/CalculateCalories'
+
+import { END_RUN, } from '../actions/EndRunAction'
 //Firebase initialzation 
 firebaseConfig
 
 const haversine = require('haversine');
 
-class SimplyRun extends Component {
+export class SimplyRun extends Component {
 
     state = {
         stats: "",
@@ -263,7 +265,7 @@ class SimplyRun extends Component {
         var totalTimeSecs = (this.state.hour * 60 * 60) + (this.state.min * 60) + this.state.sec + (this.state.mili / 1000);
 
         if (this.state.distance !== 0) {
-            var pace = (totalTimeSecs / 60) / this.state.distance.toFixed(2)
+            var pace = (totalTimeSecs / 60) / this.state.distance
             this.setState({ pace: pace })
         }
         //Using Redux to pass info to the EndRun Screen
@@ -495,7 +497,7 @@ function mapStateToProps(state) {
 function mapDispatchtoProps(dispatch) {
     return {
         sendRunStats: (time, distance, pace, calories, startTime, endTime, route, hours, mins, secs, polyline) => dispatch({
-            type: "ENDRUN", time, distance,
+            type: END_RUN, time, distance,
             pace, calories, startTime, endTime,
             route, hours, mins, secs, polyline
         }),
