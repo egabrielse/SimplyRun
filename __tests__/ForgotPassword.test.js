@@ -42,20 +42,5 @@ describe("ForgotPassword screen", () => {
                 emailValid:true,
             })
         })
-
-        it('does NOT change state when parameter:"text" is empty or null', () => {
-            const tree = renderer.create(<ForgotPassword />)
-            const instance = tree.getInstance()
-            instance.updateEmail("")
-            expect(instance.state).toEqual({
-                email:null,
-                emailValid:false,
-            })
-            instance.updateEmail(null)
-            expect(instance.state).toEqual({
-                email:null,
-                emailValid:false,
-            })
-        })
     })
 })

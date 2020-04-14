@@ -50,25 +50,6 @@ describe("Login screen", () => {
                 passwordValid:false,
             })
         })
-
-        it('does NOT change state when parameter:"text" is empty or null', () => {
-            const tree = renderer.create(<Login />)
-            const instance = tree.getInstance()
-            instance.updateEmail("")
-            expect(instance.state).toEqual({
-                email:null,
-                password:null,
-                emailValid:false,
-                passwordValid:false,
-            })
-            instance.updateEmail(null)
-            expect(instance.state).toEqual({
-                email:null,
-                password:null,
-                emailValid:false,
-                passwordValid:false,
-            })
-        })
     })
 
     
@@ -93,25 +74,6 @@ describe("Login screen", () => {
                 password:"12345678",
                 emailValid:false,
                 passwordValid:true,
-            })
-        })
-
-        it('does NOT change state when parameter:"text" is empty or null', () => {
-            const tree = renderer.create(<Login />)
-            const instance = tree.getInstance()
-            instance.updatePassword("")
-            expect(instance.state).toEqual({
-                email:null,
-                password:null,
-                emailValid:false,
-                passwordValid:false,
-            })
-            instance.updatePassword(null)
-            expect(instance.state).toEqual({
-                email:null,
-                password:null,
-                emailValid:false,
-                passwordValid:false,
             })
         })
     })

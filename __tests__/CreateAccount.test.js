@@ -49,29 +49,6 @@ describe("CreateAccount screen", () => {
                 confirmValid:false,
             })
         })
-
-        it('does NOT change state when parameter:"text" is empty or null', () => {
-            const tree = renderer.create(<CreateAccount />)
-            const instance = tree.getInstance()
-            instance.updateEmail("")
-            expect(instance.state).toEqual({
-                email:null,
-                password:null,
-                confirmPassword:null,
-                emailValid:false,
-                passwordValid:false,
-                confirmValid:false,
-            })
-            instance.updateEmail(null)
-            expect(instance.state).toEqual({
-                email:null,
-                password:null,
-                confirmPassword:null,
-                emailValid:false,
-                passwordValid:false,
-                confirmValid:false,
-            })
-        })
     })
 
     
@@ -102,29 +79,6 @@ describe("CreateAccount screen", () => {
                 confirmValid:false,
             })
         })
-
-        it('does NOT change state when parameter:"text" is empty or null', () => {
-            const tree = renderer.create(<CreateAccount />)
-            const instance = tree.getInstance()
-            instance.updatePassword("")
-            expect(instance.state).toEqual({
-                email:null,
-                password:null,
-                confirmPassword:null,
-                emailValid:false,
-                passwordValid:false,
-                confirmValid:false,
-            })
-            instance.updatePassword(null)
-            expect(instance.state).toEqual({
-                email:null,
-                password:null,
-                confirmPassword:null,
-                emailValid:false,
-                passwordValid:false,
-                confirmValid:false,
-            })
-        })
     })
 
     describe('function "updateConirm', () => {
@@ -152,29 +106,6 @@ describe("CreateAccount screen", () => {
                 emailValid:false,
                 passwordValid:false,
                 confirmValid:true,
-            })
-        })
-
-        it('does NOT change state when parameter:"text" is empty or null', () => {
-            const tree = renderer.create(<CreateAccount />)
-            const instance = tree.getInstance()
-            instance.updateConfirm("")
-            expect(instance.state).toEqual({
-                email:null,
-                password:null,
-                confirmPassword:null,
-                emailValid:false,
-                passwordValid:false,
-                confirmValid:false,
-            })
-            instance.updateConfirm(null)
-            expect(instance.state).toEqual({
-                email:null,
-                password:null,
-                confirmPassword:null,
-                emailValid:false,
-                passwordValid:false,
-                confirmValid:false,
             })
         })
     })

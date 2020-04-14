@@ -62,32 +62,26 @@ export class CreateAccount extends Component {
     }
 
     updateEmail = (text) => {
-        if (text != null && text.trim() != "") {
-            if (text.length >= 8) {
-                this.setState({email:text, emailValid:true})
-            } else {
-                this.setState({email:text, emailValid:false})
-            }
+        if (text.length >= 8) {
+            this.setState({email:text, emailValid:true})
+        } else {
+            this.setState({email:text, emailValid:false})
         }
     }
 
     updatePassword = (text) => {
-        if (text != null && text.trim() != "") {
-            if (text.length >= 8) {
-                this.setState({password:text, passwordValid:true})
-            } else {
-                this.setState({password:text, passwordValid:false})
-            }
+        if (text.length >= 8) {
+            this.setState({password:text, passwordValid:true})
+        } else {
+            this.setState({password:text, passwordValid:false})
         }
     }
 
     updateConfirm = (text) => {
-        if (text != null && text.trim() != "") {
-            if (text.length >= 8) {
-                this.setState({confirmPassword:text, confirmValid:true})
-            } else {
-                this.setState({confirmPassword:text, confirmValid:false})
-            }
+        if (text.length >= 8) {
+            this.setState({confirmPassword:text, confirmValid:true})
+        } else {
+            this.setState({confirmPassword:text, confirmValid:false})
         }
     }
 
