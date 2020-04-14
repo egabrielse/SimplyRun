@@ -1,5 +1,6 @@
 import {ADD_RUN,
-        DELETE_RUN} from '../actions/RunLogAction'
+        DELETE_RUN,
+        RESET_RUNS} from '../actions/RunLogAction'
 
 //Initial state of the store 
 const initialState = {
@@ -32,7 +33,7 @@ const RunLogReducer = (state = initialState, action) => {
                 total_time: state.total_time + action.time,
                 total_distance: state.total_distance + action.distance,
                 total_calories: state.total_calories + action.calories,
-                // average_pace: ((state.total_time + action.time)/60)/(state.total_distance + action.distance)
+                //average_pace: ((state.total_time)/60)/(state.total_distance)
             }
             
 
@@ -51,7 +52,7 @@ const RunLogReducer = (state = initialState, action) => {
                 return state
             } else {
                 return {...state, 
-                    runs: state.runs.filter((item,index) => item.id !== action.id),
+                    runs: state.runs.filter(run => run.id !== action.id),
                     total_time: state.total_time - terminal.time,
                     total_distance: state.total_distance - terminal.distance,
                     total_calories: state.total_calories - terminal.calories,
@@ -59,6 +60,15 @@ const RunLogReducer = (state = initialState, action) => {
                 }
             }
 
+        case RESET_RUNS:
+            console.log("RunLogReducer: ( RESET_RUNS ): resetting runs in store.")
+            return {...state, 
+                runs:[],
+                total_time:0,
+                total_distance:0,
+                total_calories:0,
+                // average_pace:0,
+            }
 
         default:
             console.log("RunLogReducer (",action.type,"): default case (no change to state)")
