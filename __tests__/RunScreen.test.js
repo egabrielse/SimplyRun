@@ -8,11 +8,24 @@ import {SimplyRun} from '../src/screens/SimplyRun'
 import configureStore from 'redux-mock-store'
 import { Provider } from 'react-redux';
 import initialState from '../__mock_stores__/initialState'
+import StopRunButton from '../src/runbutton/StopRunButton';
+import StartButton from '../src/runbutton/StartButton';
+
 
 
 const createMockStore = configureStore([])
 
 Enzyme.configure({ adapter: new Adapter() })
+const mockGeolocation = {
+    getCurrentPosition: jest.fn()
+        .mockImplementationOnce((success) => Promise.resolve(success({
+            coords: {
+                latitude: 51.1,
+                longitude: 45.3
+            }
+        })))
+};
+global.navigator.geolocation = mockGeolocation;
 
 jest.mock('react-native-maps', () => {
     const React = jest.requireActual('react');
@@ -54,15 +67,11 @@ jest.mock('react-native-maps', () => {
 });
 
 
-
 test("Test Timer", () => {
     const t = renderer.create(<SimplyRun />)
     const instance = t.getInstance()
     instance.start()
     expect(instance.state.secs).toBe(0)
-
-
-
 })
     
 
@@ -73,14 +82,33 @@ test("Format Stats", () => {
     expect(instance.state.stats).toBe("")
 })
 
+jest.useFakeTimers();
+
 test("Start Tracking", () => {
     const t = renderer.create(<SimplyRun />)
     const instance = t.getInstance()
     instance.startTracking();
-    expect(instance.state.calories).toBe(0)
+    jest.advanceTimersByTime(1000)
     expect(instance.state.distance).toBe(0)
-    expect(instance.state.secs).toBe(0)
-    
+
+
+})
+test("Start Tracking", () => {
+    const t = renderer.create(<SimplyRun />)
+    const instance = t.getInstance()
+    instance.state.distance = 1
+    instance.startTracking();
+    jest.advanceTimersByTime(1000)
+    expect(instance.state.distance).toBe(1)
+
+
 })
 
 
+
+test("Start and Stop Button", () => {
+    const stop = renderer.create(<StopRunButton />)
+    expect(stop.getInstance().props[0]).toBe(undefined)
+    const start = renderer.create(<StartButton />)
+    expect(start.getInstance().props[0]).toBe(undefined)
+})
