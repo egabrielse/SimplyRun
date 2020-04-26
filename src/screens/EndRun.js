@@ -129,7 +129,7 @@ class EndRun extends Component {
                                 backgroundColor: '#FFD700',
                                 borderRadius: 200 / 2,
                                 alignItems: 'center'
-                            }} onPress={this.saveRun}>
+                            }} onPress={() => this.saveRun()}>
 
                                 <MaterialCommunityIcons name="check" size={50} style={{ paddingTop: 5 }} color={"#5018D9"} />
 
@@ -144,7 +144,7 @@ class EndRun extends Component {
                                 backgroundColor: 'darkorange',
                                 borderRadius: 200 / 2,
                                 alignItems: 'center'
-                            }} onPress={this.discardRun}>
+                            }} onPress={() => this.discardRun()}>
 
                                 <MaterialCommunityIcons name="trash-can-outline" size={50} style={{ paddingTop: 5 }} color={"#5018D9"} />
 
