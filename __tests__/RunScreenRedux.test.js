@@ -8,13 +8,26 @@ const createMockStore = configureStore([])
 import { shallow, mount } from 'enzyme';
 import Enzyme from 'enzyme'
 import Adapter from 'enzyme-adapter-react-16'
-import StartButton from '../src/runbutton/StartButton';
-import { View } from 'react-native'
-import { UPDATE_ALL_SETTINGS } from '../src/actions/SettingsAction'
 import SettingsReducer from '../src/reducers/SettingsReducer'
 
 
+
+
+
 Enzyme.configure({ adapter: new Adapter() })
+
+
+const mockGeolocation = {
+    getCurrentPosition: jest.fn()
+        .mockImplementationOnce((success) => Promise.resolve(success({
+            coords: {
+                latitude: 51.1,
+                longitude: 45.3
+            }
+        })))
+};
+global.navigator.geolocation = mockGeolocation;
+
 
 jest.mock('react-native-maps', () => {
     const React = jest.requireActual('react');
@@ -74,22 +87,11 @@ describe("Run screen", () => {
 
 })
 
-function setup() {
-    const props = {
-        start: jest.fn()
-    }
-
-    const enzymeWrapper = shallow(<SimplyRun store={createMockStore(initialState)} />)
-
-    return {
-        props,
-        enzymeWrapper
-    }
-}
 
 describe("Run screen", () => {
 
   
+
 
     it('Start Pause, Stop', () => {
         const enzymeWrapper = shallow(<SimplyRun store={createMockStore(initialState)} />)
@@ -101,6 +103,10 @@ describe("Run screen", () => {
     });
 
 
+
+
+
+    jest.useFakeTimers();
 
     it('Change Settings', () => {
         s = {
@@ -137,12 +143,1332 @@ describe("Run screen", () => {
 
         const enzymeWrapper = shallow(<SimplyRun store={createMockStore(s)} />)
         const component = enzymeWrapper.dive().dive();
-        
         component.find("StartButton").props().onPress();
+        jest.advanceTimersByTime(1000);
+        component.find("StartButton").props().onPress();
+        component.find("StartButton").props().onPress();
+    });
+
+    jest.useFakeTimers();
+
+    it('Change Settings', () => {
+        t = {
+            SettingsReducer: {
+                display_calories: false,
+                display_distance: true,
+                display_pace: true,
+                display_time: true,
+                metric: true,
+                update_frequency: false,
+            },
+
+            endRunReducer: {
+                time: 0,
+                distance: 0,
+                pace: 0,
+                calories: 0,
+                startTime: "",
+                endTime: "",
+                route: [],
+                hours: 0,
+                mins: 0,
+                secs: 0
+            },
+            PersonalInfoReducer: {
+                name: null,
+                email: null,
+                birthday: null,
+                height: null,
+                weight: 100,
+                sex: "male",
+            }
+        }
+
+        const enzymeWrapper = shallow(<SimplyRun store={createMockStore(t)} />)
+        const component = enzymeWrapper.dive().dive();
+
+        component.find("StartButton").props().onPress();
+        jest.advanceTimersByTime(1000);
         component.find("StartButton").props().onPress();
         component.find("StartButton").props().onPress();
     });
 
 
+    jest.useFakeTimers();
+
+    it('Change Settings', () => {
+        t = {
+            SettingsReducer: {
+                display_calories: false,
+                display_distance: false,
+                display_pace: true,
+                display_time: true,
+                metric: true,
+                update_frequency: false,
+            },
+
+            endRunReducer: {
+                time: 0,
+                distance: 0,
+                pace: 0,
+                calories: 0,
+                startTime: "",
+                endTime: "",
+                route: [],
+                hours: 0,
+                mins: 0,
+                secs: 0
+            },
+            PersonalInfoReducer: {
+                name: null,
+                email: null,
+                birthday: null,
+                height: null,
+                weight: 100,
+                sex: "male",
+            }
+        }
+
+        const enzymeWrapper = shallow(<SimplyRun store={createMockStore(t)} />)
+        const component = enzymeWrapper.dive().dive();
+
+        component.find("StartButton").props().onPress();
+        jest.advanceTimersByTime(1000);
+        component.find("StartButton").props().onPress();
+        component.find("StartButton").props().onPress();
+    });
+
+
+    jest.useFakeTimers();
+
+    it('Change Settings', () => {
+        t = {
+            SettingsReducer: {
+                display_calories: false,
+                display_distance: false,
+                display_pace: false,
+                display_time: true,
+                metric: true,
+                update_frequency: false,
+            },
+
+            endRunReducer: {
+                time: 0,
+                distance: 0,
+                pace: 0,
+                calories: 0,
+                startTime: "",
+                endTime: "",
+                route: [],
+                hours: 0,
+                mins: 0,
+                secs: 0
+            },
+            PersonalInfoReducer: {
+                name: null,
+                email: null,
+                birthday: null,
+                height: null,
+                weight: 100,
+                sex: "male",
+            }
+        }
+
+        const enzymeWrapper = shallow(<SimplyRun store={createMockStore(t)} />)
+        const component = enzymeWrapper.dive().dive();
+
+        component.find("StartButton").props().onPress();
+        jest.advanceTimersByTime(1000);
+        component.find("StartButton").props().onPress();
+        component.find("StartButton").props().onPress();
+    });
+    jest.useFakeTimers();
+    it('Change Settings', () => {
+        t = {
+            SettingsReducer: {
+                display_calories: false,
+                display_distance: false,
+                display_pace: false,
+                display_time: false,
+                metric: true,
+                update_frequency: false,
+            },
+
+            endRunReducer: {
+                time: 0,
+                distance: 0,
+                pace: 0,
+                calories: 0,
+                startTime: "",
+                endTime: "",
+                route: [],
+                hours: 0,
+                mins: 0,
+                secs: 0
+            },
+            PersonalInfoReducer: {
+                name: null,
+                email: null,
+                birthday: null,
+                height: null,
+                weight: 100,
+                sex: "male",
+            }
+        }
+
+        const enzymeWrapper = shallow(<SimplyRun store={createMockStore(t)} />)
+        const component = enzymeWrapper.dive().dive();
+
+        component.find("StartButton").props().onPress();
+        jest.advanceTimersByTime(1000);
+        component.find("StartButton").props().onPress();
+        component.find("StartButton").props().onPress();
+    });
+    jest.useFakeTimers();
+    it('Change Settings', () => {
+        t = {
+            SettingsReducer: {
+                display_calories: true,
+                display_distance: false,
+                display_pace: true,
+                display_time: true,
+                metric: true,
+                update_frequency: false,
+            },
+
+            endRunReducer: {
+                time: 0,
+                distance: 0,
+                pace: 0,
+                calories: 0,
+                startTime: "",
+                endTime: "",
+                route: [],
+                hours: 0,
+                mins: 0,
+                secs: 0
+            },
+            PersonalInfoReducer: {
+                name: null,
+                email: null,
+                birthday: null,
+                height: null,
+                weight: 100,
+                sex: "male",
+            }
+        }
+
+        const enzymeWrapper = shallow(<SimplyRun store={createMockStore(t)} />)
+        const component = enzymeWrapper.dive().dive();
+
+        component.find("StartButton").props().onPress();
+        jest.advanceTimersByTime(1000);
+        component.find("StartButton").props().onPress();
+        component.find("StartButton").props().onPress();
+    });
+    jest.useFakeTimers();
+    it('Change Settings', () => {
+        t = {
+            SettingsReducer: {
+                display_calories: true,
+                display_distance: false,
+                display_pace: false,
+                display_time: true,
+                metric: true,
+                update_frequency: false,
+            },
+
+            endRunReducer: {
+                time: 0,
+                distance: 0,
+                pace: 0,
+                calories: 0,
+                startTime: "",
+                endTime: "",
+                route: [],
+                hours: 0,
+                mins: 0,
+                secs: 0
+            },
+            PersonalInfoReducer: {
+                name: null,
+                email: null,
+                birthday: null,
+                height: null,
+                weight: 100,
+                sex: "male",
+            }
+        }
+
+        const enzymeWrapper = shallow(<SimplyRun store={createMockStore(t)} />)
+        const component = enzymeWrapper.dive().dive();
+
+        component.find("StartButton").props().onPress();
+        jest.advanceTimersByTime(1000);
+        component.find("StartButton").props().onPress();
+
+    });
+    jest.useFakeTimers();
+    it('Change Settings', () => {
+        t = {
+            SettingsReducer: {
+                display_calories: true,
+                display_distance: false,
+                display_pace: true,
+                display_time: false,
+                metric: true,
+                update_frequency: false,
+            },
+
+            endRunReducer: {
+                time: 0,
+                distance: 0,
+                pace: 0,
+                calories: 0,
+                startTime: "",
+                endTime: "",
+                route: [],
+                hours: 0,
+                mins: 0,
+                secs: 0
+            },
+            PersonalInfoReducer: {
+                name: null,
+                email: null,
+                birthday: null,
+                height: null,
+                weight: 100,
+                sex: "male",
+            }
+        }
+
+        const enzymeWrapper = shallow(<SimplyRun store={createMockStore(t)} />)
+        const component = enzymeWrapper.dive().dive();
+
+        component.find("StartButton").props().onPress();
+        jest.advanceTimersByTime(1000);
+        component.find("StartButton").props().onPress();
+        component.find("StartButton").props().onPress();
+    });
+    jest.useFakeTimers();
+    it('Change Settings', () => {
+        t = {
+            SettingsReducer: {
+                display_calories: true,
+                display_distance: false,
+                display_pace: false,
+                display_time: false,
+                metric: true,
+                update_frequency: false,
+            },
+
+            endRunReducer: {
+                time: 0,
+                distance: 0,
+                pace: 0,
+                calories: 0,
+                startTime: "",
+                endTime: "",
+                route: [],
+                hours: 0,
+                mins: 0,
+                secs: 0
+            },
+            PersonalInfoReducer: {
+                name: null,
+                email: null,
+                birthday: null,
+                height: null,
+                weight: 100,
+                sex: "male",
+            }
+        }
+
+        const enzymeWrapper = shallow(<SimplyRun store={createMockStore(t)} />)
+        const component = enzymeWrapper.dive().dive();
+
+        component.find("StartButton").props().onPress();
+        jest.advanceTimersByTime(1000);
+        component.find("StartButton").props().onPress();
+        component.find("StartButton").props().onPress();
+    });
+    jest.useFakeTimers();
+    it('Change Settings', () => {
+        t = {
+            SettingsReducer: {
+                display_calories: true,
+                display_distance: true,
+                display_pace: false,
+                display_time: false,
+                metric: true,
+                update_frequency: false,
+            },
+
+            endRunReducer: {
+                time: 0,
+                distance: 0,
+                pace: 0,
+                calories: 0,
+                startTime: "",
+                endTime: "",
+                route: [],
+                hours: 0,
+                mins: 0,
+                secs: 0
+            },
+            PersonalInfoReducer: {
+                name: null,
+                email: null,
+                birthday: null,
+                height: null,
+                weight: 100,
+                sex: "male",
+            }
+        }
+
+        const enzymeWrapper = shallow(<SimplyRun store={createMockStore(t)} />)
+        const component = enzymeWrapper.dive().dive();
+
+        component.find("StartButton").props().onPress();
+        jest.advanceTimersByTime(1000);
+        component.find("StartButton").props().onPress();
+        component.find("StartButton").props().onPress();
+    });
+    jest.useFakeTimers();
+    it('Change Settings', () => {
+        t = {
+            SettingsReducer: {
+                display_calories: true,
+                display_distance: true,
+                display_pace: false,
+                display_time: true,
+                metric: true,
+                update_frequency: false,
+            },
+
+            endRunReducer: {
+                time: 0,
+                distance: 0,
+                pace: 0,
+                calories: 0,
+                startTime: "",
+                endTime: "",
+                route: [],
+                hours: 0,
+                mins: 0,
+                secs: 0
+            },
+            PersonalInfoReducer: {
+                name: null,
+                email: null,
+                birthday: null,
+                height: null,
+                weight: 100,
+                sex: "male",
+            }
+        }
+
+        const enzymeWrapper = shallow(<SimplyRun store={createMockStore(t)} />)
+        const component = enzymeWrapper.dive().dive();
+
+        component.find("StartButton").props().onPress();
+        jest.advanceTimersByTime(1000);
+        component.find("StartButton").props().onPress();
+        component.find("StartButton").props().onPress();
+    });
+
+    it('Change Settings', () => {
+        t = {
+            SettingsReducer: {
+                display_calories: true,
+                display_distance: true,
+                display_pace: true,
+                display_time: false,
+                metric: true,
+                update_frequency: false,
+            },
+
+            endRunReducer: {
+                time: 0,
+                distance: 0,
+                pace: 0,
+                calories: 0,
+                startTime: "",
+                endTime: "",
+                route: [],
+                hours: 0,
+                mins: 0,
+                secs: 0
+            },
+            PersonalInfoReducer: {
+                name: null,
+                email: null,
+                birthday: null,
+                height: null,
+                weight: 100,
+                sex: "male",
+            }
+        }
+
+        const enzymeWrapper = shallow(<SimplyRun store={createMockStore(t)} />)
+        const component = enzymeWrapper.dive().dive();
+
+        component.find("StartButton").props().onPress();
+        jest.advanceTimersByTime(1000);
+        component.find("StartButton").props().onPress();
+        component.find("StartButton").props().onPress();
+    });
+
+    it('Change Settings', () => {
+        t = {
+            SettingsReducer: {
+                display_calories: false,
+                display_distance: true,
+                display_pace: false,
+                display_time: true,
+                metric: true,
+                update_frequency: false,
+            },
+
+            endRunReducer: {
+                time: 0,
+                distance: 0,
+                pace: 0,
+                calories: 0,
+                startTime: "",
+                endTime: "",
+                route: [],
+                hours: 0,
+                mins: 0,
+                secs: 0
+            },
+            PersonalInfoReducer: {
+                name: null,
+                email: null,
+                birthday: null,
+                height: null,
+                weight: 100,
+                sex: "male",
+            }
+        }
+
+        const enzymeWrapper = shallow(<SimplyRun store={createMockStore(t)} />)
+        const component = enzymeWrapper.dive().dive();
+
+        component.find("StartButton").props().onPress();
+        jest.advanceTimersByTime(1000);
+        component.find("StartButton").props().onPress();
+        component.find("StartButton").props().onPress();
+    });
+
+
+
+    it('Change Settings', () => {
+        t = {
+            SettingsReducer: {
+                display_calories: false,
+                display_distance: true,
+                display_pace: false,
+                display_time: false,
+                metric: true,
+                update_frequency: false,
+            },
+
+            endRunReducer: {
+                time: 0,
+                distance: 0,
+                pace: 0,
+                calories: 0,
+                startTime: "",
+                endTime: "",
+                route: [],
+                hours: 0,
+                mins: 0,
+                secs: 0
+            },
+            PersonalInfoReducer: {
+                name: null,
+                email: null,
+                birthday: null,
+                height: null,
+                weight: 100,
+                sex: "male",
+            }
+        }
+
+        const enzymeWrapper = shallow(<SimplyRun store={createMockStore(t)} />)
+        const component = enzymeWrapper.dive().dive();
+
+        component.find("StartButton").props().onPress();
+        jest.advanceTimersByTime(1000);
+        component.find("StartButton").props().onPress();
+        component.find("StartButton").props().onPress();
+    });
+
+    it('Change Settings', () => {
+        t = {
+            SettingsReducer: {
+                display_calories: false,
+                display_distance: false,
+                display_pace: true,
+                display_time: false,
+                metric: true,
+                update_frequency: false,
+            },
+
+            endRunReducer: {
+                time: 0,
+                distance: 0,
+                pace: 0,
+                calories: 0,
+                startTime: "",
+                endTime: "",
+                route: [],
+                hours: 0,
+                mins: 0,
+                secs: 0
+            },
+            PersonalInfoReducer: {
+                name: null,
+                email: null,
+                birthday: null,
+                height: null,
+                weight: 100,
+                sex: "male",
+            }
+        }
+
+        const enzymeWrapper = shallow(<SimplyRun store={createMockStore(t)} />)
+        const component = enzymeWrapper.dive().dive();
+
+        component.find("StartButton").props().onPress();
+        jest.advanceTimersByTime(1000);
+        component.find("StartButton").props().onPress();
+        component.find("StartButton").props().onPress();
+    });
+
+    it('Change Settings', () => {
+        t = {
+            SettingsReducer: {
+                display_calories: false,
+                display_distance: false,
+                display_pace: false,
+                display_time: false,
+                metric: true,
+                update_frequency: false,
+            },
+
+            endRunReducer: {
+                time: 0,
+                distance: 0,
+                pace: 0,
+                calories: 0,
+                startTime: "",
+                endTime: "",
+                route: [],
+                hours: 0,
+                mins: 0,
+                secs: 0
+            },
+            PersonalInfoReducer: {
+                name: null,
+                email: null,
+                birthday: null,
+                height: null,
+                weight: 100,
+                sex: "male",
+            }
+        }
+
+        const enzymeWrapper = shallow(<SimplyRun store={createMockStore(t)} />)
+        const component = enzymeWrapper.dive().dive();
+
+        component.find("StartButton").props().onPress();
+        jest.advanceTimersByTime(1000);
+        component.find("StartButton").props().onPress();
+        component.find("StartButton").props().onPress();
+    });
+////////////////////////////////////////////////////////////////////
+    jest.useFakeTimers();
+    it('Change Settings', () => {
+        s = {
+            SettingsReducer: {
+                display_calories: true,
+                display_distance: true,
+                display_pace: true,
+                display_time: true,
+                metric: false,
+                update_frequency: false,
+            },
+
+            endRunReducer: {
+                time: 0,
+                distance: 0,
+                pace: 0,
+                calories: 0,
+                startTime: "",
+                endTime: "",
+                route: [],
+                hours: 0,
+                mins: 0,
+                secs: 0
+            },
+            PersonalInfoReducer: {
+                name: null,
+                email: null,
+                birthday: null,
+                height: null,
+                weight: 100,
+                sex: "male",
+            }
+        }
+
+        const enzymeWrapper = shallow(<SimplyRun store={createMockStore(s)} />)
+        const component = enzymeWrapper.dive().dive();
+        component.find("StartButton").props().onPress();
+        jest.advanceTimersByTime(1000);
+        component.find("StartButton").props().onPress();
+        component.find("StartButton").props().onPress();
+    });
+
+    jest.useFakeTimers();
+
+    it('Change Settings', () => {
+        t = {
+            SettingsReducer: {
+                display_calories: false,
+                display_distance: true,
+                display_pace: true,
+                display_time: true,
+                metric: false,
+                update_frequency: false,
+            },
+
+            endRunReducer: {
+                time: 0,
+                distance: 0,
+                pace: 0,
+                calories: 0,
+                startTime: "",
+                endTime: "",
+                route: [],
+                hours: 0,
+                mins: 0,
+                secs: 0
+            },
+            PersonalInfoReducer: {
+                name: null,
+                email: null,
+                birthday: null,
+                height: null,
+                weight: 100,
+                sex: "male",
+            }
+        }
+
+        const enzymeWrapper = shallow(<SimplyRun store={createMockStore(t)} />)
+        const component = enzymeWrapper.dive().dive();
+
+        component.find("StartButton").props().onPress();
+        jest.advanceTimersByTime(1000);
+        component.find("StartButton").props().onPress();
+        component.find("StartButton").props().onPress();
+    });
+
+
+    jest.useFakeTimers();
+
+    it('Change Settings', () => {
+        t = {
+            SettingsReducer: {
+                display_calories: false,
+                display_distance: false,
+                display_pace: true,
+                display_time: true,
+                metric: false,
+                update_frequency: false,
+            },
+
+            endRunReducer: {
+                time: 0,
+                distance: 0,
+                pace: 0,
+                calories: 0,
+                startTime: "",
+                endTime: "",
+                route: [],
+                hours: 0,
+                mins: 0,
+                secs: 0
+            },
+            PersonalInfoReducer: {
+                name: null,
+                email: null,
+                birthday: null,
+                height: null,
+                weight: 100,
+                sex: "male",
+            }
+        }
+
+        const enzymeWrapper = shallow(<SimplyRun store={createMockStore(t)} />)
+        const component = enzymeWrapper.dive().dive();
+
+        component.find("StartButton").props().onPress();
+        jest.advanceTimersByTime(1000);
+        component.find("StartButton").props().onPress();
+        component.find("StartButton").props().onPress();
+    });
+
+
+    jest.useFakeTimers();
+
+    it('Change Settings', () => {
+        t = {
+            SettingsReducer: {
+                display_calories: false,
+                display_distance: false,
+                display_pace: false,
+                display_time: true,
+                metric: false,
+                update_frequency: false,
+            },
+
+            endRunReducer: {
+                time: 0,
+                distance: 0,
+                pace: 0,
+                calories: 0,
+                startTime: "",
+                endTime: "",
+                route: [],
+                hours: 0,
+                mins: 0,
+                secs: 0
+            },
+            PersonalInfoReducer: {
+                name: null,
+                email: null,
+                birthday: null,
+                height: null,
+                weight: 100,
+                sex: "male",
+            }
+        }
+
+        const enzymeWrapper = shallow(<SimplyRun store={createMockStore(t)} />)
+        const component = enzymeWrapper.dive().dive();
+
+        component.find("StartButton").props().onPress();
+        jest.advanceTimersByTime(1000);
+        component.find("StartButton").props().onPress();
+        component.find("StartButton").props().onPress();
+    });
+    jest.useFakeTimers();
+    it('Change Settings', () => {
+        t = {
+            SettingsReducer: {
+                display_calories: false,
+                display_distance: false,
+                display_pace: false,
+                display_time: false,
+                metric: false,
+                update_frequency: false,
+            },
+
+            endRunReducer: {
+                time: 0,
+                distance: 0,
+                pace: 0,
+                calories: 0,
+                startTime: "",
+                endTime: "",
+                route: [],
+                hours: 0,
+                mins: 0,
+                secs: 0
+            },
+            PersonalInfoReducer: {
+                name: null,
+                email: null,
+                birthday: null,
+                height: null,
+                weight: 100,
+                sex: "male",
+            }
+        }
+
+        const enzymeWrapper = shallow(<SimplyRun store={createMockStore(t)} />)
+        const component = enzymeWrapper.dive().dive();
+
+        component.find("StartButton").props().onPress();
+        jest.advanceTimersByTime(1000);
+        component.find("StartButton").props().onPress();
+        component.find("StartButton").props().onPress();
+    });
+    jest.useFakeTimers();
+    it('Change Settings', () => {
+        t = {
+            SettingsReducer: {
+                display_calories: true,
+                display_distance: false,
+                display_pace: true,
+                display_time: true,
+                metric: false,
+                update_frequency: false,
+            },
+
+            endRunReducer: {
+                time: 0,
+                distance: 0,
+                pace: 0,
+                calories: 0,
+                startTime: "",
+                endTime: "",
+                route: [],
+                hours: 0,
+                mins: 0,
+                secs: 0
+            },
+            PersonalInfoReducer: {
+                name: null,
+                email: null,
+                birthday: null,
+                height: null,
+                weight: 100,
+                sex: "male",
+            }
+        }
+
+        const enzymeWrapper = shallow(<SimplyRun store={createMockStore(t)} />)
+        const component = enzymeWrapper.dive().dive();
+
+        component.find("StartButton").props().onPress();
+        jest.advanceTimersByTime(1000);
+        component.find("StartButton").props().onPress();
+        component.find("StartButton").props().onPress();
+    });
+    jest.useFakeTimers();
+    it('Change Settings', () => {
+        t = {
+            SettingsReducer: {
+                display_calories: true,
+                display_distance: false,
+                display_pace: false,
+                display_time: true,
+                metric: false,
+                update_frequency: false,
+            },
+
+            endRunReducer: {
+                time: 0,
+                distance: 0,
+                pace: 0,
+                calories: 0,
+                startTime: "",
+                endTime: "",
+                route: [],
+                hours: 0,
+                mins: 0,
+                secs: 0
+            },
+            PersonalInfoReducer: {
+                name: null,
+                email: null,
+                birthday: null,
+                height: null,
+                weight: 100,
+                sex: "male",
+            }
+        }
+
+        const enzymeWrapper = shallow(<SimplyRun store={createMockStore(t)} />)
+        const component = enzymeWrapper.dive().dive();
+
+        component.find("StartButton").props().onPress();
+        jest.advanceTimersByTime(1000);
+        component.find("StartButton").props().onPress();
+
+    });
+    jest.useFakeTimers();
+    it('Change Settings', () => {
+        t = {
+            SettingsReducer: {
+                display_calories: true,
+                display_distance: false,
+                display_pace: true,
+                display_time: false,
+                metric: false,
+                update_frequency: false,
+            },
+
+            endRunReducer: {
+                time: 0,
+                distance: 0,
+                pace: 0,
+                calories: 0,
+                startTime: "",
+                endTime: "",
+                route: [],
+                hours: 0,
+                mins: 0,
+                secs: 0
+            },
+            PersonalInfoReducer: {
+                name: null,
+                email: null,
+                birthday: null,
+                height: null,
+                weight: 100,
+                sex: "male",
+            }
+        }
+
+        const enzymeWrapper = shallow(<SimplyRun store={createMockStore(t)} />)
+        const component = enzymeWrapper.dive().dive();
+
+        component.find("StartButton").props().onPress();
+        jest.advanceTimersByTime(1000);
+        component.find("StartButton").props().onPress();
+        component.find("StartButton").props().onPress();
+    });
+    jest.useFakeTimers();
+    it('Change Settings', () => {
+        t = {
+            SettingsReducer: {
+                display_calories: true,
+                display_distance: false,
+                display_pace: false,
+                display_time: false,
+                metric: false,
+                update_frequency: false,
+            },
+
+            endRunReducer: {
+                time: 0,
+                distance: 0,
+                pace: 0,
+                calories: 0,
+                startTime: "",
+                endTime: "",
+                route: [],
+                hours: 0,
+                mins: 0,
+                secs: 0
+            },
+            PersonalInfoReducer: {
+                name: null,
+                email: null,
+                birthday: null,
+                height: null,
+                weight: 100,
+                sex: "male",
+            }
+        }
+
+        const enzymeWrapper = shallow(<SimplyRun store={createMockStore(t)} />)
+        const component = enzymeWrapper.dive().dive();
+
+        component.find("StartButton").props().onPress();
+        jest.advanceTimersByTime(1000);
+        component.find("StartButton").props().onPress();
+        component.find("StartButton").props().onPress();
+    });
+    jest.useFakeTimers();
+    it('Change Settings', () => {
+        t = {
+            SettingsReducer: {
+                display_calories: true,
+                display_distance: true,
+                display_pace: false,
+                display_time: false,
+                metric: false,
+                update_frequency: false,
+            },
+
+            endRunReducer: {
+                time: 0,
+                distance: 0,
+                pace: 0,
+                calories: 0,
+                startTime: "",
+                endTime: "",
+                route: [],
+                hours: 0,
+                mins: 0,
+                secs: 0
+            },
+            PersonalInfoReducer: {
+                name: null,
+                email: null,
+                birthday: null,
+                height: null,
+                weight: 100,
+                sex: "male",
+            }
+        }
+
+        const enzymeWrapper = shallow(<SimplyRun store={createMockStore(t)} />)
+        const component = enzymeWrapper.dive().dive();
+
+        component.find("StartButton").props().onPress();
+        jest.advanceTimersByTime(1000);
+        component.find("StartButton").props().onPress();
+        component.find("StartButton").props().onPress();
+    });
+    jest.useFakeTimers();
+    it('Change Settings', () => {
+        t = {
+            SettingsReducer: {
+                display_calories: true,
+                display_distance: true,
+                display_pace: false,
+                display_time: true,
+                metric: false,
+                update_frequency: false,
+            },
+
+            endRunReducer: {
+                time: 0,
+                distance: 0,
+                pace: 0,
+                calories: 0,
+                startTime: "",
+                endTime: "",
+                route: [],
+                hours: 0,
+                mins: 0,
+                secs: 0
+            },
+            PersonalInfoReducer: {
+                name: null,
+                email: null,
+                birthday: null,
+                height: null,
+                weight: 100,
+                sex: "male",
+            }
+        }
+
+        const enzymeWrapper = shallow(<SimplyRun store={createMockStore(t)} />)
+        const component = enzymeWrapper.dive().dive();
+
+        component.find("StartButton").props().onPress();
+        jest.advanceTimersByTime(1000);
+        component.find("StartButton").props().onPress();
+        component.find("StartButton").props().onPress();
+    });
+
+    it('Change Settings', () => {
+        t = {
+            SettingsReducer: {
+                display_calories: true,
+                display_distance: true,
+                display_pace: true,
+                display_time: false,
+                metric: false,
+                update_frequency: false,
+            },
+
+            endRunReducer: {
+                time: 0,
+                distance: 0,
+                pace: 0,
+                calories: 0,
+                startTime: "",
+                endTime: "",
+                route: [],
+                hours: 0,
+                mins: 0,
+                secs: 0
+            },
+            PersonalInfoReducer: {
+                name: null,
+                email: null,
+                birthday: null,
+                height: null,
+                weight: 100,
+                sex: "male",
+            }
+        }
+
+        const enzymeWrapper = shallow(<SimplyRun store={createMockStore(t)} />)
+        const component = enzymeWrapper.dive().dive();
+
+        component.find("StartButton").props().onPress();
+        jest.advanceTimersByTime(1000);
+        component.find("StartButton").props().onPress();
+        component.find("StartButton").props().onPress();
+    });
+
+    it('Change Settings', () => {
+        t = {
+            SettingsReducer: {
+                display_calories: false,
+                display_distance: true,
+                display_pace: false,
+                display_time: true,
+                metric: false,
+                update_frequency: false,
+            },
+
+            endRunReducer: {
+                time: 0,
+                distance: 0,
+                pace: 0,
+                calories: 0,
+                startTime: "",
+                endTime: "",
+                route: [],
+                hours: 0,
+                mins: 0,
+                secs: 0
+            },
+            PersonalInfoReducer: {
+                name: null,
+                email: null,
+                birthday: null,
+                height: null,
+                weight: 100,
+                sex: "male",
+            }
+        }
+
+        const enzymeWrapper = shallow(<SimplyRun store={createMockStore(t)} />)
+        const component = enzymeWrapper.dive().dive();
+
+        component.find("StartButton").props().onPress();
+        jest.advanceTimersByTime(1000);
+        component.find("StartButton").props().onPress();
+        component.find("StartButton").props().onPress();
+    });
+
+
+
+    it('Change Settings', () => {
+        t = {
+            SettingsReducer: {
+                display_calories: false,
+                display_distance: true,
+                display_pace: false,
+                display_time: false,
+                metric: false,
+                update_frequency: false,
+            },
+
+            endRunReducer: {
+                time: 0,
+                distance: 0,
+                pace: 0,
+                calories: 0,
+                startTime: "",
+                endTime: "",
+                route: [],
+                hours: 0,
+                mins: 0,
+                secs: 0
+            },
+            PersonalInfoReducer: {
+                name: null,
+                email: null,
+                birthday: null,
+                height: null,
+                weight: 100,
+                sex: "male",
+            }
+        }
+
+        const enzymeWrapper = shallow(<SimplyRun store={createMockStore(t)} />)
+        const component = enzymeWrapper.dive().dive();
+
+        component.find("StartButton").props().onPress();
+        jest.advanceTimersByTime(1000);
+        component.find("StartButton").props().onPress();
+        component.find("StartButton").props().onPress();
+    });
+
+    it('Change Settings', () => {
+        t = {
+            SettingsReducer: {
+                display_calories: false,
+                display_distance: false,
+                display_pace: true,
+                display_time: false,
+                metric: false,
+                update_frequency: false,
+            },
+
+            endRunReducer: {
+                time: 0,
+                distance: 0,
+                pace: 0,
+                calories: 0,
+                startTime: "",
+                endTime: "",
+                route: [],
+                hours: 0,
+                mins: 0,
+                secs: 0
+            },
+            PersonalInfoReducer: {
+                name: null,
+                email: null,
+                birthday: null,
+                height: null,
+                weight: 100,
+                sex: "male",
+            }
+        }
+
+        const enzymeWrapper = shallow(<SimplyRun store={createMockStore(t)} />)
+        const component = enzymeWrapper.dive().dive();
+
+        component.find("StartButton").props().onPress();
+        jest.advanceTimersByTime(1000);
+        component.find("StartButton").props().onPress();
+        component.find("StartButton").props().onPress();
+    });
+
+    it('Change Settings', () => {
+        t = {
+            SettingsReducer: {
+                display_calories: false,
+                display_distance: false,
+                display_pace: false,
+                display_time: false,
+                metric: false,
+                update_frequency: false,
+            },
+
+            endRunReducer: {
+                time: 0,
+                distance: 0,
+                pace: 0,
+                calories: 0,
+                startTime: "",
+                endTime: "",
+                route: [],
+                hours: 0,
+                mins: 0,
+                secs: 0
+            },
+            PersonalInfoReducer: {
+                name: null,
+                email: null,
+                birthday: null,
+                height: null,
+                weight: 100,
+                sex: "male",
+            }
+        }
+
+        const enzymeWrapper = shallow(<SimplyRun store={createMockStore(t)} />)
+        const component = enzymeWrapper.dive().dive();
+
+        component.find("StartButton").props().onPress();
+        jest.advanceTimersByTime(1000);
+        component.find("StartButton").props().onPress();
+        component.find("StartButton").props().onPress();
+    });
 
 })
