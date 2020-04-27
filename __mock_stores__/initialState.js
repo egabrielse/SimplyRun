@@ -9,7 +9,7 @@ export default {
         email: null,
         birthday: null,
         height: null,
-        weight:null,
+        weight:100,
         sex:"male",
     },
 

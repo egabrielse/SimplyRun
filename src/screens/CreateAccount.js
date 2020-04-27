@@ -5,13 +5,12 @@ import firebaseConfig from '../config/firebaseConfig'
 import '@firebase/firestore';
 import { connect } from 'react-redux'
 import { ScrollView } from 'react-native-gesture-handler';
-import {createLoginAction} from '../actions/UserAuthenticationAction'
 
 //Firebase initialization 
 firebaseConfig
 
 
-class CreateAccount extends Component {
+export class CreateAccount extends Component {
 
     state = {
         email:null,
@@ -38,9 +37,6 @@ class CreateAccount extends Component {
                     console.log("CreateAccount: Successfully signed up new user!")
                     let user = firebase.auth().currentUser
 
-                    // Dispatch to UserAuthenticationReducer
-                    this.props.dispatch(createLoginAction(user))
-
                     // Navigate to 'Main'
                     this.props.navigation.navigate("InputPersonalInfo")
 
@@ -66,14 +62,15 @@ class CreateAccount extends Component {
     }
 
     updateEmail = (text) => {
-        if (text != null && text.trim() != "" && text.length >= 8) {
+        if (text.length >= 8) {
             this.setState({email:text, emailValid:true})
         } else {
             this.setState({email:text, emailValid:false})
         }
     }
+
     updatePassword = (text) => {
-        if (text != null && text.trim() != "" && text.length >= 8) {
+        if (text.length >= 8) {
             this.setState({password:text, passwordValid:true})
         } else {
             this.setState({password:text, passwordValid:false})
@@ -81,7 +78,7 @@ class CreateAccount extends Component {
     }
 
     updateConfirm = (text) => {
-        if (text != null && text.trim() != "" && text.length >= 8) {
+        if (text.length >= 8) {
             this.setState({confirmPassword:text, confirmValid:true})
         } else {
             this.setState({confirmPassword:text, confirmValid:false})

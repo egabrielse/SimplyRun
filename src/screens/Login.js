@@ -5,7 +5,6 @@ import firebaseConfig from '../config/firebaseConfig'
 import { connect } from 'react-redux'
 import { ScrollView } from 'react-native-gesture-handler';
 import {addRunAction} from '../actions/RunLogAction'
-import {createLoginAction} from '../actions/UserAuthenticationAction'
 import {updateAllPersonalInfoAction} from '../actions/PersonalInfoAction'
 import {updateAllSettingsAction} from '../actions/SettingsAction'
 
@@ -14,7 +13,7 @@ const firestore = firebase.firestore();
 //Firebase initialzation 
 firebaseConfig
 
-class Login extends Component {
+export class Login extends Component {
     state = {
         email:null,
         password:null,
@@ -54,8 +53,6 @@ class Login extends Component {
                         console.log("Login: Successfully fetched user data for user with uid=", user.uid)
                         let userData = doc.data()
 
-                        // Update login info in store
-                        this.props.dispatch(createLoginAction(user))
                         // Update all personal info in store
                         this.props.dispatch(updateAllPersonalInfoAction(userData.personal))
                         // Update all settings info in store 
@@ -113,7 +110,7 @@ class Login extends Component {
     }
 
     updateEmail = (text) => {
-        if (text != null && text.trim() != "" && text.length >= 8) {
+        if (text.length >= 8) {
             this.setState({email:text, emailValid:true})
         } else {
             this.setState({email:text, emailValid:false})
@@ -121,7 +118,7 @@ class Login extends Component {
     }
 
     updatePassword = (text) => {
-        if (text != null && text.trim() != "" && text.length >= 8) {
+        if (text.length >= 8) {
             this.setState({password:text, passwordValid:true})
         } else {
             this.setState({password:text, passwordValid:false})

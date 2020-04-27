@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
-import { Modal, Text, TouchableOpacity, View, TextInput, Button, StyleSheet, TouchableHighlight, Alert } from 'react-native';
+import { Modal, Text, TouchableOpacity, View, StyleSheet, TouchableHighlight, Alert } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from 'react-native-table-component';
+import { Table, TableWrapper, Row, Cell } from 'react-native-table-component';
 import { connect } from 'react-redux';
 import firebaseConfig from '../config/firebaseConfig'
-import firebase from 'firebase';
 import MapView, {Polyline} from 'react-native-maps';
 import { deleteRunAction } from '../actions/RunLogAction';
 
@@ -54,6 +53,28 @@ class RunLog extends Component {
     return (date.getMonth() + 1) + "/" + day + "/" + year;
   }
 
+  formatStats(rowData) {
+    var formattedData = [];
+    for (var i = 0; i < 4; i++) {
+      switch (i) {
+        case 0:
+          formattedData.push(this.formatDate(new Date(rowData[0]).toString()));
+          break;
+        case 1:
+          formattedData.push(rowData[1] + (this.props.metric ? " km" : " mi"));
+          break;
+        case 2:
+          formattedData.push(this.formatTime(rowData[2]));
+          break;
+        case 3:
+          formattedData.push(this.formatPace(rowData[3]) + (this.props.metric ? " min/km" : " min/mi"));
+          break; 
+      }
+    }
+    return formattedData;
+  }
+
+
   //sorts data in table based on column selected
   sortTable(field, ascending) {
     const sortedTableData = this.state.tableData.sort(function(a,b) {
@@ -64,7 +85,7 @@ class RunLog extends Component {
         return (a[field] < b[field]) ? -1 : 1;
       }
       else return (a[field] > b[field]) ? -1 : 1;
-  });
+    });
       this.setState({
         tableData: sortedTableData,
         ascendingSort: !this.state.ascendingSort
@@ -77,10 +98,10 @@ class RunLog extends Component {
     const tableData = [];
     this.props.runs.forEach(run => {
       const rowData = [];
-      rowData.push(this.formatDate(run.start_time)); //fix formatting
-      rowData.push(run.distance.toFixed(2) + " mi");
-      rowData.push(this.formatTime(run.time));
-      rowData.push(this.formatPace(run.pace) + " min/mi");
+      rowData.push(Date.parse(run.start_time));
+      rowData.push(Number(this.props.metric ? (run.distance * 1.609).toFixed(2): run.distance.toFixed(2)));
+      rowData.push(run.time);
+      rowData.push(Number(this.props.metric ? (run.pace * .621) : run.pace));
       rowData.push(run.id);
       tableData.push(rowData);
     });
@@ -90,7 +111,7 @@ class RunLog extends Component {
     });
 
     //sort by date by default
-    this.sortTable(0, true);
+    this.sortTable(0, false);
   
   }
 
@@ -102,10 +123,10 @@ class RunLog extends Component {
       const tableData = [];
       this.props.runs.forEach(run => {
       const rowData = [];
-      rowData.push(this.formatDate(run.start_time)); //fix formatting
-      rowData.push(run.distance.toFixed(2) + " mi");
-      rowData.push(this.formatTime(run.time));
-      rowData.push(this.formatPace(run.pace) + " min/mi");
+      rowData.push(Date.parse(run.start_time));
+      rowData.push(Number(this.props.metric ? (run.distance * 1.609).toFixed(2): run.distance.toFixed(2)));
+      rowData.push(run.time);
+      rowData.push(Number(this.props.metric ? (run.pace * .621) : run.pace));
       rowData.push(run.id);
       tableData.push(rowData);
       });
@@ -169,8 +190,8 @@ class RunLog extends Component {
     }
     const modalData = [];
     modalData.push("Time: " + this.formatTime(this.state.selectedRun.time) + "\n");
-    modalData.push("Distance: " + this.state.selectedRun.distance.toFixed(2)  + " miles\n");
-    modalData.push("Pace: " + this.formatPace(this.state.selectedRun.pace) + " mi/min\n");
+    modalData.push("Distance: " + this.props.metric ? (this.state.selectedRun.distance * 1.609).toFixed(2) + " km\n" : this.state.selectedRun.distance.toFixed(2)  + " miles\n");
+    modalData.push("Pace: " + this.props.metric ? this.formatPace(this.state.selectedRun.pace * .621) + " km/min\n" : this.formatPace(this.state.selectedRun.pace) + " mi/min\n");
     modalData.push("Calories: " + this.state.selectedRun.calories.toFixed() + "\n");
     modalData.push("Notes: " + this.state.selectedRun.note + "\n");
     const date = this.formatDate(this.state.selectedRun.start_time);
@@ -194,8 +215,8 @@ class RunLog extends Component {
         <View>
           <Text style = {styles.title}> Run Log </Text>
           <Text style = {styles.totals}> Total Time: {this.formatTime(this.props.total_time)} </Text>
-          <Text style = {styles.totals}> Total Distance: {this.props.total_distance.toFixed(2)} miles </Text>
-          <Text style = {styles.totals}> Average Pace: {this.props.total_distance > 0 ? this.formatPace((this.props.total_time / 60) / this.props.total_distance) : "0:00"} min/mi </Text>
+          <Text style = {styles.totals}> Total Distance: {this.props.metric ? (this.props.total_distance * 1.609).toFixed(2) + " km" : this.props.total_distance.toFixed(2) + " miles"}</Text>
+          <Text style = {styles.totals}> Average Pace: {this.props.total_distance > 0 ? this.props.metric ? this.formatPace((this.props.total_time / 60) / (this.props.total_distance * 1.609)) + " min/km" : this.formatPace((this.props.total_time / 60) / this.props.total_distance) + " min/mi" : "0:00"}</Text>
           <Text style = {styles.totals}> Total Calories: {this.props.total_calories.toFixed()} </Text>
 
         <Table borderStyle={{borderWidth: 0}}>
@@ -213,7 +234,7 @@ class RunLog extends Component {
             {this.state.tableData.map((rowData, index) => (
                 <TouchableHighlight key={index} underlayColor='#AAAAAA' style={[index%2 && {backgroundColor: '#DDDDDD'}]} onPress={() => this.setModalVisible(!this.state.modalVisible, rowData[rowData.length - 1])}>
                     <Row
-                      data={rowData.slice(0, rowData.length - 1)} 
+                      data={this.formatStats(rowData.slice(0, rowData.length - 1))} 
                       style={styles.table}
                       textStyle={styles.text}
                     />
@@ -288,6 +309,7 @@ const mapStateToProps = state => {
   return {
       user: state.user,
       name: state.PersonalInfoReducer.name,
+      metric: state.SettingsReducer.metric,
       runs: state.RunLogReducer.runs,
       total_time: state.RunLogReducer.total_time,
       total_distance: state.RunLogReducer.total_distance,
