@@ -171,7 +171,7 @@ class RunLog extends Component {
     modalData.push("Time: " + this.formatTime(this.state.selectedRun.time) + "\n");
     modalData.push("Distance: " + this.state.selectedRun.distance.toFixed(2)  + " miles\n");
     modalData.push("Pace: " + this.formatPace(this.state.selectedRun.pace) + " mi/min\n");
-    modalData.push("Calories: " + this.state.selectedRun.calories + "\n");
+    modalData.push("Calories: " + this.state.selectedRun.calories.toFixed() + "\n");
     modalData.push("Notes: " + this.state.selectedRun.note + "\n");
     const date = this.formatDate(this.state.selectedRun.start_time);
     const lat = this.state.selectedRun.lat;
