@@ -25,4 +25,27 @@ describe("Settings screen", () => {
         ).toJSON();
         expect(tree).toMatchSnapshot();
     });
+
+    describe('functions "_showDialog" and "_hideDialog" ', () => {
+        const tree = renderer.create(<Settings />)
+        const instance = tree.getInstance()
+        test('correctly show the dialog', () => {
+            instance._showDialog();
+            expect(instance.state).toEqual({
+                visible: true,
+                password: ""
+            })
+        })
+
+        test('correctly hide the dialog ', () => {
+            instance._hideDialog();
+            expect(instance.state).toEqual({
+                visible: false,
+                password: ""
+            })
+        })
+    })
+
+
+
 })

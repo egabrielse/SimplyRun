@@ -15,7 +15,7 @@ const firestore = firebase.firestore();
 //Firebase initialzation 
 firebaseConfig
 
-class Settings extends Component {
+export class Settings extends Component {
     state = {
         visible: false,
         password: "",

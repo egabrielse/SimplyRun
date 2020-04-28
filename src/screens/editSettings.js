@@ -16,7 +16,7 @@ const firestore = firebase.firestore();
 //Firebase initialzation 
 firebaseConfig
 
-class editSettings extends Component {
+export class EditSettings extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -53,8 +53,9 @@ class editSettings extends Component {
         } else {
             big = Math.floor(this.props.height / 12).toString();
             little = Math.floor(this.props.height % 12).toString();
-            w = this.props.weight.toString();
+            w = Math.round(this.props.weight).toString();
         }
+
         this.setState({
             ftm: big,
             incm: little,
@@ -63,7 +64,6 @@ class editSettings extends Component {
             month: months[date.getMonth()].label, 
             day: date.getDate().toString()
         })
-        console.log(this.props);
     }
     
     convertMeasurementsToHeight = (ftm, incm) => {
@@ -415,7 +415,7 @@ function mapStateToProps(state) {
     }
 }
 
-export default connect(mapStateToProps)(editSettings);
+export default connect(mapStateToProps)(EditSettings);
 
 const styles = StyleSheet.create({
     row: {
