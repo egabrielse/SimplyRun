@@ -7,7 +7,7 @@ import firebaseConfig from '../config/firebaseConfig'
 import MapView, {Polyline} from 'react-native-maps';
 import { deleteRunAction } from '../actions/RunLogAction';
 
-class RunLog extends Component {
+export class RunLog extends Component {
 
   state = {
         tableHead: ['Date', 'Distance', 'Time', 'Pace'],
@@ -215,9 +215,9 @@ class RunLog extends Component {
         <View>
           <Text style = {styles.title}> Run Log </Text>
           <Text style = {styles.totals}> Total Time: {this.formatTime(this.props.total_time)} </Text>
-          <Text style = {styles.totals}> Total Distance: {this.props.metric ? (this.props.total_distance * 1.609).toFixed(2) + " km" : this.props.total_distance.toFixed(2) + " miles"}</Text>
-          <Text style = {styles.totals}> Average Pace: {this.props.total_distance > 0 ? this.props.metric ? this.formatPace((this.props.total_time / 60) / (this.props.total_distance * 1.609)) + " min/km" : this.formatPace((this.props.total_time / 60) / this.props.total_distance) + " min/mi" : "0:00"}</Text>
-          <Text style = {styles.totals}> Total Calories: {this.props.total_calories.toFixed()} </Text>
+          <Text style = {styles.totals}> Total Distance: {this.props.total_distance > 0 ? (this.props.metric ? (this.props.total_distance * 1.609).toFixed(2) + " km" : this.props.total_distance.toFixed(2) + " miles") : "0.00" + (this.props.metric ? " km" : " miles")}</Text>
+          <Text style = {styles.totals}> Average Pace: {this.props.total_distance > 0 ? (this.props.metric ? this.formatPace((this.props.total_time / 60) / (this.props.total_distance * 1.609)) + " min/km" : this.formatPace((this.props.total_time / 60) / this.props.total_distance) + " min/mi") : "0:00" + (this.props.metric ? " min/km" : " min/mi")}</Text>
+          <Text style = {styles.totals}> Total Calories: {this.props.total_calories ? this.props.total_calories.toFixed() : "0"} </Text>
 
         <Table borderStyle={{borderWidth: 0}}>
         <TableWrapper style={styles.head}>
