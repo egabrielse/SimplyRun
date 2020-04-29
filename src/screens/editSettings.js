@@ -78,7 +78,6 @@ export class EditSettings extends Component {
     }
 
     sendToFirebase = () => {
-        console.log("Edit Settings:", this.state.month)
         // ensure fields aren't left blank
         if (this.state.name === null || this.state.name === "") {
             console.log("InputPersonalInfo: name is null or blank")

@@ -7,8 +7,8 @@ import { Provider } from 'react-redux';
 import Enzyme, { shallow } from 'enzyme'
 import Adapter from 'enzyme-adapter-react-16'
 import * as dates from '../src/constants/Date';
+import firebase from 'firebase';
 // import firebaseConfig from '../src/config/firebaseConfig';
-const firebase = jest.genMockFromModule('firebase')
 
 const createMockStore = configureStore([])
 
@@ -85,70 +85,152 @@ describe("editSettings screen", () => {
 
     describe('function "sendToFirebase" ', () => {
         
-        it('works correctly ', () => {
-            // const auth = jest.fn(() => {
-            //       return {
-            //           currentUser: "fakeUser"
-            //       }
-            //   })
-            // const firestore = jest.fn(() => {
-            //     return { 
-            //         collection: jest.fn(() => {
-            //             return {
-            //                 doc: jest.fn(() => {
-            //                 return {
-            //                   collection: collection,
-            //                   update: jest.fn(() => Promise.resolve(true)),
-            //                   onSnapshot: jest.fn(() => Promise.resolve(true)),
-            //                   get: jest.fn(() => Promise.resolve(true))
-            //                 }
-            //               })
-            //         }})
-            //     };
-            //   });
-            // firestore.FieldValue = {
-            //     serverTimestamp: () => {
-            //       return "MOCK_TIME";
-            //     }
-            //   };
-            jest.mock('../src/config/firebaseConfig')
-            firebase.initializeApp = jest.fn();
-            firebase.auth = jest.fn(() => Promise.resolve(true))
-            firebase.firestore = jest.fn(() => {
-                    return {
-                        collection: jest.fn(() => {
-                            return {
-                                doc: jest.fn(() => { 
-                                    return {
-                                        update: jest.fn(() => Promise.resolve(true))
-                                    }
-                                })
-                            }
-                        })
-                    }
-            })
-
-            // const firestoreMock = jest.fn(() => {
-            //     return {
-            //         mockCollection: jest.fn(() => {
-            //             return {
-            //                 mockDoc: jest.fn(() => { 
-            //                     return {
-            //                         mockUpdate: jest.fn(() => Promise.resolve(true))
-            //                     }
-            //                 })
-            //             }
-            //         })
-            //     }
-            // })
-    
-            const tree = renderer.create(<EditSettings name="" email="" display_calories={false} height="0" 
-                metric={true} sex="male" weight="0" birthday="0" update_frequency="0" display_time={false} display_distance={false} display_pace={false}
-                />)
+        it('stops on null name', () => {
+            const tree = renderer.create(<EditSettings name="" email="" display_calories={false} height="101" 
+            metric={true} sex="male" weight="2" birthday="0" update_frequency="0" display_time={false} display_distance={false} display_pace={false}/>)
             const instance = tree.getInstance()
+            firebase.auth = jest.fn();
+            
             instance.sendToFirebase();
             expect(firebase.auth).not.toHaveBeenCalled();
         })
 
+        it('stops on blank height', () => {
+            const tree = renderer.create(<EditSettings name="fakeName" email="" display_calories={false} height={null}
+            metric={true} sex="male" weight="" birthday="0" update_frequency="0" display_time={false} display_distance={false} display_pace={false}/>)
+            const instance = tree.getInstance()
+            firebase.auth = jest.fn();
+            instance.state = {
+                name: "fakeName",
+                email: "",
+                day: "31",
+                month: "December",
+                year: "1969",
+                ftm: "",
+                incm: "0",
+                weight: "",
+                sex: "male",
+                metric: true,
+                update_frequency: "0",
+                display_calories_switch: false,
+                display_pace_switch: false,
+                display_distance_switch: false,
+                display_time_switch: false
+            }
+            instance.sendToFirebase();
+            expect(firebase.auth).not.toHaveBeenCalled();
+        })
+
+        it('stops on blank weight', () => {
+            const tree = renderer.create(<EditSettings name="fakeName" email="" display_calories={false} height={null}
+            metric={true} sex="male" weight="" birthday="0" update_frequency="0" display_time={false} display_distance={false} display_pace={false}/>)
+            const instance = tree.getInstance()
+            firebase.auth = jest.fn();
+            instance.state = {
+                name: "fakeName",
+                email: "",
+                day: "31",
+                month: "December",
+                year: "1969",
+                ftm: "0",
+                incm: "0",
+                weight: "",
+                sex: "male",
+                metric: true,
+                update_frequency: "0",
+                display_calories_switch: false,
+                display_pace_switch: false,
+                display_distance_switch: false,
+                display_time_switch: false
+            }
+            instance.sendToFirebase();
+            expect(firebase.auth).not.toHaveBeenCalled();
+        })
+
+        it('stops on blank date', () => {
+            const tree = renderer.create(<EditSettings name="fakeName" email="" display_calories={false} height={null}
+            metric={true} sex="male" weight="" birthday="0" update_frequency="0" display_time={false} display_distance={false} display_pace={false}/>)
+            const instance = tree.getInstance()
+            firebase.auth = jest.fn();
+            instance.state = {
+                name: "fakeName",
+                email: "",
+                day: "31",
+                month: "December",
+                year: "",
+                ftm: "",
+                incm: "",
+                weight: "",
+                sex: "male",
+                metric: true,
+                update_frequency: "0",
+                display_calories_switch: false,
+                display_pace_switch: false,
+                display_distance_switch: false,
+                display_time_switch: false
+            }
+            instance.sendToFirebase();
+            expect(firebase.auth).not.toHaveBeenCalled();
+        }) 
     })
 })
+
+// failed firebase experiments
+                // const auth = jest.fn(() => {
+                //       return {
+                //           currentUser: "fakeUser"
+                //       }
+                //   })
+                // const firestore = jest.fn(() => {
+                //     return { 
+                //         collection: jest.fn(() => {
+                //             return {
+                //                 doc: jest.fn(() => {
+                //                 return {
+                //                   collection: collection,
+                //                   update: jest.fn(() => Promise.resolve(true)),
+                //                   onSnapshot: jest.fn(() => Promise.resolve(true)),
+                //                   get: jest.fn(() => Promise.resolve(true))
+                //                 }
+                //               })
+                //         }})
+                //     };
+                //   });
+                // firestore.FieldValue = {
+                //     serverTimestamp: () => {
+                //       return "MOCK_TIME";
+                //     }
+                //   };
+                // const firebase = jest.fn();
+                // const firebaseConfig = jest.fn();
+                // firebase.initializeApp = jest.fn();
+                // firebase.auth = jest.fn(() => {
+                //     return {
+                //         currentUser: "fakeUser"
+                //     }
+                // })
+                // firebase.firestore = jest.fn(() => {
+                //         return {
+                //             collection: jest.fn(() => {
+                //                 return {
+                //                     doc: jest.fn(() => { 
+                //                         return {
+                //                             update: jest.fn(() => Promise.resolve(true))
+                //                         }
+                //                     })
+                //                 }
+                //             })
+                //         }
+                // })
+                // const spy = jest.spyOn(firebase, "initializeApp").mockImplementation(() => ({
+                //     auth: () => ({
+                //         currentUser: {
+                //             uid: "fakeUID"
+                //         }
+                //     })
+                // }))
+        
+                // jest.mock('firebase');
+                // let mockInitializeApp = jest.fn();
+                // firebase.initializeApp = mockInitializeApp;
+                // firebase.apps = [];
