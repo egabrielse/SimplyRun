@@ -11,7 +11,7 @@ const firestore = firebase.firestore();
 //Firebase initialzation 
 firebaseConfig
 
-class updateEmailPassword extends Component {
+export class UpdateEmailPassword extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -29,15 +29,10 @@ class updateEmailPassword extends Component {
         let p = this.state.password;
         let p2 = this.state.confirmPassword;
 
-        let user = firebase.auth().currentUser;
-        var credential = firebase.auth.EmailAuthProvider.credential(
-            this.state.oldEmail,
-            p0
-        );
-
         // flag variable. Determines whether function should navigate back to settings upon execution
         let toReturn = 1;
 
+        // require password
         if(p0 === null || p0 === "") {
             Alert.alert("Please provide your old password.");
             toReturn = 0;
@@ -45,6 +40,11 @@ class updateEmailPassword extends Component {
 
         // update email if it changed
         if(e != null && e.trim() != "" && e !== this.state.oldEmail && toReturn === 1) {
+            let user = firebase.auth().currentUser;
+            var credential = firebase.auth.EmailAuthProvider.credential(
+                this.state.oldEmail,
+                p0
+            );
             // re-authenticate user
             user.reauthenticateWithCredential(credential).then(() => {
                 user.updateEmail(e)
@@ -90,6 +90,11 @@ class updateEmailPassword extends Component {
         if(p != null && p.trim() != "" && p2 != null && p2.trim() != "" && toReturn === 1) {
             // update password if p and p2 match
             if (p === p2) {
+                let user = firebase.auth().currentUser;
+                var credential = firebase.auth.EmailAuthProvider.credential(
+                    this.state.oldEmail,
+                    p0
+                );
                 // re-authenticate user
                 user.reauthenticateWithCredential(credential).then(() => {
                     user.updatePassword(p)
@@ -230,7 +235,7 @@ function mapStateToProps(state) {
     }
 }
 
-export default connect(mapStateToProps)(updateEmailPassword);
+export default connect(mapStateToProps)(UpdateEmailPassword);
 
 const styles = StyleSheet.create({
     textInput: {
