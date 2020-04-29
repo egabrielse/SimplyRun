@@ -1,4 +1,4 @@
-import {UPDATE_ALL_SETTINGS} from '../src/actions/SettingsAction'
+import {UPDATE_ALL_SETTINGS,RESET_ALL_SETTINGS} from '../src/actions/SettingsAction'
 import SettingsReducer from '../src/reducers/SettingsReducer'
 
 
@@ -47,5 +47,12 @@ describe('SettingsReducer', () => {
             metric: true,
             update_frequency: true,
         })
+    })
+
+    // TEST 3: RESET_ALL_SETTINGS
+    it('should return the updated state from inital state when given a valid UPDATE_ALL_SETTINGS action', () => {    
+        expect(SettingsReducer(initialState,{
+            type: RESET_ALL_SETTINGS,
+        })).toEqual(initialState)
     })
 })

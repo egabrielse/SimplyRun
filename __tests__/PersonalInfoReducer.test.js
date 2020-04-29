@@ -1,4 +1,4 @@
-import {UPDATE_ALL_PERSONAL_INFO, UPDATE_NAME, UPDATE_BIRTH, UPDATE_EMAIL, UPDATE_SEX, UPDATE_WEIGHT, UPDATE_HEIGHT} from '../src/actions/PersonalInfoAction'
+import {UPDATE_ALL_PERSONAL_INFO, UPDATE_NAME, UPDATE_BIRTH, UPDATE_EMAIL, UPDATE_SEX, UPDATE_WEIGHT, UPDATE_HEIGHT, RESET_ALL} from '../src/actions/PersonalInfoAction'
 import PersonalInfoReducer from '../src/reducers/PersonalInfoReducer'
 
 
@@ -156,5 +156,12 @@ describe('PersonalInfoReducer', () => {
             weight: 173,
             sex: "male",
         })
+    })
+
+    // TEST 9: CHANGED STATE + RESET_ALL
+    it ('RESET_ALL should reset state to inital values', () => {
+        expect(PersonalInfoReducer(changedState, {
+            type: RESET_ALL,
+        })).toEqual(initialState)
     })
 })

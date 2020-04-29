@@ -26,7 +26,6 @@ export class CreateAccount extends Component {
         let e = this.state.email;
         let p = this.state.password;
         let p2 = this.state.confirmPassword;
-
         // Create new user with given username and password
         if (e != null && e.trim() != "" && p != null && p.trim() != "" && p2 != null && p2.trim() != "") {
             if (p === p2) {
@@ -35,14 +34,10 @@ export class CreateAccount extends Component {
                 .createUserWithEmailAndPassword(e, p)
                 .then(() => {
                     console.log("CreateAccount: Successfully signed up new user!")
-                    let user = firebase.auth().currentUser
-
-                    // Navigate to 'Main'
-                    this.props.navigation.navigate("InputPersonalInfo")
-
                     // Reset CreateAccount's state
                     this.setState({email:null,password:null,confirmPassword:null,emailValid:false,passwordValid:false, confirmValid:false})
-
+                    // Navigate to 'Main'
+                    this.props.navigation.navigate("InputPersonalInfo")
                 })
                 .catch((error) => {
                     Alert.alert(error.message)
