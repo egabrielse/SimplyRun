@@ -62,4 +62,30 @@ describe("updateEmailPassword screen", () => {
             expect(firebase.auth).not.toHaveBeenCalled();
         })
     })
+
+    describe('updateEmailPassword Screen  ', () => {
+
+        test('change email/oldPassword/password/confirmPassword ', () => {
+            const navigation = jest.mock();
+            navigation.navigate = jest.fn();
+            const enzymeWrapper = shallow(<UpdateEmailPassword store={createMockStore(initialState)} email="" navigation={navigation}/>)
+            const component = enzymeWrapper.dive().dive();
+            component.find("TextInput").at(0).props().onChangeText(" ");
+            component.find("TextInput").at(1).props().onChangeText(" ");
+            component.find("TextInput").at(2).props().onChangeText(" ");
+            component.find("TextInput").at(3).props().onChangeText(" ");
+            expect(navigation.navigate).not.toHaveBeenCalled();
+        })
+
+        test('change buttons ', () => {
+            const navigation = jest.mock();
+            navigation.navigate = jest.fn();
+            const enzymeWrapper = shallow(<UpdateEmailPassword store={createMockStore(initialState)} email="" navigation={navigation}/>)
+            const component = enzymeWrapper.dive().dive();
+            component.find("View").at(1).dive().find("TouchableOpacity").at(0).props().onPress();
+            expect(navigation.navigate).not.toHaveBeenCalled();
+            component.find("View").at(1).dive().find("TouchableOpacity").at(1).props().onPress();
+            expect(navigation.navigate).toHaveBeenCalled();
+        })
+    })
 })

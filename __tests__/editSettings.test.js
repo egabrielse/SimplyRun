@@ -172,64 +172,93 @@ describe("editSettings screen", () => {
             expect(firebase.auth).not.toHaveBeenCalled();
         }) 
     })
-})
 
-// failed firebase experiments
-                // const auth = jest.fn(() => {
-                //       return {
-                //           currentUser: "fakeUser"
-                //       }
-                //   })
-                // const firestore = jest.fn(() => {
-                //     return { 
-                //         collection: jest.fn(() => {
-                //             return {
-                //                 doc: jest.fn(() => {
-                //                 return {
-                //                   collection: collection,
-                //                   update: jest.fn(() => Promise.resolve(true)),
-                //                   onSnapshot: jest.fn(() => Promise.resolve(true)),
-                //                   get: jest.fn(() => Promise.resolve(true))
-                //                 }
-                //               })
-                //         }})
-                //     };
-                //   });
-                // firestore.FieldValue = {
-                //     serverTimestamp: () => {
-                //       return "MOCK_TIME";
-                //     }
-                //   };
-                // const firebase = jest.fn();
-                // const firebaseConfig = jest.fn();
-                // firebase.initializeApp = jest.fn();
-                // firebase.auth = jest.fn(() => {
-                //     return {
-                //         currentUser: "fakeUser"
-                //     }
-                // })
-                // firebase.firestore = jest.fn(() => {
-                //         return {
-                //             collection: jest.fn(() => {
-                //                 return {
-                //                     doc: jest.fn(() => { 
-                //                         return {
-                //                             update: jest.fn(() => Promise.resolve(true))
-                //                         }
-                //                     })
-                //                 }
-                //             })
-                //         }
-                // })
-                // const spy = jest.spyOn(firebase, "initializeApp").mockImplementation(() => ({
-                //     auth: () => ({
-                //         currentUser: {
-                //             uid: "fakeUID"
-                //         }
-                //     })
-                // }))
-        
-                // jest.mock('firebase');
-                // let mockInitializeApp = jest.fn();
-                // firebase.initializeApp = mockInitializeApp;
-                // firebase.apps = [];
+    describe('editSettings Screen  ', () => {
+
+        test('change name ', () => {
+            const navigation = jest.mock();
+            navigation.navigate = jest.fn();
+            const enzymeWrapper = shallow(<EditSettings store={createMockStore(initialState)} navigation={navigation} 
+                name="fakeName" email="" display_calories={false} height={null} metric={true} sex="male" weight="" 
+                birthday="0" update_frequency="0" display_time={false} display_distance={false} display_pace={false}/>)
+            const component = enzymeWrapper.dive();
+            component.find("View").at(0).dive().find("TextInput").props().onChangeText(" ");
+            expect(navigation.navigate).not.toHaveBeenCalled();
+        })
+
+        test('change to metric ', () => {
+            const navigation = jest.mock();
+            navigation.navigate = jest.fn();
+            const enzymeWrapper = shallow(<EditSettings store={createMockStore(initialState)} navigation={navigation} 
+                name="fakeName" email="" display_calories={false} height={null} metric={true} sex="male" weight="" 
+                birthday="0" update_frequency="0" display_time={false} display_distance={false} display_pace={false}/>)
+            const component = enzymeWrapper.dive();
+            component.find("View").at(4).dive().find("TouchableOpacity").props().onPress();
+            expect(navigation.navigate).not.toHaveBeenCalled();
+        })
+
+        test('change to imperial ', () => {
+            const navigation = jest.mock();
+            navigation.navigate = jest.fn();
+            const enzymeWrapper = shallow(<EditSettings store={createMockStore(initialState)} navigation={navigation} 
+                name="fakeName" email="" display_calories={false} height={null} metric={true} sex="male" weight="" 
+                birthday="0" update_frequency="0" display_time={false} display_distance={false} display_pace={false}/>)
+            const component = enzymeWrapper.dive();
+            component.find("View").at(6).dive().find("TouchableOpacity").props().onPress();
+            expect(navigation.navigate).not.toHaveBeenCalled();
+        })
+
+        test('change height/weight ', () => {
+            const navigation = jest.mock();
+            navigation.navigate = jest.fn();
+            const enzymeWrapper = shallow(<EditSettings store={createMockStore(initialState)} navigation={navigation} 
+                name="fakeName" email="" display_calories={false} height={null} metric={true} sex="male" weight="" 
+                birthday="0" update_frequency="0" display_time={false} display_distance={false} display_pace={false}/>)
+            const component = enzymeWrapper.dive();
+            component.find("View").at(15).dive().find("TextInput").props().onChangeText(" ");
+            component.find("View").at(16).dive().find("TextInput").props().onChangeText(" ");
+            component.find("View").at(17).dive().find("TextInput").props().onChangeText(" ");
+            expect(navigation.navigate).not.toHaveBeenCalled();
+        })
+
+        test('change sex ', () => {
+            const navigation = jest.mock();
+            navigation.navigate = jest.fn();
+            const enzymeWrapper = shallow(<EditSettings store={createMockStore(initialState)} navigation={navigation} 
+                name="fakeName" email="" display_calories={false} height={null} metric={true} sex="male" weight="" 
+                birthday="0" update_frequency="0" display_time={false} display_distance={false} display_pace={false}/>)
+            const component = enzymeWrapper.dive();
+            component.find("View").at(20).dive().find("TouchableOpacity").props().onPress();
+            component.find("View").at(22).dive().find("TouchableOpacity").props().onPress();
+            expect(navigation.navigate).not.toHaveBeenCalled();
+        })
+
+        test('change switches ', () => {
+            const navigation = jest.mock();
+            navigation.navigate = jest.fn();
+            const enzymeWrapper = shallow(<EditSettings store={createMockStore(initialState)} navigation={navigation} 
+                name="fakeName" email="" display_calories={false} height={null} metric={true} sex="male" weight="" 
+                birthday="0" update_frequency="0" display_time={false} display_distance={false} display_pace={false}/>)
+            const component = enzymeWrapper.dive();
+            component.find("View").at(24).dive().find("Switch").props().onValueChange(" ");
+            component.find("View").at(25).dive().find("Switch").props().onValueChange(" ");
+            component.find("View").at(26).dive().find("Switch").props().onValueChange(" ");
+            component.find("View").at(27).dive().find("Switch").props().onValueChange(" ");
+            expect(navigation.navigate).not.toHaveBeenCalled();
+        })
+
+        test('save/cancel buttons ', () => {
+            const navigation = jest.mock();
+            navigation.navigate = jest.fn();
+            const enzymeWrapper = shallow(<EditSettings store={createMockStore(initialState)} navigation={navigation} 
+                name="" email="" display_calories={false} height={null} metric={true} sex="male" weight="" 
+                birthday="0" update_frequency="0" display_time={false} display_distance={false} display_pace={false}/>)
+            const component = enzymeWrapper.dive();
+            component.find("View").at(28).dive().find("TouchableOpacity").at(0).props().onPress();
+            expect(navigation.navigate).not.toHaveBeenCalled();
+            component.find("View").at(28).dive().find("TouchableOpacity").at(1).props().onPress();
+            expect(navigation.navigate).toHaveBeenCalled();
+        })
+
+    })
+})
