@@ -8,7 +8,6 @@ import Enzyme, { shallow } from 'enzyme'
 import Adapter from 'enzyme-adapter-react-16'
 import * as dates from '../src/constants/Date';
 import firebase from 'firebase';
-// import firebaseConfig from '../src/config/firebaseConfig';
 
 const createMockStore = configureStore([])
 
