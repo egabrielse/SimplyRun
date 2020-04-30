@@ -1,4 +1,4 @@
-import {ADD_RUN, DELETE_RUN, addRunAction, deleteRunAction} from '../src/actions/RunLogAction'
+import {ADD_RUN, DELETE_RUN, RESET_RUNS, addRunAction, deleteRunAction, resetRunsAction} from '../src/actions/RunLogAction'
 import firebase from 'firebase';
 
 describe('addRunAction', () => {
@@ -36,6 +36,39 @@ describe('addRunAction', () => {
   })
 })
 
+describe('addRunAction', () => {
+  it('should create an action with type:ADD_RUN even if no distance was traveled.', () => {
+
+    const input = {
+        id: "TH9FYXr4NR2rlsbxHa3F",
+        note: "well done Jon",
+        time: 0,
+        distance: 0,
+        pace: 0,
+        calories: 0,
+        start_time: new Date("2020-03-22T12:48:54Z"),
+        end_time: new Date("2020-03-22T12:48:55Z"),
+        route: [],
+    }
+
+    const expectedAction = {
+        type:ADD_RUN,
+        id: "TH9FYXr4NR2rlsbxHa3F",
+        note: "well done Jon",
+        time: 0,
+        distance: 0,
+        pace: 0,
+        calories: 0,
+        start_time: "Sun Mar 22 2020 07:48:54 GMT-0500 (Central Daylight Time)",
+        end_time: "Sun Mar 22 2020 07:48:55 GMT-0500 (Central Daylight Time)",
+        route: [],
+        lat:0,
+        long:0,
+    }
+    expect(addRunAction(input)).toEqual(expectedAction)
+  })
+})
+
 describe('deleteRunAction', () => {
   it('should create an action with type:DELETE_RUN when given valid run data.', () =>  {
     const input = "TH9FYXr4NR2rlsbxHa3F"
@@ -46,5 +79,13 @@ describe('deleteRunAction', () => {
     }
 
     expect(deleteRunAction(input)).toEqual(expectedAction)
+  })
+})
+
+describe('resetRunsAction', () => {
+  it('should create an action with type:RESET_RUNS', () =>  {
+    const expectedAction = {type: RESET_RUNS}
+
+    expect(resetRunsAction()).toEqual(expectedAction)
   })
 })

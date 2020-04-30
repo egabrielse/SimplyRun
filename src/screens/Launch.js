@@ -14,7 +14,7 @@ const firestore = firebase.firestore();
 //Firebase initialzation 
 firebaseConfig
 
-class Launch extends Component {
+export class Launch extends Component {
     constructor(props){
         super(props)
         

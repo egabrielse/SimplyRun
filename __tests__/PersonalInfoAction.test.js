@@ -4,7 +4,8 @@ import {UPDATE_NAME,
   UPDATE_WEIGHT,
   UPDATE_SEX,
   UPDATE_EMAIL,
-  UPDATE_ALL_PERSONAL_INFO} from '../src/actions/PersonalInfoAction'
+  UPDATE_ALL_PERSONAL_INFO,
+  RESET_ALL} from '../src/actions/PersonalInfoAction'
 
 import {updateAllPersonalInfoAction,
   updateNameAction,
@@ -12,7 +13,8 @@ import {updateAllPersonalInfoAction,
   updateSexAction,
   updateEmailAction,
   updateHeightAction,
-  updateWeightAction} from '../src/actions/PersonalInfoAction'
+  updateWeightAction,
+  resetAllAction} from '../src/actions/PersonalInfoAction'
 
 describe('updateAllPersonalInfoAction', () => {
   it('should create an action with type:UPDATE_ALL_PERSONAL_INFO using the passed in user data.', () => {
@@ -83,5 +85,11 @@ describe('updateHeightAction', () => {
     const input = 76
     const expectedAction = {type:UPDATE_HEIGHT,height: 76}
     expect(updateHeightAction(input)).toEqual(expectedAction)
+  })
+})
+describe('resetAllAction', () => {
+  it('should create an action with type:RESET_ALL ', () => {
+    const expectedAction = {type:RESET_ALL}
+    expect(resetAllAction()).toEqual(expectedAction)
   })
 })
