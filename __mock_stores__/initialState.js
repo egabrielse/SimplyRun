@@ -7,9 +7,9 @@ export default {
     PersonalInfoReducer: {
         name:null,
         email: null,
-        birthday: null,
-        height: null,
-        weight:100,
+        birthday: 0,
+        height: 0,
+        weight: 0,
         sex:"male",
     },
 
