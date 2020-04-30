@@ -175,37 +175,38 @@ export class RunLog extends Component {
 
 
   //gets info for selected run
-  async RunDetails(id) {
+  RunDetails(id) {
 
-    await this.props.runs.forEach(run => {
+    this.props.runs.forEach(run => {
       if (run.id === id) {
-        this.setState({
-          selectedRun: run,
+        this.setState({selectedRun: run}, () => {
+          if (this.state.selectedRun === null) {
+            Alert.alert("Unable to load run details.")
+            return;
+          }
+          const modalData = [];
+          modalData.push("Time: " + this.formatTime(this.state.selectedRun.time) + "\n");
+          modalData.push("Distance: " + this.props.metric ? (this.state.selectedRun.distance * 1.609).toFixed(2) + " km\n" : this.state.selectedRun.distance.toFixed(2)  + " miles\n");
+          modalData.push("Pace: " + this.props.metric ? this.formatPace(this.state.selectedRun.pace * .621) + " km/min\n" : this.formatPace(this.state.selectedRun.pace) + " mi/min\n");
+          modalData.push("Calories: " + this.state.selectedRun.calories.toFixed() + "\n");
+          modalData.push("Notes: " + this.state.selectedRun.note + "\n");
+          const date = this.formatDate(this.state.selectedRun.start_time);
+          const lat = this.state.selectedRun.lat;
+          const long = this.state.selectedRun.long;
+          const route = this.state.selectedRun.route;
+
+          this.setState({
+            modalData : modalData,
+            date: date,
+            route: route,
+            lat: lat,
+            long: long
+          });
         });
       }
     });
-    if (this.state.selectedRun === null) {
-      alert("Unable to load run details.")
-      return;
-    }
-    const modalData = [];
-    modalData.push("Time: " + this.formatTime(this.state.selectedRun.time) + "\n");
-    modalData.push("Distance: " + this.props.metric ? (this.state.selectedRun.distance * 1.609).toFixed(2) + " km\n" : this.state.selectedRun.distance.toFixed(2)  + " miles\n");
-    modalData.push("Pace: " + this.props.metric ? this.formatPace(this.state.selectedRun.pace * .621) + " km/min\n" : this.formatPace(this.state.selectedRun.pace) + " mi/min\n");
-    modalData.push("Calories: " + this.state.selectedRun.calories.toFixed() + "\n");
-    modalData.push("Notes: " + this.state.selectedRun.note + "\n");
-    const date = this.formatDate(this.state.selectedRun.start_time);
-    const lat = this.state.selectedRun.lat;
-    const long = this.state.selectedRun.long;
-    const route = this.state.selectedRun.route;
-
-    this.setState({
-      modalData : modalData,
-      date: date,
-      route: route,
-      lat: lat,
-      long: long
-    });
+    
+    
   }
 
 
