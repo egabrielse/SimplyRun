@@ -5,8 +5,12 @@ import configureStore from 'redux-mock-store'
 import initialState from '../__mock_stores__/initialState'
 import { Provider } from 'react-redux';
 import { Alert } from 'react-native';
+import Enzyme, { shallow } from 'enzyme'
+import Adapter from 'enzyme-adapter-react-16'
 
 const createMockStore = configureStore([])
+
+Enzyme.configure({ adapter: new Adapter() })
 
 describe("InputPersonalInfo screen", () => {
 
@@ -135,4 +139,58 @@ describe("InputPersonalInfo screen", () => {
         expect(Alert.alert.mock.calls.length).toBe(1)
         expect(Alert.alert.mock.results[0].value).toBe("Please provide a full birth date.")
     });
+
+    describe('InputPersonalInfo Screen  ', () => {
+
+        test('change name ', () => {
+            const navigation = jest.mock();
+            navigation.navigate = jest.fn();
+            const enzymeWrapper = shallow(<InputPersonalInfo store={createMockStore(initialState)} navigation={navigation}/>)
+            const component = enzymeWrapper.dive();
+            component.find("View").at(2).dive().find("TextInput").props().onChangeText(" ");
+            expect(navigation.navigate).not.toHaveBeenCalled();
+        })
+
+        test('toggle metric/imperial ', () => {
+            const navigation = jest.mock();
+            navigation.navigate = jest.fn();
+            const enzymeWrapper = shallow(<InputPersonalInfo store={createMockStore(initialState)} navigation={navigation}/>)
+            const component = enzymeWrapper.dive();
+            component.find("View").at(5).dive().find("TouchableOpacity").props().onPress();
+            component.find("View").at(7).dive().find("TouchableOpacity").props().onPress();
+            expect(navigation.navigate).not.toHaveBeenCalled();
+        })
+
+        test('change height/weight ', () => {
+            const navigation = jest.mock();
+            navigation.navigate = jest.fn();
+            const enzymeWrapper = shallow(<InputPersonalInfo store={createMockStore(initialState)} navigation={navigation}/>)
+            const component = enzymeWrapper.dive();
+            // ft/m, in/cm, lb/kg
+            component.find("View").at(16).dive().find("TextInput").props().onChangeText(" ");
+            component.find("View").at(17).dive().find("TextInput").props().onChangeText(" ");
+            component.find("View").at(18).dive().find("TextInput").props().onChangeText(" ");
+            expect(navigation.navigate).not.toHaveBeenCalled();
+        })
+
+        test('toggle sex', () => {
+            const navigation = jest.mock();
+            navigation.navigate = jest.fn();
+            const enzymeWrapper = shallow(<InputPersonalInfo store={createMockStore(initialState)} navigation={navigation}/>)
+            const component = enzymeWrapper.dive();
+            // male then female button
+            component.find("View").at(21).dive().find("TouchableOpacity").props().onPress();
+            component.find("View").at(23).dive().find("TouchableOpacity").props().onPress();
+            expect(navigation.navigate).not.toHaveBeenCalled();
+        })
+
+        test('submit ', () => {
+            const navigation = jest.mock();
+            navigation.navigate = jest.fn();
+            const enzymeWrapper = shallow(<InputPersonalInfo store={createMockStore(initialState)} navigation={navigation}/>)
+            const component = enzymeWrapper.dive();
+            component.find("View").at(25).dive().find("TouchableOpacity").props().onPress();
+            expect(navigation.navigate).not.toHaveBeenCalled();
+        })
+    })
 })

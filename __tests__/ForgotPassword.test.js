@@ -4,9 +4,12 @@ import renderer from 'react-test-renderer';
 import configureStore from 'redux-mock-store'
 import initialState from '../__mock_stores__/initialState'
 import { Provider } from 'react-redux';
+import Enzyme, { shallow } from 'enzyme'
+import Adapter from 'enzyme-adapter-react-16'
 
 const createMockStore = configureStore([])
 
+Enzyme.configure({ adapter: new Adapter() })
 
 describe("ForgotPassword screen", () => {
 
@@ -41,6 +44,27 @@ describe("ForgotPassword screen", () => {
                 email:"12345678",
                 emailValid:true,
             })
+        })
+    })
+
+    describe('InputPersonalInfo Screen  ', () => {
+
+        test('change email ', () => {
+            const navigation = jest.mock();
+            navigation.navigate = jest.fn();
+            const enzymeWrapper = shallow(<ForgotPassword store={createMockStore(initialState)} navigation={navigation}/>)
+            const component = enzymeWrapper.dive();
+            component.find("TextInput").props().onChangeText(" ");
+            expect(navigation.navigate).not.toHaveBeenCalled();
+        })
+
+        test('send email button ', () => {
+            const navigation = jest.mock();
+            navigation.navigate = jest.fn();
+            const enzymeWrapper = shallow(<ForgotPassword store={createMockStore(initialState)} navigation={navigation}/>)
+            const component = enzymeWrapper.dive();
+            component.find("TouchableOpacity").props().onPress();
+            expect(navigation.navigate).not.toHaveBeenCalled();
         })
     })
 })
