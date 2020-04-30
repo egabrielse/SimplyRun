@@ -308,7 +308,6 @@ export class RunLog extends Component {
 const mapStateToProps = state => {
   return {
       user: state.user,
-      name: state.PersonalInfoReducer.name,
       metric: state.SettingsReducer.metric,
       runs: state.RunLogReducer.runs,
       total_time: state.RunLogReducer.total_time,
