@@ -5,6 +5,10 @@ import configureStore from 'redux-mock-store'
 import initialState from '../__mock_stores__/initialState'
 import { Provider } from 'react-redux';
 import { Alert } from 'react-native';
+import Enzyme, { shallow } from 'enzyme'
+import Adapter from 'enzyme-adapter-react-16'
+
+Enzyme.configure({ adapter: new Adapter() })
 
 jest.mock('firebase', () => {
     return {
@@ -236,5 +240,29 @@ describe("CreateAccount screen", () => {
         })
     });
 
+    describe('CreateAccount Screen textinput/button testing  ', () => {
+
+        test('change email/password/confirmPassword ', () => {
+            const navigation = jest.mock();
+            navigation.navigate = jest.fn();
+            const enzymeWrapper = shallow(<CreateAccount store={createMockStore(initialState)} navigation={navigation}/>)
+            const component = enzymeWrapper.dive();
+            // email, password, confirmPassword
+            component.find("TextInput").at(0).props().onChangeText(" ");
+            component.find("TextInput").at(1).props().onChangeText(" ");
+            component.find("TextInput").at(2).props().onChangeText(" ");
+            expect(navigation.navigate).not.toHaveBeenCalled();
+        })
+
+        test('sign up user ', () => {
+            const navigation = jest.mock();
+            navigation.navigate = jest.fn();
+            const enzymeWrapper = shallow(<CreateAccount store={createMockStore(initialState)} navigation={navigation}/>)
+            const component = enzymeWrapper.dive();
+            // email, password, confirmPassword
+            component.find("TouchableOpacity").props().onPress();
+            expect(navigation.navigate).not.toHaveBeenCalled();
+        })
+    })
     
 })

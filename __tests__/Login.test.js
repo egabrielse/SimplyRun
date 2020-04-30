@@ -88,4 +88,52 @@ describe("Login screen", () => {
             expect(Alert.alert).toHaveBeenCalled()
         })
     })
+
+    describe('Login Screen  ', () => {
+
+        test('change email ', () => {
+            const navigation = jest.mock();
+            navigation.navigate = jest.fn();
+            const enzymeWrapper = shallow(<Login store={createMockStore(initialState)} navigation={navigation}/>)
+            const component = enzymeWrapper.dive();
+            component.find("TextInput").at(0).props().onChangeText("asdf1234");
+            expect(navigation.navigate).not.toHaveBeenCalled();
+        })
+
+        test('change password ', () => {
+            const navigation = jest.mock();
+            navigation.navigate = jest.fn();
+            const enzymeWrapper = shallow(<Login store={createMockStore(initialState)} navigation={navigation}/>)
+            const component = enzymeWrapper.dive();
+            component.find("TextInput").at(1).props().onChangeText("asdf1234");
+            expect(navigation.navigate).not.toHaveBeenCalled();
+        })
+
+        test('sign in button ', () => {
+            const navigation = jest.mock();
+            navigation.navigate = jest.fn();
+            const enzymeWrapper = shallow(<Login store={createMockStore(initialState)} navigation={navigation}/>)
+            const component = enzymeWrapper.dive();
+            component.find("TouchableOpacity").props().onPress();
+            expect(navigation.navigate).not.toHaveBeenCalled();
+        })
+
+        test('go to Create Account ', () => {
+            const navigation = jest.mock();
+            navigation.navigate = jest.fn();
+            const enzymeWrapper = shallow(<Login store={createMockStore(initialState)} navigation={navigation}/>)
+            const component = enzymeWrapper.dive();
+            component.find("Text").at(3).props().onPress();
+            expect(navigation.navigate).toHaveBeenCalled();
+        })
+
+        test('go to Forgot Password ', () => {
+            const navigation = jest.mock();
+            navigation.navigate = jest.fn();
+            const enzymeWrapper = shallow(<Login store={createMockStore(initialState)} navigation={navigation}/>)
+            const component = enzymeWrapper.dive();
+            component.find("Text").at(4).props().onPress();
+            expect(navigation.navigate).toHaveBeenCalled();
+        })
+    })
 })
