@@ -65,4 +65,11 @@ describe('EndRunReducer', () => {
             polyline: [1]
         })
     })
+
+    // TEST 3: CLEARRUN
+    it('should return the updated state from inital state', () => {
+        expect(endRunReducer(initialState, {
+            type: "CLEARRUN",
+        })).toEqual(initialState)
+    })
 })

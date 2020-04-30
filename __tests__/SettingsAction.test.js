@@ -1,4 +1,4 @@
-import {UPDATE_ALL_SETTINGS, updateAllSettingsAction} from '../src/actions/SettingsAction'
+import {UPDATE_ALL_SETTINGS, RESET_ALL_SETTINGS, updateAllSettingsAction, resetAllSettingsAction} from '../src/actions/SettingsAction'
 
 describe('updateAllSettingsAction', () => {
   it('should create an action with type:UPDATE_ALL_SETTINGS when given valid settings data.', () => {
@@ -21,6 +21,15 @@ describe('updateAllSettingsAction', () => {
         update_frequency: true,
     }
     expect(updateAllSettingsAction(input)).toEqual(expectedAction)
+  })
+})
+
+
+describe('resetAllSettingsAction', () => {
+
+  it('should create an action with type:RESET_ALL_SETTINGS', () => {
+    const expectedAction = {type: RESET_ALL_SETTINGS}
+    expect(resetAllSettingsAction()).toEqual(expectedAction)
   })
 })
 
