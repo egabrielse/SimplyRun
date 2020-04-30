@@ -1,4 +1,4 @@
-import {ADD_RUN, DELETE_RUN} from '../src/actions/RunLogAction'
+import {ADD_RUN, DELETE_RUN, RESET_RUNS} from '../src/actions/RunLogAction'
 import RunLogReducer from '../src/reducers/RunLogReducer'
 import firebase from 'firebase';
 
@@ -129,5 +129,11 @@ describe('RunLogReducer', () => {
             total_distance: 9.9,
             total_calories: 2025,
         })
+    })
+
+    // TEST 6: RESET_RUNS
+    it('RESET_RUNS should reset run log to initial state', () => {
+        expect(RunLogReducer(nonEmptyState, {type:RESET_RUNS
+        })).toEqual(initialState)
     })
 })

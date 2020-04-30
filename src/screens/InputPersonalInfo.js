@@ -15,7 +15,7 @@ const firestore = firebase.firestore();
 //Firebase initialzation 
 firebaseConfig
 
-class InputPersonalInfo extends Component {
+export class InputPersonalInfo extends Component {
     state = {
         metric:true,
         name:null,
@@ -65,8 +65,8 @@ class InputPersonalInfo extends Component {
             Alert.alert("Please provide a height.")
             return
         }
-        if (this.state.ftm === null || this.state.incm === null) {
-            console.log("InputPersonalInfo: ftm and/or incm are/is null")
+        if (this.state.weight === null) {
+            console.log("InputPersonalInfo: weight is null")
             Alert.alert("Please provide a weight.")
             return
         }
