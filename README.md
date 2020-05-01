@@ -1,8 +1,8 @@
-### SimplyRun
+# SimplyRun
 
 
 
-# Prerequisites:
+### Prerequisites:
 
     Expo Client app installed on your smartphone
     Node JS installed on your computer
@@ -13,7 +13,7 @@
             Install Node JS with installer (https://nodejs.org/en/download/ (Links to an external site.)) 
     Install Expo in your computer with “npm install -g expo-cli” (once Node is installed)
 
-# Cloning and Running:
+### Cloning and Running:
 
     git clone https://github.com/egabrielse/SimplyRun.git (Links to an external site.)
     git checkout -b iteration_3
@@ -23,4 +23,4 @@
     Scan QR code in terminal window with smartphone
     control+C               (in terminal to end)
 
-# Running Tests: ‘npm test -- -u”
+### Running Tests: ‘npm test -- -u”
