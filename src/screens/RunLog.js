@@ -61,13 +61,13 @@ export class RunLog extends Component {
           formattedData.push(this.formatDate(new Date(rowData[0]).toString()));
           break;
         case 1:
-          formattedData.push(rowData[1] + (this.props.metric ? " km" : " mi"));
+          formattedData.push(this.props.metric ? ((rowData[1] * 1.609).toFixed(2) + " km") : (rowData[1].toFixed(2) + " mi"));
           break;
         case 2:
           formattedData.push(this.formatTime(rowData[2]));
           break;
         case 3:
-          formattedData.push(this.formatPace(rowData[3]) + (this.props.metric ? " min/km" : " min/mi"));
+          formattedData.push(this.props.metric ? (this.formatPace((rowData[3] * .621).toFixed(2)) + " min/km") : this.formatPace(rowData[3]) + " min/mi");
           break; 
       }
     }
@@ -94,14 +94,16 @@ export class RunLog extends Component {
   
 
 
+
+
   async componentDidMount() {
     const tableData = [];
     this.props.runs.forEach(run => {
       const rowData = [];
       rowData.push(Date.parse(run.start_time));
-      rowData.push(Number(this.props.metric ? (run.distance * 1.609).toFixed(2): run.distance.toFixed(2)));
+      rowData.push(run.distance);
       rowData.push(run.time);
-      rowData.push(Number(this.props.metric ? (run.pace * .621) : run.pace));
+      rowData.push(run.pace);
       rowData.push(run.id);
       tableData.push(rowData);
     });
@@ -124,9 +126,9 @@ export class RunLog extends Component {
       this.props.runs.forEach(run => {
       const rowData = [];
       rowData.push(Date.parse(run.start_time));
-      rowData.push(Number(this.props.metric ? (run.distance * 1.609).toFixed(2): run.distance.toFixed(2)));
+      rowData.push(run.distance);
       rowData.push(run.time);
-      rowData.push(Number(this.props.metric ? (run.pace * .621) : run.pace));
+      rowData.push(run.pace);
       rowData.push(run.id);
       tableData.push(rowData);
       });
@@ -186,8 +188,8 @@ export class RunLog extends Component {
           }
           const modalData = [];
           modalData.push("Time: " + this.formatTime(this.state.selectedRun.time) + "\n");
-          modalData.push("Distance: " + this.props.metric ? (this.state.selectedRun.distance * 1.609).toFixed(2) + " km\n" : this.state.selectedRun.distance.toFixed(2)  + " miles\n");
-          modalData.push("Pace: " + this.props.metric ? this.formatPace(this.state.selectedRun.pace * .621) + " km/min\n" : this.formatPace(this.state.selectedRun.pace) + " mi/min\n");
+          modalData.push("Distance: " + (this.props.metric ? ((this.state.selectedRun.distance * 1.609).toFixed(2) + " km\n") : (this.state.selectedRun.distance.toFixed(2)  + " miles\n")));
+          modalData.push("Pace: " + (this.props.metric ? (this.formatPace(this.state.selectedRun.pace * .621) + " min/km\n") : (this.formatPace(this.state.selectedRun.pace) + " min/mi\n")));
           modalData.push("Calories: " + this.state.selectedRun.calories.toFixed() + "\n");
           modalData.push("Notes: " + this.state.selectedRun.note + "\n");
           const date = this.formatDate(this.state.selectedRun.start_time);
