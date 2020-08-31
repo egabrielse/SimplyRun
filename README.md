@@ -9,51 +9,50 @@
 3. [Run with Expo-Client](###-**3.-Run-with-Expo-Client**)
 4. [Design Details](###-4.-Design-Details**)
 
-### **1. Project Abstract**
+## **1. Project Abstract**
 There are a lot of runners in this world, a quick google search tells you that in 2017 almost 60 million people participated in running events in the United States. There’s also a lot of mobile running apps. So why make a new running app? I’m an avid runner and have not found a running app that I’m completely satisfied with. Running apps have gotten unnecessarily complicated. They have become congested with excessive stats, features, and pop ups, all of which can be overwhelming to the user. They focus too much on specific training routines and sharing your workout via social media. Running is a simple activity and only requires a simple app. Simply Run would provide this, a running app that does not get lost in unnecessary features and statistics so a user can focus on what’s important, running. Our target audience is not the entire running community. There are clearly plenty of runners who enjoy the social media connectivity and more diverse set of features offered by our competitors. But there are no doubt many runners want something simple that just works.
 
 
 
 
 
-### **2. Exposition**
-##### *Create Account:*
-![Create Account](./readme_img/Create_Account.png)
+## **2. Exposition**
+### *Create Account:*
+![Create Account](./readme_img/Create.gif)
 
-##### *Edit Profile:*
-![Edit Profile](./readme_img/Edit_Profile.png)
+### *Edit Profile:*
+![Edit Profile](./readme_img/Edit_Profile.gif)
 
-##### *Change Password:*
-![Change Password](./readme_img/Change_Password.png)
+### *Change Password:*
+![Change Password](./readme_img/Change_Password.gif)
 
-##### *Login:*
-![Login](./readme_img/Login.png)
+### *Login:*
+![Login](./readme_img/Login.gif)
 
-##### *Start Run:*
-![Start](./readme_img/Start_Run.png)
+### *Go for a run:*
+#### Note: Emulator does not track actual location (must be run on an actual smartphone for this).
+![Run](./readme_img/Run.gif)
 
-##### *End Run:*
-![End Run](./readme_img/End_Run.png)
+### *View Run in Run Log:*
+#### These two runs depict actual data from the app running on an iPhone 8.
+![View Run](./readme_img/View_Run.gif)
 
-##### *View Run in Run Log:*
-![View Run](./readme_img/View_Run.png)
+### *Change Ordering of Run Log:*
+![Change_Ordering](./readme_img/Change_Ordering.gif)
 
-##### *Change Ordering of Run Log:*
-![Change_Ordering](./readme_img/Change_Ordering.png)
-
-##### *Delete Run:*
-![Delete Run](./readme_img/Delete_Run.png)
-
+### *Delete Run:*
+![Delete Run](./readme_img/Delete.gif)
 
 
 
 
-### **3. Run with Expo-Client**
-##### *Pre-requisites:*
+
+## **3. Run with Expo-Client**
+#### *Pre-requisites:*
 - *Expo Client* downloaded on your smartphone
 - Install version 14.8.0 of *Node JS* on your computer (https://nodejs.org/en/download/)
 - Install *Expo* on your computer: **npm install -g expo-cli** (*Node JS* must be installed first).
-##### *Running the App:*
+#### *Running the App:*
 1. git clone https://github.com/egabrielse/SimplyRun.git
 2. cd SimplyRun
 3. npm install 
@@ -66,8 +65,8 @@ There are a lot of runners in this world, a quick google search tells you that i
 
 
 
-### **4. Design Details**
-#### **User Requirements:**
+## **4. Design Details**
+### **User Requirements:**
 1. **User opens the application for the first time.**
     - The application loads and displays a screen where the user can either create a new account or login to an existing account.  
     - For create new account, the user will input their username, password, and email, as well as their gender, height, and weight for calorie tracking.
@@ -91,16 +90,16 @@ There are a lot of runners in this world, a quick google search tells you that i
     - After the user has ended their run, the app will display a summary of all the tracked stats of the run, and allows the user to choose to save or discard the run.
 
 
-#### **UI Mockup:**
+### **UI Mockup:**
 ![UI Mock 1](./readme_img/UI_1.png)
 ![UI Mock 2](./readme_img/UI_2.png)
 ![UI Mock 3](./readme_img/UI_3.png)
 ![UI Mock 4](./readme_img/UI_4.png)
 ![Use Flow](./readme_img/Use_Flow.png)
-#### **Database:**
+### **Database:**
 For our database, we will be using Firebase’s Cloud Firestore, which is a DBaaS (data-base as a service). Firestore is a NoSQL database that supports hierarchical data structures. Data is put into “documents” and these documents are organized into “collections.” A document itself can contain a collection (called a subcollection). Our data for a user will be organized as shown in the diagram below. The name is listed, followed by the type.
 
-#### **Data Flow:**
+### **Data Flow:**
 We will be using Redux in our application, which is a state managing JavaScript library, that uses a unidirectional data flow system architecture. The key component of this architecture is that data has only one way to be transferred from one part of the application to another. The architecture of Redux was designed to be easily implemented with React Native and parallels the Flux Architecture made by Facebook to use with React. 
 
 Data flow in Redux is defined by Actions, Dispatchers. Reducers, Stores and Views:
@@ -113,7 +112,7 @@ Data flow in Redux is defined by Actions, Dispatchers. Reducers, Stores and View
 ![Data Flow](./readme_img/Data_Flow.png)
 
 
-#### **Testing Plan:**
+### **Testing Plan:**
 - Unit & Integration Testing:
     For both Unit and Integration Testing we will be using Jest (https://jestjs.io/en/ and https://jestjs.io/docs/en/tutorial-react-native) as our testing framework. Jest provides testing for both our display side (React-Native) through Snapshots, and the logic/state side (Redux) through Redux Snapshots.
     We will be conducting both Unit and Integration tests throughout the development process. While Unit tests will test the functionality of individual components, integration tests will test how those separate components work together. 

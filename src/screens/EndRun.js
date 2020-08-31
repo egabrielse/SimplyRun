@@ -49,7 +49,8 @@ class EndRun extends Component {
                 pace: this.props.pace
             }
             this.props.addRun(run)
-        })
+            this.props.clearRun();
+        })        
     }
 
 
