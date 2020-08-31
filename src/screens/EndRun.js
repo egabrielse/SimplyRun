@@ -49,7 +49,8 @@ class EndRun extends Component {
                 pace: this.props.pace
             }
             this.props.addRun(run)
-        })
+            this.props.clearRun();
+        })        
     }
 
 
@@ -93,9 +94,9 @@ class EndRun extends Component {
                     <Polyline coordinates={this.props.polyline} strokeWidth={5} />
                 </MapView>
 
-                <KeyboardAvoidingView behavior='padding' keyboardVerticalOffset='100' style={{ alignItems: 'center', backgroundColor: '#A44CA0' }}>
+                <KeyboardAvoidingView behavior='padding' keyboardVerticalOffset='100' style={{ alignItems: 'center', backgroundColor: 'white' }}>
 
-                    <View style={{ justifyContent: 'center', alignItems: 'center', backgroundColor: '#A44CA0' }}  >
+                    <View style={{ justifyContent: 'center', alignItems: 'center', backgroundColor: 'white' }}  >
 
 
                         <Text style={{ fontSize: 20, }} > {"Run Complete"} </Text>

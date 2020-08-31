@@ -439,7 +439,7 @@ export class SimplyRun extends Component {
 
 
                 <View style={{
-                    alignItems: 'center', justifyContent: "center", flex: 1.5, backgroundColor: '#A44CA0',
+                    alignItems: 'center', justifyContent: "center", flex: 1.5, backgroundColor: 'white',
                 }}>
                     <Text style={{ fontSize: 15 }}> {this.state.current}</Text>
 

@@ -325,7 +325,7 @@ export default connect(mapStateToProps)(RunLog);
 const styles = StyleSheet.create({
 
   container: { flex: 1, padding: 16, paddingTop: 30, backgroundColor: '#fff' },
-  head: { height: 40, flex: 1, flexDirection: 'row', backgroundColor: '#A44CA0' },
+  head: { height: 40, flex: 1, flexDirection: 'row', backgroundColor: 'white' },
   table: {height: 40},
   text: { margin: 6 },
 
